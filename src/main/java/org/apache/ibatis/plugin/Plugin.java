@@ -39,10 +39,10 @@ import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.Configuration;
 
-import com.ncbank.plugin.PagePlugin;
-import com.ncbank.plugin.PageView;
-import com.ncbank.util.Common;
-import com.ncbank.util.EhcacheUtils;
+import com.numberONe.plugin.PagePlugin;
+import com.numberONe.plugin.PageView;
+import com.numberONe.util.Common;
+import com.numberONe.util.EhcacheUtils;
 
 /**
  * @author Clinton Begin
