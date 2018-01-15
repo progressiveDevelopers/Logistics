@@ -14,6 +14,7 @@ public class ConfigUtils {
 	private final Logger logger = Logger.getLogger(ConfigUtils.class);
 	/**
 	 * 初始化数据库表字段到缓存
+	 * 很重要
 	 */
 	public void initTableField(BaseMapper baseMapper) {
 		// 记录总记录数
