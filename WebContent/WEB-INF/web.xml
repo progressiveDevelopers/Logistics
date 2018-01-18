@@ -13,6 +13,12 @@
     <filter-name>encoding</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  <!-- 在初始化 springmvc DispatcherServlet 时，该框架将尝试加载位于该应用程序的 WebContent/WEB-INF 目录中文件名为 [servlet-name]-servlet.xml 的应用程序内容。 -->
+  <!-- 在这种情况下，我们的文件将是 springmvc-servlet.xml。                                                                                                                                                                                                                             -->	
+  <!-- 接下来，<servlet-mapping> 标签表明哪些 URLs 将被 DispatcherServlet 处理。这里所有以 .shtml 结束的 HTTP 请求将由 springmvc DispatcherServle t处理。         -->
+  
+  
   <servlet>
     <servlet-name>springmvc</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -26,6 +32,10 @@
     <servlet-name>springmvc</servlet-name>
     <url-pattern>*.shtml</url-pattern>
   </servlet-mapping>
+  
+  <!-- 如果你不想使用默认文件名 [servlet-name]-servlet.xml 和默认位置 WebContent/WEB-INF，           -->
+  <!-- 可以通过在 web.xml 文件中添加 servlet 监听器 ContextLoaderListener 自定义该文件的名称和位置  --> 
+  
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath:spring-shiro.xml,classpath:spring-application.xml</param-value>
@@ -37,9 +47,11 @@
   </listener>
   <listener>
     <listener-class>  
-	            org.springframework.web.context.request.RequestContextListener  
-	        </listener-class>
+	    org.springframework.web.context.request.RequestContextListener  
+	</listener-class>
   </listener>
+  
+  
   <filter>
     <filter-name>shiroFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

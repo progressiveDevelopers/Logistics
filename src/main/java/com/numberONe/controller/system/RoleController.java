@@ -18,11 +18,19 @@ import com.numberONe.mapper.RoleMapper;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
 
-/**
- * 
- * @author numberONe 2014-11-19
- * @version 3.0v
+
+/** 
+ * @ClassName: RoleController 
+ * @Description: TODO(这里用一句话描述这个类的作用) 
+ * @author gaoguofeng 
+ * @date 2018年1月17日 下午2:59:48 
  */
+
+/**
+ * @Controller 注释定义该类作为一个 Spring MVC 控制器
+ * @RequestMapping 表明在该控制器中处理的所有方法都是相对于 /role/ 路径的,RequestMapping相当于包名，用来控制边界。
+ */
+
 @Controller
 @RequestMapping("/role/")
 public class RoleController extends BaseController {
@@ -35,6 +43,13 @@ public class RoleController extends BaseController {
 		return Common.BACKGROUND_PATH + "/system/role/list";
 	}
 
+
+	/** 
+	 * @Title: findByPage 
+	 * @Description: TODO(这里用一句话描述这个方法的作用) 
+	 * @author gaoguofeng 
+	 * @date 2018年1月17日 下午3:01:27 
+	 */
 	@ResponseBody
 	@RequestMapping("findByPage")
 	public PageView findByPage(String pageNow,

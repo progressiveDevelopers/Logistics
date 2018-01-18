@@ -42,8 +42,11 @@
 			</list>
 		</property>
 	</bean>
-	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀   -->
-	<!-- 第三个组件  视图解析器   -->
+
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀                                                                               -->
+	<!-- 第三个组件  视图解析器                                                                                                                                 -->
+	<!-- InternalResourceViewResolver 将使用定义的规则来解决视图名称。                                     -->
+	<!-- 按照上述定义的规则，一个名称为 hello 的逻辑视图将发送给位于 /hello.jsp 中实现的视图。 -->
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass"
@@ -53,6 +56,10 @@
 		<!-- 后缀是所有视图的后缀名 -->
 		<property name="suffix" value=".jsp"></property>
 	</bean>
+	
+	
+	
+	
 	<mvc:annotation-driven>
 		<!-- 处理responseBody 里面日期类型 -->
 		<mvc:message-converters>
