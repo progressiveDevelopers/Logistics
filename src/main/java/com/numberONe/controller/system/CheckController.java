@@ -26,12 +26,12 @@ public class CheckController extends BaseController{
 	
 	@RequestMapping("index")
 	public String welcome(){
-		return Common.BACKGROUND_PATH + "/system/check/index";
+		return Common.BACKGROUND_PATH + "/function/check/index";
 	}
 	
 	@RequestMapping("checkResult")
 	public String assessList(){
-		return Common.BACKGROUND_PATH + "/system/check/checkResult";
+		return Common.BACKGROUND_PATH + "/function/check/checkResult";
 	}
 	
 }

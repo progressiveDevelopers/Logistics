@@ -24,6 +24,10 @@ user-scalable - 用户是否可以手动缩放
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/css/numberONe.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
+
+
+
 	<!-- base start 重要部分不可删改-->
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.v1.js"></script>
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
@@ -135,3 +139,12 @@ function getSelectEx(byId,options){
 </script>
 <!-- 返回顶部 -->
 <script type="text/javascript" src="${ctx}/js/scrolltopcontrol.js"></script>
+
+
+
+<script type="text/javascript" src="${ctx}/layui/layui.all.js"></script> 
+
+ 
+
+
+
