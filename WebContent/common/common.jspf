@@ -28,6 +28,7 @@ user-scalable - 用户是否可以手动缩放
 
 
 
+
 	<!-- base start 重要部分不可删改-->
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.v1.js"></script>
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
@@ -39,8 +40,22 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/js/jquery/underscore.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <!--[if lt IE 9]> <script src="${ctx}/js/jquery/ie/html5shiv.js"></script> <script src="${ctx}/js/jquery/ie/respond.min.js"></script><![endif]-->
-<link href="${ctx}/js/date/bootstrap.min.css" rel="stylesheet">
+<link href="${ctx}/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="${ctx}/js/date/font-awesome.min.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="${ctx}/bootstrap-star-rating-master/css/star-rating.css"  media="all" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${ctx}/bootstrap-star-rating-master/themes/krajee-svg/theme.css"  media="all" rel="stylesheet" type="text/css">
+
+
+
+<!-- 添加评分控件需要的css样式与js  -->
+
+<script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/js/star-rating.js"></script>
+<script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/themes/krajee-svg/theme.js"></script>
+
+
 <%-- 
     时间控件 -------- 可能导致样式问题,和某些js事件失效 如加上,,自行处理
 <link rel="stylesheet" type="text/css" media="all" href="${ctx}/js/date/daterangepicker-bs3.css" />
@@ -48,6 +63,12 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/js/date/moment.js"></script>
 <script type="text/javascript" src="${ctx}/js/date/daterangepicker.js"></script>--%>
 <script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> 
+
+
+
+
+
+
 <style type="text/css">
 .l_err{
     background: none repeat scroll 0 0 #FFFCC7;
@@ -145,6 +166,3 @@ function getSelectEx(byId,options){
 <script type="text/javascript" src="${ctx}/layui/layui.all.js"></script> 
 
  
-
-
-
