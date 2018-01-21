@@ -3,9 +3,7 @@
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main"/>
-        <property name="java-output-path" value="/Logistics/build/classes"/>
         <property name="context-root" value="Logistics"/>
+        <property name="java-output-path" value="/Logistics/build"/>
     </wb-module>
 </project-modules>
