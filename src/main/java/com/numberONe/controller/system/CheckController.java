@@ -7,6 +7,7 @@
 package com.numberONe.controller.system;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.numberONe.controller.index.BaseController;
@@ -25,7 +26,7 @@ import com.numberONe.util.Common;
 public class CheckController extends BaseController{
 	
 	@RequestMapping("index")
-	public String welcome(){
+	public String welcome() throws Exception{
 		return Common.BACKGROUND_PATH + "/function/check/index";
 	}
 	

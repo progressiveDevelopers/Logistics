@@ -295,35 +295,7 @@
 						</ul>
 						<section class="scrollable" style="margin-top: 35px;">
 						<div id="loadhtml"></div>
-						
-<!-- 测试 -->
-						
-						
-<input id="input-id" type="number" class="rating" min=0 max=5 step=0.5 data-size="lg" >
 
-<script>
-$("#input-id").rating();
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 测试 -->
 						
 						</section>
 					</section>
