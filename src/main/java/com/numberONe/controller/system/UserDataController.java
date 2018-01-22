@@ -24,8 +24,6 @@ public class UserDataController {
     
     @RequestMapping("view")
     public String echartView() {
-        
-        
         return Common.BACKGROUND_PATH + "/system/userData/view";
     }
     
