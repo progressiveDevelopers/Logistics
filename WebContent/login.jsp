@@ -28,13 +28,7 @@
 			<div class="control-group normal_text">
 				<table style="width: 100%">
 					<tr>
-						<td align="left"><img
-							src="${pageContext.servletContext.contextPath }/admin_files/logo_left.png"
-							alt="Logo"></td>
-							<td align="center" style="font-weight: bold;color: gray;">NumberOne管理系统</td>
-						<td align="right"><img
-							src="${pageContext.servletContext.contextPath }/admin_files/logo_left.png"
-							alt="Logo"></td>
+						<td align="center" style="font-weight: bold;color: gray;font-size: 22px;">物流与商业金融部后台管理系统</td>
 					</tr>
 				</table>
 
@@ -62,8 +56,6 @@
 			<div class="form-actions">
 				<span class="pull-left" style="width: 33%"><a href="#"
 					class="flip-link btn btn-info" id="to-recover">忘记密码？</a></span>
-					<span class="pull-left" style="width: 33%"><a href="install.shtml"
-					class="flip-link btn btn-danger" id="to-recover">一键初始化系统</a></span>
 					 <span
 					class="pull-right"><a type="submit"
 					href="javascript:checkUserForm()" class="btn btn-success">登&nbsp;&nbsp;录</a></span>
