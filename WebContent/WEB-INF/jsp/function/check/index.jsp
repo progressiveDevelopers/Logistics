@@ -1,7 +1,10 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
  
+ <script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/js/star-rating.js"></script>
+<script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/themes/krajee-svg/theme.js"></script>
+
  
- 
+ <script type="text/javascript" src="${pageContext.request.contextPath}/js/system/function/index.js"></script>
  
 <%--  <%@include file="/common/common.jspf"%> --%> 
   
@@ -11,6 +14,8 @@
  
  
  <button type="submit" class="btn btn-primary">Submit</button>
+ 
+ 
  
 
  
