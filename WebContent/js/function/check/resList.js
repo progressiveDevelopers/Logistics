@@ -19,10 +19,13 @@ $(function() {
 			colkey : "operationPost",
 			name : "中后台人员",
 			width : "90px"
+		}, {
+			colkey : "checkResult",
+			name : "考核结果",
+			width : "90px"
 		}],
-		jsonUrl : rootPath + '/check/findByPage.shtml',
-		checkbox : true,
-		button : true
+		jsonUrl : rootPath + '/check/findResByPage.shtml',
+		checkbox : true
 	});
 	$("#searchForm").click("click", function() {//绑定查询按扭
 		var searchParams = $("#fenye").serializeJson();

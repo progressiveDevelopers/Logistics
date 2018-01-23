@@ -268,3 +268,88 @@ CREATE TABLE `ly_user_role` (
 INSERT INTO `ly_user_role` VALUES ('1', '2');
 INSERT INTO `ly_user_role` VALUES ('2', '3');
 INSERT INTO `ly_user_role` VALUES ('3', '1');
+
+
+
+
+
+
+-- ----------------------------
+-- 月度表结构
+-- ----------------------------
+CREATE TABLE `check_month` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `mouth` varchar(20) DEFAULT NULL COMMENT '月份记录',
+  
+  `description` varchar(100) DEFAULT NULL COMMENT '描述' ,
+
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+
+ 
+
+-- ----------------------------
+-- 评价选项表结构
+-- ----------------------------
+
+CREATE TABLE `check_option` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `checkOption` varchar(20) DEFAULT NULL COMMENT '评价选项',
+  
+  `description` varchar(100) DEFAULT NULL COMMENT '描述' ,
+
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+
+ 
+-- ----------------------------
+-- 任务分配表结构
+-- ----------------------------
+
+CREATE TABLE `check_task_assignment` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `mouthId` int(10) DEFAULT NULL COMMENT '月份ID',
+  `mouth` varchar(20) DEFAULT NULL COMMENT '月份记录',
+  `evaluatorId` varchar(20) DEFAULT NULL COMMENT '评价人ID',
+  `evaluator` varchar(20) DEFAULT NULL COMMENT '评价人',
+   `operationPostId` varchar(20) DEFAULT NULL COMMENT '被评价人ID',
+  `operationPost` varchar(20) DEFAULT NULL COMMENT '被评价人',
+    `description` varchar(100) DEFAULT NULL COMMENT '描述' ,
+
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+
+ 
+-- ----------------------------
+-- 任务分配表结构评分明细表结构
+-- ----------------------------
+
+CREATE TABLE `check_result` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+   `mouthId` int(10) DEFAULT NULL COMMENT '月份ID',
+  `mouth` varchar(20) DEFAULT NULL COMMENT '月份记录',
+    `evaluatorId` varchar(20) DEFAULT NULL COMMENT '评价人ID',
+  `evaluator` varchar(20) DEFAULT NULL COMMENT '评价人',
+    `operationPost` varchar(20) DEFAULT NULL COMMENT '被评价人',
+  
+     `checkOption` varchar(20) DEFAULT NULL COMMENT '评价选项',
+     `checkResult` varchar(20) DEFAULT NULL COMMENT '评价选项',
+  `description` varchar(100) DEFAULT NULL COMMENT '描述' ,
+
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+

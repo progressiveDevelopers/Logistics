@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckResultFormMap;
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.CheckMapper;
@@ -56,5 +57,27 @@ public class CheckController extends BaseController {
 		pageView.setRecords(checkMapper.findByPage(checkTaskAssignmentFormMap));
 		return pageView;
 	}
+	
+	@RequestMapping("resList")
+	public String resListUI(Model model) throws Exception {
+
+	
+
+		return Common.BACKGROUND_PATH + "/function/check/resList";
+	}
+	
+	@ResponseBody
+	@RequestMapping("findResByPage")
+	public PageView findResByPage(String pageNow, String pageSize)
+			throws Exception {
+		CheckResultFormMap checkResultFormMap = getFormMap(CheckResultFormMap.class);
+
+		checkResultFormMap = toFormMap(checkResultFormMap,
+				pageNow, pageSize, checkResultFormMap.getStr("orderby"));
+
+		pageView.setRecords(checkMapper.findByPage(checkResultFormMap));
+		return pageView;
+	}
+	
 
 }
