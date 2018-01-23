@@ -28,6 +28,7 @@ user-scalable - 用户是否可以手动缩放
 
 
 
+
 	<!-- base start 重要部分不可删改-->
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.v1.js"></script>
 <script type="text/javascript" src="${ctx}/notebook/notebook_files/app.plugin.js"></script>
@@ -50,11 +51,11 @@ user-scalable - 用户是否可以手动缩放
 
 <!-- 添加评分控件需要的css样式与js  -->
 
-
+<%--  <script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script> --%>
 <script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/js/star-rating.js"></script>
 <script type="text/javascript" src="${ctx}/bootstrap-star-rating-master/themes/krajee-svg/theme.js"></script>
 
-
+ 
 <%-- 
     时间控件 -------- 可能导致样式问题,和某些js事件失效 如加上,,自行处理
 <link rel="stylesheet" type="text/css" media="all" href="${ctx}/js/date/daterangepicker-bs3.css" />
@@ -63,11 +64,10 @@ user-scalable - 用户是否可以手动缩放
 <script type="text/javascript" src="${ctx}/js/date/daterangepicker.js"></script>--%>
 <script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> 
 
-<!-- echarts  -->
 
-<script type="text/javascript" src="${ctx}/echarts/echarts.common.min.js"></script>
-
-<!-- echarts end -->
+<!--  echarts  -->
+<script type="text/javascript" src="${ctx}/echarts/echarts.common.min.js"></script> 
+<!--  echarts end  -->
 
 <style type="text/css">
 .l_err{
@@ -160,9 +160,4 @@ function getSelectEx(byId,options){
 </script>
 <!-- 返回顶部 -->
 <script type="text/javascript" src="${ctx}/js/scrolltopcontrol.js"></script>
-
-
-
 <script type="text/javascript" src="${ctx}/layui/layui.all.js"></script> 
-
- 
