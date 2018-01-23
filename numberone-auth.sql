@@ -352,4 +352,13 @@ CREATE TABLE `check_result` (
   `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+ 
+-- ----------------------------
+-- 添加评分功能的菜单
+-- ----------------------------
+
+INSERT INTO `wlhg`.`ly_resources` (`id`, `name`, `parentId`, `resKey`, `type`, `resUrl`, `level`, `icon`, `ishide`, `description`) VALUES ('37', '部门考核管理', '0', 'check', '0', 'check', '23', 'calendar-check', '0', '部门评级考核');
+INSERT INTO `wlhg`.`ly_resources` (`id`, `name`, `parentId`, `resKey`, `type`, `resUrl`, `level`, `icon`, `ishide`, `description`) VALUES ('38', '考核评价', '37', 'Assess', '2', '/check/list.shtml', '24', '', '0', '&lt;button type=&quot;button&quot; id=&quot;delFun&quot; class=&quot;btn btn-danger marR10&quot;&gt;删除&lt;/button&gt;');
+INSERT INTO `wlhg`.`ly_resources` (`id`, `name`, `parentId`, `resKey`, `type`, `resUrl`, `level`, `icon`, `ishide`, `description`) VALUES ('39', '考核结果查询', '37', 'AssessResults', '1', '/check/resList.shtml', '25', '', '0', '考核结果查询');
+
 
