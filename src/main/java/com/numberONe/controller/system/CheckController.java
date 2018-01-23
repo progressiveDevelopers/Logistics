@@ -21,6 +21,7 @@ import com.numberONe.mapper.CheckMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
+import com.numberONe.util.LayTableUtils;
 
 /**
  * @ClassName: CheckController
@@ -47,22 +48,31 @@ public class CheckController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("findByPage")
-	public PageView findByPage(String pageNow, String pageSize)
+	public LayTableUtils<CheckTaskAssignmentFormMap> findByPage(String page, String limit)
 			throws Exception {
 		CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = getFormMap(CheckTaskAssignmentFormMap.class);
 
+	
+		
 		checkTaskAssignmentFormMap = toFormMap(checkTaskAssignmentFormMap,
-				pageNow, pageSize, checkTaskAssignmentFormMap.getStr("orderby"));
+				page, limit, checkTaskAssignmentFormMap.getStr("orderby"));
+		 
+		
+		 ;
+		 LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
+		 
+		 layTableUtils.setCode(0);
+		 layTableUtils.setCount(1000);
+		 layTableUtils.setData(checkMapper.findByPage(checkTaskAssignmentFormMap));
+		 
+		 
+		 System.out.println(layTableUtils.toString());
+		 return layTableUtils;
 
-		pageView.setRecords(checkMapper.findByPage(checkTaskAssignmentFormMap));
-		return pageView;
 	}
 	
 	@RequestMapping("resList")
 	public String resListUI(Model model) throws Exception {
-
-	
-
 		return Common.BACKGROUND_PATH + "/function/check/resList";
 	}
 	
