@@ -66,7 +66,7 @@ user-scalable - 用户是否可以手动缩放
 
 
 <!--  echarts  -->
-<script type="text/javascript" src="${ctx}/echarts/echarts.common.min.js"></script> 
+<script type="text/javascript" src="${ctx}/echarts/echarts.min.js"></script>
 <!--  echarts end  -->
 
 <style type="text/css">

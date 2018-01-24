@@ -9,14 +9,35 @@
 	<!-- 以下与实体类的中字段一致 -->
 	
     <resultMap type="com.numberONe.entity.UserData" id="UserData">
-        <id column="id" property="id"/>
+        <id column="id" property="ids"/>
         <result column="name" property="name"/>
         <result column="age" property="age"/>
         <result column="flag" property="flag"/>
     </resultMap>
-
+    
+    <resultMap type="com.numberONe.util.UserRelativeTreeUtil" id="userRelativeTree">
+        <result column="id" property="ids"/>
+        <result column="name" property="name"/>
+        <result column="groupName" property="name"/>
+        <result column="userName" property="name"/>
+    </resultMap>
+    
 	<select id="findAll" resultMap="UserData">
 		select id,`name`,age,flag from ly_user_data
 	</select>
+    
+    <select id="findAllGroup" resultMap="userRelativeTree">
+        SELECT g.id,g.groupName FROM ly_group g
+    </select>
+    
+    <select id="findTargetRole" resultMap="userRelativeTree">
+        SELECT t.id,t.`name`  FROM role_info t
+        WHERE t.groupId = #{id}
+    </select>
+    
+    <select id="findTargetUser" resultMap="userRelativeTree" parameterType="map">
+        SELECT t.id,t.userName FROM user_info t 
+        WHERE t.groupId = #{0} AND t.roleId = #{1}
+    </select>
 	
 </mapper>
