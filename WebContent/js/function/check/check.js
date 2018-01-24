@@ -18,13 +18,13 @@ $(function() {
 		     elem: '#test'
 		    ,skin: 'line' //行边框风格
 		    ,even: true //开启隔行背景
-		    ,url: rootPath + '/check/findByPage.shtml' //数据接口
+		    ,url: rootPath + '/check/findOptByPage.shtml' //数据接口
 		    ,page: true //开启分页
 		    ,cols: [[ //表头
 		       {field: 'id',      title: 'ID' , width: "10%",    sort: true, fixed: 'left'}
-		      ,{field: 'mouth'  , title: '月份', width: "20%",  sort: true}
-		      ,{field: 'operationPost', title: '姓名', width:"30%",   sort: true}
-		      ,{field: 'description', title: '角色', width:"20%",  sort: true}
+		      ,{field: 'checkOption'  , title: '考核类型', width: "20%",  sort: true}
+		      ,{field: 'description', title: '描述', width:"30%",   sort: true}
+		      ,{field: 'createTime', title: '创建时间', width:"20%",  sort: true}
 		      ,{fixed: 'right', width: "20%", align:'center', toolbar: '#barDemo'}
 		    ]]
 		  });
@@ -46,7 +46,7 @@ $(function() {
 		    } else */
 		    if(layEvent === 'check'){
 		    	layer.open({
-		    		title : "新增",
+		    		title : "评分",
 		    		type : 2,
 		    		area : [ "1000px", "80%" ],
 		    		isOutAnim: 6,
