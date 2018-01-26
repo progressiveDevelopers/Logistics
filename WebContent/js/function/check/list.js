@@ -2,7 +2,7 @@ var dialog;
 var grid;
 $(function() {
 	
-	
+	console.log(1);
 	layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], function(){
 		  
 		  var laydate = layui.laydate //日期
@@ -44,13 +44,17 @@ $(function() {
 		        //向服务端发送删除指令
 		      });
 		    } else */
+		    var id = data.id;
+		    var operationPost = data.operationPost;
+		   
+		    
 		    if(layEvent === 'check'){
 		    	layer.open({
-		    		title : "新增",
+		    		title : "考核评价",
 		    		type : 2,
 		    		area : [ "1000px", "80%" ],
 		    		isOutAnim: 6,
-		    		content : rootPath + '/check/checkUI.shtml'
+		    		content : rootPath + '/check/checkUI.shtml?id='+ id + '&operationPost=' +  operationPost
 		    	});
 		    }
 		  });

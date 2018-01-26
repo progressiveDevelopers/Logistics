@@ -6,10 +6,14 @@
  */
 package com.numberONe.controller.system;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -17,6 +21,7 @@ import com.numberONe.controller.index.BaseController;
 import com.numberONe.entity.CheckOptionFormMap;
 import com.numberONe.entity.CheckResultFormMap;
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
+import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.CheckMapper;
 import com.numberONe.mapper.UserMapper;
@@ -49,76 +54,74 @@ public class CheckController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("findByPage")
-	public LayTableUtils<CheckTaskAssignmentFormMap> findByPage(String page, String limit)
-			throws Exception {
+	public LayTableUtils<CheckTaskAssignmentFormMap> findByPage(String page,
+			String limit) throws Exception {
 		CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = getFormMap(CheckTaskAssignmentFormMap.class);
 
-	
-		
 		checkTaskAssignmentFormMap = toFormMap(checkTaskAssignmentFormMap,
 				page, limit, checkTaskAssignmentFormMap.getStr("orderby"));
-		 
-		
-		 ;
-		 LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
-		 
-		 layTableUtils.setCode(0);
-		 layTableUtils.setCount(1000);
-		 layTableUtils.setData(checkMapper.findByPage(checkTaskAssignmentFormMap));
-		 
-		 
-		 System.out.println(layTableUtils.toString());
-		 return layTableUtils;
+
+		;
+		LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
+
+		layTableUtils.setCode(0);
+		layTableUtils.setCount(1000);
+		layTableUtils.setData(checkMapper
+				.findByPage(checkTaskAssignmentFormMap));
+
+		System.out.println(layTableUtils.toString());
+		return layTableUtils;
 
 	}
-	
+
 	@RequestMapping("resList")
 	public String resListUI(Model model) throws Exception {
 		return Common.BACKGROUND_PATH + "/function/check/resList";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("findResByPage")
 	public PageView findResByPage(String pageNow, String pageSize)
 			throws Exception {
 		CheckResultFormMap checkResultFormMap = getFormMap(CheckResultFormMap.class);
 
-		checkResultFormMap = toFormMap(checkResultFormMap,
-				pageNow, pageSize, checkResultFormMap.getStr("orderby"));
+		checkResultFormMap = toFormMap(checkResultFormMap, pageNow, pageSize,
+				checkResultFormMap.getStr("orderby"));
 
 		pageView.setRecords(checkMapper.findByPage(checkResultFormMap));
 		return pageView;
 	}
-	
+
 	@RequestMapping("checkUI")
 	public String addUI(Model model) throws Exception {
+		String id = getPara("id");
+		String operationPost = getPara("operationPost");
+		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
+		List  res  = checkMapper.findByWhere(checkOptionFormMap);
+		model.addAttribute("res",   res);
+		model.addAttribute("operationPost", operationPost);
+		
 		return Common.BACKGROUND_PATH + "/function/check/check";
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("findOptByPage")
-	public LayTableUtils<CheckOptionFormMap> findOptByPage(String page, String limit)
-			throws Exception {
+	public LayTableUtils<CheckOptionFormMap> findOptByPage(String page,
+			String limit) throws Exception {
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
 
-	
-		
-		checkOptionFormMap = toFormMap(checkOptionFormMap,
-				page, limit, checkOptionFormMap.getStr("orderby"));
-		 
-		
-		 ;
-		 LayTableUtils<CheckOptionFormMap> layTableUtils = new LayTableUtils<CheckOptionFormMap>();
-		 
-		 layTableUtils.setCode(0);
-		 layTableUtils.setCount(1000);
-		 layTableUtils.setData(checkMapper.findByPage(checkOptionFormMap));
-		 
-		 
-		 System.out.println(layTableUtils.toString());
-		 return layTableUtils;
+		checkOptionFormMap = toFormMap(checkOptionFormMap, page, limit,
+				checkOptionFormMap.getStr("orderby"));
+
+		LayTableUtils<CheckOptionFormMap> layTableUtils = new LayTableUtils<CheckOptionFormMap>();
+
+		layTableUtils.setCode(0);
+		layTableUtils.setCount(1000);
+		layTableUtils.setData(checkMapper.findByPage(checkOptionFormMap));
+
+		System.out.println(layTableUtils.toString());
+		return layTableUtils;
 
 	}
-	
 
 }
