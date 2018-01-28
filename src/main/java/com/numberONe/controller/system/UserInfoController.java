@@ -4,35 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.numberONe.entity.UserData;
-import com.numberONe.mapper.UserDataMapper;
+import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.UserFormMap;
+import com.numberONe.entity.UserInfoView;
+import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.util.Common;
 import com.numberONe.util.UserRelativeTreeUtil;
 
 @Controller
-@RequestMapping("userData")
-public class UserDataController {
+@RequestMapping("userInfo")
+public class UserInfoController extends BaseController{
 
     @Inject
-    private UserDataMapper userDataMapper;
-    
-    
-    @RequestMapping("view")
-    public String echartView() {
-        return Common.BACKGROUND_PATH + "/system/userData/view";
-    }
-    
-    @RequestMapping(value = "data")
-    @ResponseBody
-    public List<UserData>  echartData(){
-        return userDataMapper.findAll();
-    }
+    private UserInfoMapper userInfoMapper;
     
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
@@ -45,20 +35,20 @@ public class UserDataController {
         List<UserRelativeTreeUtil> urtsLevel2 = null; // 角色
         List<UserRelativeTreeUtil> urtsLevel3 = null; // 用户
         
-        urtsLevel1 = userDataMapper.findAllGroup();
+        urtsLevel1 = userInfoMapper.findAllGroup();
         
         urt.setChildren(urtsLevel1);
         
         //用组数据获取角色信息
         for (UserRelativeTreeUtil userRelativeTreeUtil1 : urtsLevel1) {
             urtsLevel2 = new ArrayList<UserRelativeTreeUtil>();
-            urtsLevel2 = userDataMapper.findTargetRole(userRelativeTreeUtil1.getIds());
+            urtsLevel2 = userInfoMapper.findTargetRole(userRelativeTreeUtil1.getIds());
             userRelativeTreeUtil1.setChildren(urtsLevel2);
             
             // 用组合角色数据获取用户信息
             for (UserRelativeTreeUtil userRelativeTreeUtil2 : urtsLevel2) {
                 urtsLevel3 = new ArrayList<UserRelativeTreeUtil>();
-                urtsLevel3 = userDataMapper.findTargetUser(userRelativeTreeUtil1.getIds(), 
+                urtsLevel3 = userInfoMapper.findTargetUser(userRelativeTreeUtil1.getIds(), 
                         userRelativeTreeUtil2.getIds());
                 userRelativeTreeUtil2.setChildren(urtsLevel3);
             }
@@ -70,7 +60,33 @@ public class UserDataController {
     
     @RequestMapping("userRelativeTreeView")
     public String userRelativeTreeView(){
-        return Common.BACKGROUND_PATH + "/system/userData/userRelativeTreeView";
+        return Common.BACKGROUND_PATH + "/system/userInfo/userRelativeTreeView";
     }
+    
+
+    /**
+     * 人员信息
+     * 得到当前人员下属的信息
+     * 
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("subordinateRate")
+    @ResponseBody
+    public List<UserInfoView> getSubordinate(HttpServletRequest request) throws Exception{
+        // 当验证都通过后，把用户信息放在session里
+        UserFormMap userFormMap = getFormMap(UserFormMap.class);
+        
+        userFormMap = (UserFormMap)Common.findUserSession(request);
+        
+        // 当前用户的全量信息
+        UserInfoView userInfoView = userInfoMapper.findById((Integer) userFormMap.get("id"));
+        
+        // 下属的信息全量
+        List<UserInfoView> listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
+        
+        return listUserInfoView;
+    }
+    
     
 }

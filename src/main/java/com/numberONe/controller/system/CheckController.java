@@ -58,8 +58,6 @@ public class CheckController extends BaseController {
 		checkTaskAssignmentFormMap = toFormMap(checkTaskAssignmentFormMap,
 				page, limit, checkTaskAssignmentFormMap.getStr("orderby"));
 		 
-		
-		 ;
 		 LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
 		 
 		 layTableUtils.setCode(0);

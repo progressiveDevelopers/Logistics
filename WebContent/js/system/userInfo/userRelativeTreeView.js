@@ -3,7 +3,7 @@
  */
 var myChart = echarts.init(document.getElementById('main'));
 
-$.get('/Logistics/userData/userRelativeTree.shtml', function (data) {
+$.get('/Logistics/userInfo/userRelativeTree.shtml', function (data) {
     
     data = JSON.parse(data);
     

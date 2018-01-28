@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.UserInfoMapper">
+	<!--mybatis ehcache缓存配置 -->
+	<!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+		/> -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- 以下与实体类的中字段一致 -->
+	
+    <resultMap type="com.numberONe.util.UserRelativeTreeUtil" id="userRelativeTree">
+        <result column="roleId" property="ids"/>
+        <result column="groupId" property="ids"/>
+        <result column="id" property="ids"/>
+        <result column="name" property="name"/>
+        <result column="roleName" property="name"/>
+        <result column="groupName" property="name"/>
+        <result column="userName" property="name"/>
+    </resultMap>
+    
+    
+    <resultMap type="com.numberONe.entity.UserInfoView" id="userInfoView">
+        <result column="userId" property="userId"/>
+        <result column="userName" property="userName"/>
+        <result column="accountName" property="accountName"/>
+        <result column="deletestatus" property="deletestatus"/>
+        <result column="roleId" property="roleId"/>
+        <result column="roleName" property="roleName"/>
+        <result column="level" property="level"/>
+        <result column="state" property="state"/>
+        <result column="groupId" property="groupId"/>
+        <result column="groupName" property="groupName"/>
+    </resultMap>
+    
+    <select id="findAllGroup" resultMap="userRelativeTree">
+        SELECT g.id,g.groupName FROM ly_group g
+    </select>
+    
+    <select id="findTargetRole" resultMap="userRelativeTree">
+        SELECT t.roleId,t.`roleName`  FROM role_info t
+        WHERE t.groupId = #{id}
+    </select>
+    
+    <select id="findTargetUser" resultMap="userRelativeTree" parameterType="map">
+        SELECT t.userId,t.userName FROM user_info t 
+        WHERE t.groupId = #{0} AND t.roleId = #{1}
+    </select>
+    
+    <select id="findById" resultMap="userInfoView">
+        SELECT
+        	userId,
+            userName,
+            accountName,
+            deletestatus,
+            roleId,
+            roleName,
+            `level`,
+            state,
+            groupId,
+            groupName
+        FROM
+        	user_info 
+        where userId = #{id}
+    </select>
+    
+	<select id="findSubordinate" resultMap="userInfoView">
+        SELECT
+            userId,
+            userName,
+            accountName,
+            deletestatus,
+            roleId,
+            roleName,
+            `level`,
+            state,
+            groupId,
+            groupName
+        FROM
+            user_info 
+        where groupId = #{groupId} AND `level` &lt; #{level}
+    </select>
+</mapper>
