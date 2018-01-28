@@ -23,6 +23,7 @@
         <result column="userId" property="userId"/>
         <result column="userName" property="userName"/>
         <result column="accountName" property="accountName"/>
+        <result column="userDescription" property="userDescription"/>
         <result column="deletestatus" property="deletestatus"/>
         <result column="roleId" property="roleId"/>
         <result column="roleName" property="roleName"/>
@@ -68,6 +69,7 @@
             userId,
             userName,
             accountName,
+            userDescription,
             deletestatus,
             roleId,
             roleName,

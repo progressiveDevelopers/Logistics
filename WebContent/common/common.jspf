@@ -160,5 +160,4 @@ function getSelectEx(byId,options){
 </script>
 <!-- 返回顶部 -->
 <script type="text/javascript" src="${ctx}/js/scrolltopcontrol.js"></script>
-<script type="text/javascript" src="${ctx}/layui/layui.all.js"></script>
 <script type="text/javascript" src="${ctx}/layui/layui.js"></script> 

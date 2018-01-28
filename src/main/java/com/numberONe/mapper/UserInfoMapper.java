@@ -38,11 +38,16 @@ public interface UserInfoMapper extends BaseMapper {
     
     /**
      * 根据当前用户信息查询其下属
-     * 在同一个组
-     * 但是等级又比当前用户低
+     * 在同一个组,但是等级又比当前用户低
+     * 在layui table 中展示
+     * 
      * @param userInfoView 当前用户信息
      * @return
      */
     List<UserInfoView> findSubordinate(UserInfoView userInfoView);
+    
+    
+ 
+    
     
 }

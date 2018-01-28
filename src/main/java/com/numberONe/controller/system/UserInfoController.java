@@ -9,12 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserInfoView;
+import com.numberONe.mapper.CheckMonthMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.util.Common;
+import com.numberONe.util.LayTableUtils;
 import com.numberONe.util.UserRelativeTreeUtil;
 
 @Controller
@@ -23,6 +27,9 @@ public class UserInfoController extends BaseController{
 
     @Inject
     private UserInfoMapper userInfoMapper;
+    
+    @Inject
+    private CheckMonthMapper checkMonthMapper;
     
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
@@ -64,6 +71,21 @@ public class UserInfoController extends BaseController{
     }
     
 
+    
+    /**
+     * 下属信息页面
+     * 
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("subordinateRateView")
+    public ModelAndView getSubordinateView(ModelAndView mv) throws Exception{
+        List<CheckMonthFormMap> listCheckMonth= checkMonthMapper.getAllMonthByDesc();
+        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.setViewName( Common.BACKGROUND_PATH + "/system/userInfo/SubordinateView");
+        return mv;
+    }
+    
     /**
      * 人员信息
      * 得到当前人员下属的信息
@@ -73,7 +95,13 @@ public class UserInfoController extends BaseController{
      */
     @RequestMapping("subordinateRate")
     @ResponseBody
-    public List<UserInfoView> getSubordinate(HttpServletRequest request) throws Exception{
+    public LayTableUtils<UserInfoView> getSubordinate(HttpServletRequest request) throws Exception{
+        
+        LayTableUtils<UserInfoView> layTableUtils = new LayTableUtils<UserInfoView>();
+        
+        layTableUtils.setCode(0);
+        layTableUtils.setCount(1000);
+        
         // 当验证都通过后，把用户信息放在session里
         UserFormMap userFormMap = getFormMap(UserFormMap.class);
         
@@ -85,7 +113,9 @@ public class UserInfoController extends BaseController{
         // 下属的信息全量
         List<UserInfoView> listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
         
-        return listUserInfoView;
+        layTableUtils.setData(listUserInfoView);
+        
+        return layTableUtils;
     }
     
     

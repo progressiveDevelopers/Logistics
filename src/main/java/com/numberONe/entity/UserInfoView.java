@@ -10,6 +10,7 @@ public class UserInfoView {
     private Integer roleId;
     private Integer groupId;
     private String userName;
+    private String userDescription;
     private String roleName;
     private String groupName;
     private String accountName;
@@ -95,6 +96,14 @@ public class UserInfoView {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public String getUserDescription() {
+        return userDescription;
+    }
+
+    public void setUserDescription(String userDescription) {
+        this.userDescription = userDescription;
     }
 
 }

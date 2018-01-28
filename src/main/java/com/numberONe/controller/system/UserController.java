@@ -124,6 +124,7 @@ public class UserController extends BaseController {
 			userMapper.deleteByAttribute("userId", id, UserGroupsFormMap.class);
 			userMapper.deleteByAttribute("userId", id, ResUserFormMap.class);
 			userMapper.deleteByAttribute("id", id, UserFormMap.class);
+			userMapper.deleteByAttribute("userId", id, UserGroupInfoFormMap.class);
 		}
 		return "success";
 	}
