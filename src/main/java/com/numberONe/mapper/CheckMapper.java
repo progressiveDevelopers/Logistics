@@ -21,5 +21,9 @@ import com.numberONe.mapper.base.BaseMapper;
 public interface CheckMapper extends BaseMapper {
 	
 	public List<ResFormMap> findRes(ResFormMap map);
+	
+	public void updateCheckResult(List list);
+	
+	
 
 }

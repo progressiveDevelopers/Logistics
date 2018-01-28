@@ -6,24 +6,38 @@
  */
 package com.numberONe.controller.system;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
+import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.CheckOptionFormMap;
 import com.numberONe.entity.CheckResultFormMap;
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.ResFormMap;
+import com.numberONe.entity.UserFormMap;
+import com.numberONe.entity.UserGroupsFormMap;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.CheckMapper;
+import com.numberONe.mapper.CheckMonthMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
@@ -43,6 +57,10 @@ public class CheckController extends BaseController {
 
 	@Inject
 	private CheckMapper checkMapper;
+	@Inject
+	private UserMapper userMapper;
+	@Inject
+	private CheckMonthMapper checkMonthMapper;
 
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -95,12 +113,21 @@ public class CheckController extends BaseController {
 	@RequestMapping("checkUI")
 	public String addUI(Model model) throws Exception {
 		String id = getPara("id");
-		String operationPost = getPara("operationPost");
+		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+		userFormMap.put("id",   id);
+	 	List  userRes  =  null;
+		try {
+			  userRes  = userMapper.findUserById(userFormMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+		Map<?, ?> map = (Map<?, ?>) userRes.get(0);
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
 		List  res  = checkMapper.findByWhere(checkOptionFormMap);
 		model.addAttribute("res",   res);
-		model.addAttribute("operationPost", operationPost);
-		
+		model.addAttribute("operationPost", map.get("userName").toString());
+		model.addAttribute("id", map.get("id").toString());
 		return Common.BACKGROUND_PATH + "/function/check/check";
 	}
 
@@ -122,6 +149,60 @@ public class CheckController extends BaseController {
 		System.out.println(layTableUtils.toString());
 		return layTableUtils;
 
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("updateCheckResult")
+	@Transactional(readOnly=false)//需要事务操作必须加入此注解
+	@SystemLog(module="部门评价",methods="考核评价-结果暂存")//凡需要处理业务逻辑的.都需要记录操作日志
+	public String updateCheckResult(@RequestParam Map<String, Object> param, HttpServletRequest req) throws Exception {
+		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+		//登录客户信息
+        userFormMap = (UserFormMap)Common.findUserSession(req);
+        int evaluatorId = (Integer) userFormMap.get("id");
+        
+        //获取当前月份
+        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+        String month = (String) checkMonthFormMap.get("month");
+        
+        
+        
+        // 当前用户的全量信息
+        // UserInfoView userInfoView = userInfoMapper.findById((Integer) userFormMap.get("id"));
+
+		
+		
+		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
+		List  res  = checkMapper.findByWhere(checkOptionFormMap);
+		int num = res.size();
+		Map<String, String> map = new  HashMap();
+		String[] option = null;
+		
+		
+		 List<Map> list = new ArrayList<Map>();  
+		for (int i = 1; i < num + 1; i++) {
+			Map<String, Comparable> updateMap  = new  HashMap<String, Comparable>();
+			map.put(i + "", (String)param.get(i));
+			updateMap.put("checkResult", (String)param.get("option" + i));
+			updateMap.put("checkOptionId", i+"");
+			updateMap.put("operationPostId", (String)param.get("operationPostId"));
+			updateMap.put("evaluatorId", evaluatorId);
+			updateMap.put("monthId", month);
+			list.add(updateMap);
+		}
+		
+	    checkMapper.updateCheckResult(list);
+		
+		
+ 
+		
+		
+		
+	 
+		//根据两个ID和评分选项进行查找，然后进行批量更新。
+	
+		return "success";
 	}
 
 }

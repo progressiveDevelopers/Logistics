@@ -19,38 +19,45 @@
 	text-align: center;
 	font-size: 25px
 }
+
+.check-title {
+	font-weight: blod;
+	line-height: 40px;
+	text-align: center;
+	font-size: 20px
+}
+
+.check-btn {
+	left-margin:500px
+}
 </style>
 </head>
 <body>
 
-<blockquote class="layui-elem-quote">${operationPost}</blockquote>
-
+<blockquote class="check-title" >被评人: ${operationPost}</blockquote>
+<form class="layui-form"  name="form" class="form-horizontal" method="post" 
+action="${ctx}/check/updateCheckResult.shtml">
 	<div>
 		<c:forEach items="${res}" var="key">
 			<div class="layui-form-item ">
 				<label class="layui-form-label">${key.checkOption}</label>
 				<div class="layui-input-block" id = "${key.id}" >
-					<input id="input-21b" value="4" type="text" class="rating"
-						data-min=0 data-max=10 data-step=1 data-size="lg" required
+					<input id='${key.id}' value="4" type="text" class="rating"
+						data-min=0 data-max=10 data-step=1    name = 'option${key.id}' data-size="lg" required   
 						title="">
 				</div>
 			</div>
 		
 		</c:forEach>
 	</div>
+	<input id='${id}'  value='${id}' type="hidden" name='operationPostId'> </input>
 
- 	
- <div class="layui-form-item">
-    <button class="layui-btn" lay-submit="" lay-filter="demo2">跳转式提交</button>
-  </div>
+ 	 
+ <footer class="panel-footer text-center bg-light lter">
+			<button type="submit" class="btn btn-success btn-s-xs">提交</button>
+		</footer>
  
+</form>
 
-
-
-<%-- 	<script type="text/javascript">
-		onloadurl();
-	</script>
-	<script type="text/javascript"
-		src="${ctx}/notebook/notebook_files/bootstrap-filestyle.min.js"></script> --%>
 </body>
 </html>
