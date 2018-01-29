@@ -1,6 +1,7 @@
 package com.numberONe.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.numberONe.entity.UserInfoView;
 import com.numberONe.mapper.base.BaseMapper;
@@ -46,8 +47,19 @@ public interface UserInfoMapper extends BaseMapper {
      */
     List<UserInfoView> findSubordinate(UserInfoView userInfoView);
     
+    /**
+     * 根据月份和用的id查看评分
+     * @param userId 用户id
+     * @param MonthId 月份id
+     * @return
+     */
+    List<Map<String,Object>> getRateByMonthAndUser(Integer userId,Integer MonthId);
     
- 
-    
+    /**
+     * 
+     * @param userId
+     * @return
+     */
+    List<Map<String,Object>> rateInfoDataAllMonth(Integer userId);
     
 }
