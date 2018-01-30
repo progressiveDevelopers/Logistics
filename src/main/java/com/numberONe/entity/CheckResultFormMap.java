@@ -5,7 +5,7 @@
  * @date 2018年1月23日 上午9:44:00  
  */
 package com.numberONe.entity;
- 
+
 import com.numberONe.annotation.TableSeg;
 import com.numberONe.util.FormMap;
 
