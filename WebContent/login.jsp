@@ -8,7 +8,7 @@
 <link href="/favicon.ico" type="image/x-icon" rel=icon>
 <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
 <meta name="renderer" content="webkit">
-<title>登录－NumberOne管理系统</title>
+<title>物流与商业金融部后台管理系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/min.css">
 <link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/login.css">
