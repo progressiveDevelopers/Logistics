@@ -21,5 +21,12 @@
 		from check_month
 		ORDER BY id DESC LIMIT 1
 	</select>
+
 	
+    <select id="getAllMonthByDesc" resultType="com.numberONe.entity.CheckMonthFormMap">
+        SELECT 
+        <include refid="selectId" />
+        FROM check_month order by id DESC
+    </select>
+  
 </mapper>

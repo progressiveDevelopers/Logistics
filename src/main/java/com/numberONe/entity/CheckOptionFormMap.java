@@ -3,20 +3,15 @@ package com.numberONe.entity;
 import com.numberONe.annotation.TableSeg;
 import com.numberONe.util.FormMap;
 
-
-
-/**
- * user实体表
+/** 
+ * @ClassName: CheckOption 
+ * @Description: 考核选项
+ * @author: gaoguofeng 
+ * @email: 18516523981@163.com
+ * @date: 2018年1月24日 下午2:46:26 
  */
-@TableSeg(tableName = "user_info", id="id")
-public class CheckOptionFormMap extends FormMap<String,Object>{
-
-	/**
-	 *@descript
-	 *@author numberONe
-	 *@date 2015年3月29日
-	 *@version 1.0
-	 */
-	private static final long serialVersionUID = 1L;
-
+@TableSeg(tableName = "check_option", id="id")
+public class CheckOptionFormMap<String,Object> extends FormMap<String,Object>{
+	private static final long serialVersionUID = 1L;	
 }
+

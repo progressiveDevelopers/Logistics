@@ -21,6 +21,7 @@ import org.apache.shiro.util.ByteSource;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.mapper.ResourcesMapper;
+import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserMapper;
 
 /**
@@ -36,6 +37,9 @@ public class MyRealm extends AuthorizingRealm {
 
 	@Inject
 	private UserMapper userMapper;
+	
+	@Inject
+	private UserInfoMapper userInfoMapper;
 
 	/**
 	 * 只有需要验证权限时才会调用, 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.在配有缓存的情况下，只加载一次.
@@ -95,6 +99,7 @@ public class MyRealm extends AuthorizingRealm {
 			Session session = SecurityUtils.getSubject().getSession();
 			session.setAttribute("userSession", userFormMaps.get(0));
 			session.setAttribute("userSessionId", userFormMaps.get(0).get("id"));
+			session.setAttribute("userInfoSession", userInfoMapper.findById((Integer) userFormMaps.get(0).get("id")));
 			return authenticationInfo;
 		} else {
 			throw new UnknownAccountException();// 没找到帐号

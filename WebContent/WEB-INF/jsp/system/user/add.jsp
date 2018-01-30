@@ -5,7 +5,6 @@
 <head>
 <%@include file="/common/common.jspf"%>
 <script type="text/javascript" src="${ctx}/js/system/user/add.js">
-	
 </script>
 <style type="text/css">
 .col-sm-3 {
@@ -55,9 +54,32 @@ label[class^="btn btn-default"] {
 					默认密码为:123456789
 				</div>
 			</div>
-			<div class="line line-dashed line-lg pull-in"></div>
+            <div class="line line-dashed line-lg pull-in"></div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">组</label>
+                <div class="col-sm-9">
+                    <div class="btn-group m-r">
+                        <button data-toggle="dropdown"
+                            class="btn btn-sm btn-default dropdown-toggle">
+                            <span class="dropdown-label">中后台</span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-select">
+                            <li class="active"><a href="#"><input type="radio"
+                                    name="groupId" value="2" checked="checked">中后台</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="groupId" value="3">交运团队1</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="groupId" value="4">交运团队2</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="groupId" value="1">系统管理员</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed line-lg pull-in"></div>
 			<div class="form-group" id="selRole" data-url="/role/selRole.shtml"></div>
-			<div class="line line-dashed line-lg pull-in"></div>
+             <div class="line line-dashed line-lg pull-in"></div>
+			
 			<div class="form-group">
 				<label class="col-sm-3 control-label">是否禁用</label>
 				<div class="col-sm-9">
@@ -93,5 +115,20 @@ label[class^="btn btn-default"] {
 	</script>
 	<script type="text/javascript"
 		src="${ctx}/notebook/notebook_files/bootstrap-filestyle.min.js"></script>
+ <script>
+/* layui.use('form', function(){
+  var form = layui.form;
+
+  
+  form.on('select(group)', function(data){
+      console.log(data.elem); //得到select原始DOM对象
+      console.log(data.value); //得到被选中的值
+      console.log(data.othis); //得到美化后的DOM对象
+    });     
+  
+}); */
+
+     
+</script>
 </body>
 </html>

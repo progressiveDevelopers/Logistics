@@ -25,6 +25,8 @@
 		action="${ctx}/user/editEntity.shtml">
 		<input type="hidden" class="form-control checkacc"
 			value="${user.id}" name="userFormMap.id" id="id">
+		<input type="hidden" class="form-control checkacc"
+			value="${user.id}" name="userGroupInfoFormMap.userId" >
 		<section class="panel panel-default">
 		<div class="panel-body">
 			<div class="form-group">
@@ -45,6 +47,29 @@
 				</div>
 			</div>
 			<div class="line line-dashed line-lg pull-in"></div>
+          
+            <div class="form-group">
+                <label class="col-sm-3 control-label">组</label>
+                <div class="col-sm-9">
+                    <div class="btn-group m-r">
+                        <button data-toggle="dropdown"
+                            class="btn btn-sm btn-default dropdown-toggle">
+                            <span class="dropdown-label">中后台</span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-select">
+                            <li class="active"><a href="#"><input type="radio"
+                                    name="userGroupInfoFormMap.groupId" value="2" checked="checked">中后台</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="userGroupInfoFormMap.groupId" value="3">交运团队1</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="userGroupInfoFormMap.groupId" value="4">交运团队2</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="userGroupInfoFormMap.groupId" value="1">系统管理员</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+              <div class="line line-dashed line-lg pull-in"></div>
 			<div id="selGroup"
 				data-url="/role/selRole.shtml?roleFormMap.userId=${user.id}"></div>
 			<div class="line line-dashed line-lg pull-in"></div>

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -26,6 +28,8 @@ import com.numberONe.util.FormMap;
 public class BaseController {
 	@Inject
 	private ResourcesMapper resourcesMapper;
+	
+	protected Session session = SecurityUtils.getSubject().getSession();
 	
 	public PageView pageView = null;
 	public PageView getPageView(String pageNow,String pageSize,String orderby) {
