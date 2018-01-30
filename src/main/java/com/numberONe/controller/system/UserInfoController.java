@@ -136,7 +136,7 @@ public class UserInfoController extends BaseController {
                 
                 System.out.println("获取的set为 ：" + set.toString());
                 // 查询所有客户经理
-                userInfoFormMap.set("roleid", 5);
+                userInfoFormMap.set("roleid", 6);
                 userInfoFormMap.set("level", 8);
                 userInfoFormMap.set("deletestatus", 0);
                 List<UserInfoFormMap> mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
