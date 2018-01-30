@@ -2,7 +2,7 @@ var dialog;
 var grid;
 $(function() {
 	
-	
+	console.log(1);
 	layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], function(){
 		  
 		  var laydate = layui.laydate //日期
@@ -22,7 +22,7 @@ $(function() {
 		    ,page: true //开启分页
 		    ,cols: [[ //表头
 		       {field: 'id',      title: 'ID' , width: "10%",    sort: true, fixed: 'left'}
-		      ,{field: 'mouth'  , title: '月份', width: "20%",  sort: true}
+		      ,{field: 'month'  , title: '月份', width: "20%",  sort: true}
 		      ,{field: 'operationPost', title: '姓名', width:"30%",   sort: true}
 		      ,{field: 'description', title: '角色', width:"20%",  sort: true}
 		      ,{fixed: 'right', width: "20%", align:'center', toolbar: '#barDemo'}
@@ -44,13 +44,17 @@ $(function() {
 		        //向服务端发送删除指令
 		      });
 		    } else */
+		    var id = data.id;
+		    var operationPost = data.operationPost;
+		   
+		    
 		    if(layEvent === 'check'){
 		    	layer.open({
-		    		title : "新增",
+		    		title : false,
 		    		type : 2,
-		    		area : [ "1000px", "80%" ],
+		    		area : [ "950px", "80%" ],
 		    		isOutAnim: 6,
-		    		content : rootPath + '/check/checkUI.shtml'
+		    		content : rootPath + '/check/checkUI.shtml?id='+ id + '&operationPost=' +  operationPost
 		    	});
 		    }
 		  });

@@ -19,5 +19,11 @@ import com.numberONe.mapper.base.BaseMapper;
  * @date: 2018年1月22日 下午5:43:57 
  */
 public interface CheckMapper extends BaseMapper {
+	
+	public List<ResFormMap> findRes(ResFormMap map);
+	
+	public void updateCheckResult(List list);
+	
+	
 
 }

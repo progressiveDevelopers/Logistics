@@ -362,3 +362,21 @@ INSERT INTO `wlhg`.`ly_resources` (`id`, `name`, `parentId`, `resKey`, `type`, `
 INSERT INTO `wlhg`.`ly_resources` (`id`, `name`, `parentId`, `resKey`, `type`, `resUrl`, `level`, `icon`, `ishide`, `description`) VALUES ('39', '考核结果查询', '37', 'AssessResults', '1', '/check/resList.shtml', '25', '', '0', '考核结果查询');
 
 
+-- ----------------------------
+-- 添加评分关联表功能的菜单
+-- ----------------------------
+
+ 
+DROP TABLE IF EXISTS `check_relation`;
+CREATE TABLE `check_relation` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(20) DEFAULT NULL COMMENT '用户ID',
+  `user` varchar(20) DEFAULT NULL COMMENT '用户',
+  `relationUserId` varchar(20) DEFAULT NULL COMMENT '关联用户ID',
+  `relationUser` varchar(20) DEFAULT NULL COMMENT '关联用户',
+  `desription` varchar(200) DEFAULT NULL COMMENT '描述',
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '时间戳',
+  `deletestatus` int(1) DEFAULT '0' COMMENT '逻辑删除状态0:存在1:删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

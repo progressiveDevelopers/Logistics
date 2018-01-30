@@ -1,7 +1,16 @@
+
+/** 
+ * @ClassName: CheckOption 
+ * @Description: TODO(这里用一句话描述这个类的作用) 
+ * @author gaoguofeng 
+ * @date 2018年1月24日 下午2:46:26  
+ */
+
 package com.numberONe.entity;
 
 import com.numberONe.annotation.TableSeg;
 import com.numberONe.util.FormMap;
+
 
 
 
@@ -20,3 +29,6 @@ public class CheckMonthFormMap extends FormMap<String,Object>{
 	private static final long serialVersionUID = 1L;
 
 }
+
+
+

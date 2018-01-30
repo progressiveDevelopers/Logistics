@@ -4,66 +4,60 @@
 <html>
 <head>
 <%@include file="/common/common.jspf"%>
- <script type="text/javascript" src="${ctx}/js/function/check/check.js">
+<script type="text/javascript" src="${ctx}/js/function/check/check.js">
 	
 </script>
 <style type="text/css">
-.col-sm-3 {
-	width: 15%;
-	float: left;
-	text-align: right;
+.layui-form-label {
+	float: center;
+	display: block;
+	padding: 0px 0px;
+	height: 60px;
+	width: 150px;
+	font-weight: blod;
+	line-height: 60px;
+	text-align: center;
+	font-size: 25px
 }
 
-.col-sm-9 {
-	width: 85%;
-	float: left;
-	text-align: left;
+.check-title {
+	font-weight: blod;
+	line-height: 40px;
+	text-align: center;
+	font-size: 20px
 }
 
-label[class^="btn btn-default"] {
-	margin-top: -4px;
+.check-btn {
+	left-margin:500px
 }
 </style>
 </head>
 <body>
 
+<blockquote class="check-title" >被评人: ${operationPost}</blockquote>
+<form class="layui-form"  name="form" class="form-horizontal" method="post" 
+action="${ctx}/check/updateCheckResult.shtml">
+	<div>
+		<c:forEach items="${res}" var="key">
+			<div class="layui-form-item ">
+				<label class="layui-form-label">${key.checkOption}</label>
+				<div class="layui-input-block" id = "${key.id}" >
+					<input id='${key.id}' value="4" type="text" class="rating"
+						data-min=0 data-max=10 data-step=1    name = 'option${key.id}' data-size="lg" required   
+						title="">
+				</div>
+			</div>
+		
+		</c:forEach>
+	</div>
+	<input id='${id}'  value='${id}' type="hidden" name='operationPostId'> </input>
 
-
-  <!-- <div class="star">
-         <span>js星级评论打分</span>
-         <ul>
-             <li><a href="javascript:;">1</a></li>
-             <li><a href="javascript:;">2</a></li>
-             <li><a href="javascript:;">3</a></li>
-             <li><a href="javascript:;">4</a></li>
-            <li><a href="javascript:;">5</a></li>
-         </ul>
-     </div> -->
-
-<div class="layui-form-item">
-    <label class="layui-form-label">评分项</label>
-    <div class="layui-input-block">
-<input id="input-21b" value="4" type="text" class="rating" data-min=0 data-max=10 data-step=1 data-size="lg" required title="">
-    </div>
-  </div>
-  
+ 	 
+ <footer class="panel-footer text-center bg-light lter">
+			<button type="submit" class="btn btn-success btn-s-xs">提交</button>
+		</footer>
  
-  
-   <!--    <div>
-      	   <span>js星级评论打分</span>
-      	   <ul>
-      	     <input id="input-21b" value="4" type="text" class="rating" data-min=0 data-max=10 data-step=1 data-size="lg" required title="">
-	  	   </ul>
-      </div> -->
+</form>
 
- 
-	 
-	   
-	 
-	<script type="text/javascript">
-	onloadurl();
-	</script>
-	<script type="text/javascript"
-		src="${ctx}/notebook/notebook_files/bootstrap-filestyle.min.js"></script>
 </body>
 </html>
