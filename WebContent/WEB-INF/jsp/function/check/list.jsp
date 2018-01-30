@@ -4,13 +4,13 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/function/check/list.js"></script>
 
  
-<table class="layui-hide" id="test" lay-filter="demo"></table>
+<table class="layui-hide" id="test" lay-filter="check"></table>
 
 <script type="text/html" id="barDemo">
-	  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-	</script>
-
+	 
+	  <a class="layui-btn layui-btn-sm" lay-event="check">评价</a>
+     
+</script>
+<!--    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>  -->
 	
-
+<!--  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a> -->

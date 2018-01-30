@@ -92,16 +92,18 @@ public class BackgroundController extends BaseController {
 				request.setAttribute("error", "用户已经被锁定不能登录，请与管理员联系！");
 				return "/login";
 			} catch (ExcessiveAttemptsException e) {
+			    e.printStackTrace();
 				token.clear();
 				request.setAttribute("error", "账号：" + username + " 登录失败次数过多,锁定10分钟!");
 				return "/login";
 			} catch (AuthenticationException e) {
+			    e.printStackTrace();
 				token.clear();
 				request.setAttribute("error", "用户或密码不正确！");
 				return "/login";
 			}
 			UserLoginFormMap userLogin = new UserLoginFormMap();
-			Session session = SecurityUtils.getSubject().getSession();
+			session = SecurityUtils.getSubject().getSession();
 			userLogin.put("userId", session.getAttribute("userSessionId"));
 			userLogin.put("accountName", username);
 			userLogin.put("loginIP", session.getHost());

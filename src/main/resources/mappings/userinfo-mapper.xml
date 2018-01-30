@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.UserInfoMapper">
+    <!--mybatis ehcache缓存配置 -->
+    <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache" 
+        /> -->
+    <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+    <!-- 以下与实体类的中字段一致 -->
+    
+    <sql id="selectId">
+        userId,
+        userName,
+        accountName,
+        deletestatus,
+        roleid,
+        roleName,
+        level,
+        state,
+        groupid,
+        groupname,
+        userDescription
+    </sql>
+    
+    <resultMap type="com.numberONe.util.UserRelativeTreeUtil" id="userRelativeTree">
+        <result column="roleId" property="ids" />
+        <result column="groupId" property="ids" />
+        <result column="id" property="ids" />
+        <result column="name" property="name" />
+        <result column="roleName" property="name" />
+        <result column="groupName" property="name" />
+        <result column="userName" property="name" />
+    </resultMap>
+
+
+    <resultMap type="com.numberONe.entity.UserInfoView" id="userInfoView">
+        <result column="userId" property="userId" />
+        <result column="userName" property="userName" />
+        <result column="accountName" property="accountName" />
+        <result column="userDescription" property="userDescription" />
+        <result column="deletestatus" property="deletestatus" />
+        <result column="roleId" property="roleId" />
+        <result column="roleName" property="roleName" />
+        <result column="level" property="level" />
+        <result column="state" property="state" />
+        <result column="groupId" property="groupId" />
+        <result column="groupName" property="groupName" />
+    </resultMap>
+
+    <select id="findByPage" resultType="com.numberONe.entity.UserInfoFormMap">
+        select
+        <include refid="selectId" />
+        from user_info
+        where 1 = 1
+        <if test="groupid != null and groupid != ''">
+            and groupid like '%${groupid}%'
+        </if>
+        <if test="roleid != null and roleid != ''">
+            and roleid like '%${roleid}%'
+        </if>
+        <if test="deletestatus != null and deletestatus != ''">
+            and deletestatus like '%${deletestatus}%'
+        </if>
+    </select>
+
+    <select id="findAllGroup" resultMap="userRelativeTree">
+        SELECT g.id,g.groupName FROM ly_group g
+    </select>
+
+    <select id="findTargetRole" resultMap="userRelativeTree">
+        SELECT t.roleId,t.`roleName` FROM
+        role_info t
+        WHERE t.groupId = #{id}
+    </select>
+
+    <select id="findTargetUser" resultMap="userRelativeTree">
+        SELECT t.userId,t.userName FROM user_info
+        t
+        WHERE t.groupId = #{0} AND t.roleId = #{1}
+    </select>
+
+    <select id="findById" resultMap="userInfoView">
+        SELECT
+        userId,
+        userName,
+        accountName,
+        deletestatus,
+        roleId,
+        roleName,
+        `level`,
+        state,
+        groupId,
+        groupName
+        FROM
+        user_info
+        where userId = #{id}
+    </select>
+
+    <select id="findSubordinate" resultMap="userInfoView">
+        SELECT
+        userId,
+        userName,
+        accountName,
+        userDescription,
+        deletestatus,
+        roleId,
+        roleName,
+        `level`,
+        state,
+        groupId,
+        groupName
+        FROM
+        user_info
+        where groupId = #{groupId} AND `level` &lt; #{level}
+    </select>
+
+
+    <select id="getRateByMonthAndUser" resultType="map">
+        SELECT
+        result.`month`,result.evaluatorId,result.evaluator,result.score,task.ifLike FROM (
+        SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS
+        'score' FROM check_result t
+        WHERE t.`operationPostId` = #{0} AND t.monthId = #{1}
+        GROUP BY t.evaluatorId,t.`monthId`
+        ) result
+        INNER JOIN
+        check_task_assignment task
+        ON result.evaluatorId = task.evaluatorId AND result.`monthId` = task.`monthId`
+        WHERE
+        task.`operationPostId` = #{0} AND task.monthId = #{1}
+        ORDER BY result.`month`
+    </select>
+
+
+    <select id="rateInfoDataAllMonth" resultType="map">
+        SELECT
+        result.`month`,result.evaluatorId,result.evaluator,result.score,task.ifLike FROM (
+        SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS
+        'score' FROM check_result t
+        WHERE t.`operationPostId` = #{id}
+        GROUP BY t.evaluatorId,t.`monthId`
+        ) result
+        INNER JOIN
+        check_task_assignment task
+        ON result.evaluatorId = task.evaluatorId AND result.`monthId` = task.`monthId`
+        WHERE
+        task.`operationPostId` = #{id}
+        ORDER BY result.`month`
+    </select>
+
+</mapper>

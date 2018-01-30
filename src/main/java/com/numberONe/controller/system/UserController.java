@@ -19,6 +19,7 @@ import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
 import com.numberONe.entity.ResUserFormMap;
 import com.numberONe.entity.UserFormMap;
+import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
 import com.numberONe.exception.SystemException;
 import com.numberONe.mapper.UserMapper;
@@ -85,7 +86,7 @@ public class UserController extends BaseController {
 	@RequestMapping("addEntity")
 	@SystemLog(module="系统管理",methods="用户管理-新增用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	public String addEntity(String txtGroupsSelect){
+	public String addEntity(String txtGroupsSelect,Integer groupId){
 		try {
 			UserFormMap userFormMap = getFormMap(UserFormMap.class);
 			userFormMap.put("txtGroupsSelect", txtGroupsSelect);
@@ -96,10 +97,15 @@ public class UserController extends BaseController {
 			if (!Common.isEmpty(txtGroupsSelect)) {
 				String[] txt = txtGroupsSelect.split(",");
 				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
+			    UserGroupInfoFormMap userGroupInfoFormMap = new UserGroupInfoFormMap();
+			    userGroupInfoFormMap.put("userId", userFormMap.get("id"));
+                userGroupInfoFormMap.put("groupId", groupId);
+                userMapper.addEntity(userGroupInfoFormMap);
 				for (String roleId : txt) {
 					userGroupsFormMap.put("userId", userFormMap.get("id"));
 					userGroupsFormMap.put("roleId", roleId);
 					userMapper.addEntity(userGroupsFormMap);
+					
 				}
 			}
 		} catch (Exception e) {
@@ -118,6 +124,7 @@ public class UserController extends BaseController {
 			userMapper.deleteByAttribute("userId", id, UserGroupsFormMap.class);
 			userMapper.deleteByAttribute("userId", id, ResUserFormMap.class);
 			userMapper.deleteByAttribute("id", id, UserFormMap.class);
+			userMapper.deleteByAttribute("userId", id, UserGroupInfoFormMap.class);
 		}
 		return "success";
 	}
@@ -137,11 +144,14 @@ public class UserController extends BaseController {
 	@SystemLog(module="系统管理",methods="用户管理-修改用户")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String editEntity(String txtGroupsSelect) throws Exception {
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+		UserGroupInfoFormMap userGroupInfoFormMap = getFormMap(UserGroupInfoFormMap.class);
 		userFormMap.put("txtGroupsSelect", txtGroupsSelect);
-		userMapper.editEntity(userFormMap);
+//		userMapper.editEntity(userFormMap);
 		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
+		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupInfoFormMap.class);
 		if(!Common.isEmpty(txtGroupsSelect)){
 			String[] txt = txtGroupsSelect.split(",");
+            userMapper.addEntity(userGroupInfoFormMap);
 			for (String roleId : txt) {
 				UserGroupsFormMap userGroupsFormMap = new UserGroupsFormMap();
 				userGroupsFormMap.put("userId", userFormMap.get("id"));

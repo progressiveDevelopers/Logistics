@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckOptionFormMap;
 import com.numberONe.entity.CheckResultFormMap;
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.UserLoginFormMap;
@@ -57,8 +58,6 @@ public class CheckController extends BaseController {
 		checkTaskAssignmentFormMap = toFormMap(checkTaskAssignmentFormMap,
 				page, limit, checkTaskAssignmentFormMap.getStr("orderby"));
 		 
-		
-		 ;
 		 LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
 		 
 		 layTableUtils.setCode(0);
@@ -87,6 +86,36 @@ public class CheckController extends BaseController {
 
 		pageView.setRecords(checkMapper.findByPage(checkResultFormMap));
 		return pageView;
+	}
+	
+	@RequestMapping("checkUI")
+	public String addUI(Model model) throws Exception {
+		return Common.BACKGROUND_PATH + "/function/check/check";
+	}
+	
+	@ResponseBody
+	@RequestMapping("findOptByPage")
+	public LayTableUtils<CheckOptionFormMap> findOptByPage(String page, String limit)
+			throws Exception {
+		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
+
+	
+		
+		checkOptionFormMap = toFormMap(checkOptionFormMap,
+				page, limit, checkOptionFormMap.getStr("orderby"));
+		 
+		
+		 ;
+		 LayTableUtils<CheckOptionFormMap> layTableUtils = new LayTableUtils<CheckOptionFormMap>();
+		 
+		 layTableUtils.setCode(0);
+		 layTableUtils.setCount(1000);
+		 layTableUtils.setData(checkMapper.findByPage(checkOptionFormMap));
+		 
+		 
+		 System.out.println(layTableUtils.toString());
+		 return layTableUtils;
+
 	}
 	
 
