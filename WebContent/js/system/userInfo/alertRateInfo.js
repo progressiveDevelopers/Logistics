@@ -1,8 +1,9 @@
+console.log(1)
 var data
 var xdata = [], ydata = []
-var myChart = echarts.init(document.getElementById('main'));
+var myChart = echarts.init(document.getElementById('main1'));
 var pieData = [], pieObj 
-
+console.log(2)
 
 /** 
  ** 除法函数，用来得到精确的除法结果
