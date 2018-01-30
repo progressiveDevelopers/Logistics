@@ -2,9 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="/common/common.jspf"%>
-<script type="text/javascript" src="${ctx}/js/system/userInfo/alertRateInfo.js"></script>
+
 <!--  aaaaaaaaaaaaaaa  -->
-<input type="text" value="${ sessionScope.userSessionId} "id="userId"/>
 <input type="text" value="${userId} "id="userIda"/>
  <form class="layui-form">
   <div class="layui-form-item">
@@ -19,6 +18,7 @@
   </div>
 </form>
 <div id="main1" style="height:90%;"></div>
+<script type="text/javascript" src="${ctx}/js/system/userInfo/alertRateInfo.js"></script>
 <!--  aaaaaaaaaaaaaaa  -->
 <script>
 layui.use('form', function(){

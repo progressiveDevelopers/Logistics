@@ -5,7 +5,6 @@
 <!--  aaaaaaaaaaaaaaa  -->
 
 <input type="text" value="${ sessionScope.userSessionId} "id="userId"/>
-<input type="text" value="${userId} "id="userIda"/>
  <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">日期</label>
