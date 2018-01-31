@@ -1,10 +1,10 @@
-console.log(1)
-var data
-var xdata = [], ydata = []
-var myChart = echarts.init(document.getElementById('main1'));
+console.log("outter")
+var myBarChart = echarts.init(document.getElementById('barMain'));
+var myLineChart = echarts.init(document.getElementById('lineMain'));
+var pieChart = echarts.init(document.getElementById('pieMain'));
 var pieData = [], pieObj 
-console.log(2)
-
+var data
+var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = []
 /** 
  ** 除法函数，用来得到精确的除法结果
  ** 说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
@@ -31,17 +31,101 @@ function accDiv(arg1, arg2) {
 }
 
 
-$(function() {
-    var month = $('#month').val(),
-        userid = $('#userId').val()
+function drawBar() {
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataAllMonth.shtml?userId=9",
+        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId=1",
+        success : function(data) {
+            data = JSON.parse(data)
+            console.log(data);
+            $.each(data, function(i, value) {
+                
+                var name =  String.fromCharCode(65+i);
+                  if(data[i].ifLike == "1"){
+                      name+="*"
+                  }
+                
+                xdataBar.push(name)
+                ydataBar.push(data[i].score)
+                
+                
+            })
+            
+//            var option= {
+//                        name: '分数',
+//                        type: 'bar',
+//                        radius : '55%',
+//                        center : [ '50%', '75%' ],// 位置确定：左下角
+//                        data:pieData,
+//                        label : {
+//                        textStyle : {
+//                              color : 'rgba(30,144,255,0.8)',
+//                              align : 'center',
+//                              baseline : 'middle',
+//                              fontSize : 30,
+//                              fontWeight : 'bolder'
+//                          },
+//                          normal: {
+//                              show: true,
+//                              formatter: '{b}:{c}({d}%)'
+//                          }
+//                          },
+//                        itemStyle: {
+//                            emphasis: {
+//                                shadowBlur: 10,
+//                                shadowOffsetX: 10,
+//                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+//                            }
+//                        },
+//                      animationType : 'scale',
+//                      animationEasing : 'elasticOut',
+//                      animationDelay : function(idx) {
+//                          return Math.random() * 200;
+//                      }
+//                       
+//                    }
+            
+            var option = {
+                    tooltip: {
+                        show: true
+                    },
+                    legend: {
+                        data: ['总分']
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        data: xdataBar
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        "name": "总分",
+                        "type": "bar",
+                        "data": ydataBar
+                    }]
+                };
+            
+                
+            // 当setOption第二个参数为true时，会阻止数据合并
+            myBarChart.setOption(option, true); 
+        }
+    });      
+    
+    
+}
+
+function drawLine() {
+    
+    
+    $.ajax({
+        type : "GET",
+        url : "/Logistics/userInfo/rateInfoDataAllMonth.shtml?userId="+$('#userId').val(),
         success : function(data) {
             data = JSON.parse(data)
             var rateData
             for(i in data) {//i 就是键，data[i]就是值
-                xdata.push(i);
+                xdataLine.push(i);
                 rateData = data[i];
                 var score = [],avg = 0,sum = 0;
                 console.log("-------------")
@@ -57,13 +141,13 @@ $(function() {
                     sum += item;
                 });
                 avg = accDiv(sum,score.length);
-                ydata.push(avg);
+                ydataLine.push(avg);
                 console.log("avg====="+avg);
             }
             
             
             // 指定图表的配置项和数据
-            option = {
+            option2 = {
                 title : {
                     text : '分数统计',
                     x:'center'
@@ -73,7 +157,7 @@ $(function() {
                 },
                 xAxis : {
                     type : 'category',
-                    data : xdata
+                    data : xdataLine
                 },
                 yAxis : {
                     type : 'value'
@@ -88,119 +172,189 @@ $(function() {
                 series : [ {
                     name : '分数',
                     type : 'line',
-                    data : ydata,
+                    data : ydataLine,
                     label:{ 
                         normal:{ 
                         show: true} 
                     },
+                  markPoint : {
+                      data : [ {
+                          type : 'max',
+                          name : '最大值'
+                      }, {
+                          type : 'min',
+                          name : '最小值'
+                      } ]
+                  },
+                  markLine : {
+                      data : [ {
+                          type : 'average',
+                          name : '平均值'
+                      } ]
+                  }
                 } ]
             };
-
+            
+            myLineChart.setOption(option2, true);
         }
     });
+    
+//    var option2 = {
+//        title : {
+//            text : '未来一周气温变化',
+//            subtext : '纯属虚构'
+//        },
+//        tooltip : {
+//            trigger : 'axis'
+//        },
+//        legend : {
+//            data : [ '最高气温', '最低气温' ]
+//        },
+//        toolbox : {
+//            show : true,
+//            feature : {
+//                mark : {
+//                    show : true
+//                },
+//                dataView : {
+//                    show : true,
+//                    readOnly : false
+//                },
+//                magicType : {
+//                    show : true,
+//                    type : [ 'line', 'bar' ]
+//                },
+//                restore : {
+//                    show : true
+//                },
+//                saveAsImage : {
+//                    show : true
+//                }
+//            }
+//        },
+//        calculable : true,
+//        xAxis : [ {
+//            type : 'category',
+//            boundaryGap : false,
+//            data : [ '周一', '周二', '周三', '周四', '周五', '周六', '周日' ]
+//        } ],
+//        yAxis : [ {
+//            type : 'value',
+//            axisLabel : {
+//                formatter : '{value} °C'
+//            }
+//        } ],
+//        series : [ {
+//            name : '最高气温',
+//            type : 'line',
+//            data : [ 11, 11, 15, 13, 12, 13, 10 ],
+//            markPoint : {
+//                data : [ {
+//                    type : 'max',
+//                    name : '最大值'
+//                }, {
+//                    type : 'min',
+//                    name : '最小值'
+//                } ]
+//            },
+//            markLine : {
+//                data : [ {
+//                    type : 'average',
+//                    name : '平均值'
+//                } ]
+//            }
+//        }, {
+//            name : '最低气温',
+//            type : 'line',
+//            data : [ 1, -2, 2, 5, 3, 2, 0 ],
+//            markPoint : {
+//                data : [ {
+//                    name : '周最低',
+//                    value : -2,
+//                    xAxis : 1,
+//                    yAxis : -1.5
+//                } ]
+//            },
+//            markLine : {
+//                data : [ {
+//                    type : 'average',
+//                    name : '平均值'
+//                } ]
+//            }
+//        } ]
+//    };
+    
+}
+
+function drawPie(){
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId=9"+"&monthId=2",
+        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId=1",
         success : function(data) {
             data = JSON.parse(data)
-            console.log(data);
-            $.each(data, function(i, value) {
-                pieObj = new Object()
-                pieObj.name =  String.fromCharCode(65+i);
-                if(data[i].ifLike == "1"){
-                    pieObj.name+="*"
-                }
-                pieObj.value = data[i].score
-                console.log(pieObj)
-                pieData.push(pieObj)
-                console.log(pieData.length);
-            })
-
-//            var pie = {
-//                name : '分数',
-//                type : 'pie',
-//                radius : '55%',
-//                center : [ '18%', '75%' ],// 位置确定：左下角
-//                data :pieData,
-//                roseType : 'radius',
-//                label : {
-//                    textStyle : {
-//                        color : 'rgba(30,144,255,0.8)',
-//                        align : 'center',
-//                        baseline : 'middle',
-//                        fontSize : 30,
-//                        fontWeight : 'bolder'
-//                },
-//                normal: {
-//                    show: true,
-//                    formatter: '{c}({d}%)'
-//                }
-//                },
-//                labelLine : {
-//                    length : 40,
-//                    lineStyle : {
-//                        color : '#f0f',
-//                        width : 3,
-//                        type : 'dotted'
-//                    }
-//                },
-//                itemStyle : {
-//                    normal : {
-//                        color : '#c23531',
-//                        shadowBlur : 200,
-//                        shadowColor : 'rgba(0, 0, 0, 0.5)'
-//                    }
-//                },
-//
-//                animationType : 'scale',
-//                animationEasing : 'elasticOut',
-//                animationDelay : function(idx) {
-//                    return Math.random() * 200;
-//                }
-//            }
-
+            console.log("pieData==============="+data);
             
-            var pie= {
-                        name: '分数',
+            for (var key in data) { // 遍历Array  
+                pieObj = new Object()
+                pieObj.name = key
+                legendData.push(key)
+                pieObj.value = data[key].toFixed(2)// 保留两位小数
+                pieData.push(pieObj)
+            }  
+            
+            option3 = {
+                title : {
+                    text: '各评分项平均分',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: legendData
+                },
+                series : [
+                    {
+                        name: '评分项',
                         type: 'pie',
                         radius : '55%',
-                        center : [ '50%', '75%' ],// 位置确定：左下角
+                        center: ['50%', '50%'],
                         data:pieData,
-                        label : {
-                        textStyle : {
-                              color : 'rgba(30,144,255,0.8)',
-                              align : 'center',
-                              baseline : 'middle',
-                              fontSize : 30,
-                              fontWeight : 'bolder'
-                          },
-                          normal: {
-                              show: true,
-                              formatter: '{b}:{c}({d}%)'
-                          }
-                          },
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
-                                shadowOffsetX: 10,
+                                shadowOffsetX: 0,
                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
                             }
                         },
-                      animationType : 'scale',
-                      animationEasing : 'elasticOut',
-                      animationDelay : function(idx) {
-                          return Math.random() * 200;
-                      }
-                       
+                        itemStyle:{ 
+                            normal:{ 
+                                  label:{ 
+                                    show: true, 
+                                    formatter: '{b} : {c} ({d}%)' 
+                                  }, 
+                                  labelLine :{show:true} 
+                                } 
+                            }
                     }
-                
-            
-            option.series.push(pie)
+                ]
+            };
 
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
+            pieChart.setOption(option3, true);
+            
         }
     });
     
-});
+}
+
+$(function() {
+    console.log("inner")
+    drawBar()
+    drawLine()
+    drawPie()
+})
