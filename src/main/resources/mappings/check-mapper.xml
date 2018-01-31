@@ -27,7 +27,7 @@
 		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
 			update check_result
 			set checkResult =${item.checkResult}
-			where  month = ${item.monthId} 
+			where  month = ${item.month} 
 			and evaluatorId = ${item.evaluatorId}
 			and operationPostId = ${item.operationPostId}
 			and checkOptionId = ${item.checkOptionId}
