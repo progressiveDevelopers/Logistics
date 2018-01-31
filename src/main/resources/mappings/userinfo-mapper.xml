@@ -114,7 +114,25 @@
         groupName
         FROM
         user_info
-        where groupId = #{groupId} AND `level` &lt; #{level}
+        where groupId = #{groupId} AND `level` &lt; 9
+    </select>
+    
+    <select id="findSubordinateForZhang" resultMap="userInfoView">
+        SELECT
+        userId,
+        userName,
+        accountName,
+        userDescription,
+        deletestatus,
+        roleId,
+        roleName,
+        `level`,
+        state,
+        groupId,
+        groupName
+        FROM
+        user_info
+        where groupId in (2,3) AND `level` &lt; 9
     </select>
 
 

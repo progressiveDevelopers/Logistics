@@ -1,10 +1,10 @@
-console.log("outter")
 var myBarChart = echarts.init(document.getElementById('barMain'));
 var myLineChart = echarts.init(document.getElementById('lineMain'));
 var pieChart = echarts.init(document.getElementById('pieMain'));
 var pieData = [], pieObj 
 var data
 var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = []
+var exitFlag = false;
 /** 
  ** 除法函数，用来得到精确的除法结果
  ** 说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
@@ -37,7 +37,11 @@ function drawBar() {
         url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId=1",
         success : function(data) {
             data = JSON.parse(data)
-            console.log(data);
+            if(data.length < 10){
+                exitFlag = true;
+                return;
+            }
+            
             $.each(data, function(i, value) {
                 
                 var name =  String.fromCharCode(65+i);
@@ -102,7 +106,17 @@ function drawBar() {
                     series: [{
                         "name": "总分",
                         "type": "bar",
-                        "data": ydataBar
+                        "data": ydataBar,
+                        label:{ 
+                            normal:{ 
+                            show: true, 
+                            position: 'inside'} 
+                            },
+                        itemStyle:{
+                            normal:{
+                                color:'#0d6fb8'
+                            }
+                        }
                     }]
                 };
             
@@ -117,6 +131,9 @@ function drawBar() {
 
 function drawLine() {
     
+    if(exitFlag){
+        return;
+    }
     
     $.ajax({
         type : "GET",
@@ -162,13 +179,6 @@ function drawLine() {
                 yAxis : {
                     type : 'value'
                 },
-                grid : [// 指定坐标轴位置，大小
-                {
-                    x : '7%',
-                    y : '7%',
-                    width : '90%',
-                    height : '31%'
-                } ],
                 series : [ {
                     name : '分数',
                     type : 'line',
@@ -177,15 +187,6 @@ function drawLine() {
                         normal:{ 
                         show: true} 
                     },
-                  markPoint : {
-                      data : [ {
-                          type : 'max',
-                          name : '最大值'
-                      }, {
-                          type : 'min',
-                          name : '最小值'
-                      } ]
-                  },
                   markLine : {
                       data : [ {
                           type : 'average',
@@ -288,6 +289,10 @@ function drawLine() {
 
 function drawPie(){
     
+    if(exitFlag){
+        return;
+    }
+    
     $.ajax({
         type : "GET",
         url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId=1",
@@ -353,7 +358,6 @@ function drawPie(){
 }
 
 $(function() {
-    console.log("inner")
     drawBar()
     drawLine()
     drawPie()
