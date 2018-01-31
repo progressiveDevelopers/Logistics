@@ -66,7 +66,11 @@ public class CheckController extends BaseController {
 	public String listUI(Model model) throws Exception {
 
 		CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = getFormMap(CheckTaskAssignmentFormMap.class);
-
+		 //获取当前月份
+        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+        String month = (String) checkMonthFormMap.get("month");
+        
+        model.addAttribute("month", month);
 		return Common.BACKGROUND_PATH + "/function/check/list";
 	}
 

@@ -65,10 +65,21 @@
 	<select id="findAssignTask" parameterType="java.util.HashMap"
 		resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
 		select
-		<include refid="selectTask" />
-		from check_task_assignment
-		where evaluatorId = #{evaluatorId} and status = '0'
+		a.id as id , 
+		a.month,
+		a.evaluatorId,
+		a.evaluator,
+		a.operationPostId,
+		a.operationPost as operationPost,
+		a.createTime,
+		a.deletestatus,
+		a.ifLike,
+		a.status,
+		b.description as description
+		from check_task_assignment as  a ,ly_user as  b  
+		where evaluatorId = #{evaluatorId} and status = '0' and a.operationPostId = b.id
 	</select>
+
 
 	<select id="findAssignTaskCount" parameterType="java.util.HashMap"
 		resultType="Integer">
