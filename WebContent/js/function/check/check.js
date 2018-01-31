@@ -22,7 +22,6 @@ $(function() {
 							    ,page: true //开启分页
 							    ,cols: [[ //表头
 							       {field: 'id',      title: 'ID' , width: "10%",    sort: true, fixed: 'left'}
-							      ,{field: 'month'  , title: '月份', width: "30%",  sort: true}
 							      ,{field: 'operationPost', title: '姓名', width:"30%",   sort: true}
 							      ,{fixed: 'right', width: "30%", align:'center', toolbar: '#barDemo'}
 							    ]]
@@ -35,9 +34,6 @@ $(function() {
  							
 				        	return false;
  						});
- 						
- 						
- 						
  						 
  					} else {
  						layer.msg('添加失败！');
