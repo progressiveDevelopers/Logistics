@@ -175,7 +175,7 @@ background="${pageContext.servletContext.contextPath }/404/left.gif"></TD>
                       <span style="color: red;font-weight: 900;font-size: 40px;">404</span><br><br>
                         <P><FONT 
                         class=red size="5"><b>您的访问的页面可能被删除或不存在。</b></FONT><BR><BR><font color="blue" size="3">你的IP已经记录，请勿进行非法操作！！</font><BR><BR><BR>
-                        <P>numberONe欢迎你.........</P></TD>
+                        <P>物流与商业金融部欢迎你.........</P></TD>
                       <TD rowSpan=2><IMG height=239 
                         src="${pageContext.servletContext.contextPath }/404/error_r2_c3.gif" 
                         width=12 border=0></TD>
