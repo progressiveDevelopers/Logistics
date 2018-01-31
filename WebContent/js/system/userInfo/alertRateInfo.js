@@ -158,6 +158,7 @@ function drawLine() {
                     sum += item;
                 });
                 avg = accDiv(sum,score.length);
+                $("#avg").text(avg)
                 ydataLine.push(avg);
                 console.log("avg====="+avg);
             }

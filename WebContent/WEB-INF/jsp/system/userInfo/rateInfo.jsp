@@ -24,7 +24,9 @@
 }
 </style>
 <!--  aaaaaaaaaaaaaaa  -->
+<h2 style='padding:0.2em 1em;'>${month } — 考评详情[本月平均分<span id="avg"></span>]</h2>
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
+
 <div class="content">
     <div id="barMain"  class="top"></div>
     <div id="pieMain"  class="bottomLeft"></div>

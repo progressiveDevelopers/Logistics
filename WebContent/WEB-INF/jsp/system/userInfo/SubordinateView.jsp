@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/system/userInfo/SubordinateView.js"></script>
 <!--  aaaaaaaaaaaaaaa  -->
+<h2 style='padding:0.2em 1em;'>${ month } — 考评列表</h2>
 <table class="layui-hide" id="subordinateTbl" lay-filter="layuiTable"></table>
 <div id="echarts" style="height:50%"></div>
 <script type="text/html" id="barDemo">

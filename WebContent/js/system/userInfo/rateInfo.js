@@ -159,6 +159,7 @@ function drawLine() {
                 });
                 avg = accDiv(sum,score.length);
                 ydataLine.push(avg);
+                $("#avg").text(avg)
                 console.log("avg====="+avg);
             }
             
