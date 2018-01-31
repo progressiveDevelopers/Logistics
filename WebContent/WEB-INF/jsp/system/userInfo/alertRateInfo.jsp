@@ -4,7 +4,7 @@
 <%@include file="/common/common.jspf"%>
 
 <!--  aaaaaaaaaaaaaaa  -->
-<input type="text" value="${userId} "id="userIda"/>
+<input type="text" value="${userId}"id="userId"/>
  <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">日期</label>

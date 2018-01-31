@@ -79,7 +79,7 @@
             groupName
         FROM
             user_info 
-        where groupId = #{groupId} AND `level` &lt; #{level}
+        where groupId = #{groupId} AND `level` &lt; 8 AND deletestatus = 0
     </select>
     
     

@@ -15,8 +15,9 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
   
   //监听工具条
   table.on('tool(layuiTable)', function(rowData){ 
-    var data = rowData.data //获得当前行数据
+      var data = rowData.data //获得当前行数据
     ,layEvent = rowData.event; //获得 lay-event 对应的值
+    console.log(data);
     if(layEvent === 'detail'){
         //弹出层iframe窗
         var month = $('#month').val();
