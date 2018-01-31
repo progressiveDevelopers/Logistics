@@ -6,8 +6,11 @@
  */
 package com.numberONe.mapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.mapper.base.BaseMapper;
 
@@ -22,8 +25,13 @@ public interface CheckMapper extends BaseMapper {
 	
 	public List<ResFormMap> findRes(ResFormMap map);
 	
+	//更新评论结果
 	public void updateCheckResult(List list);
 	
+	//查询客户经理的分配的详情
+	public List<CheckTaskAssignmentFormMap> findAssignTask(Map  map);
 	
-
+	//查询客户经理分配的人数
+	public Integer findAssignTaskCount(Map  map);
+	
 }

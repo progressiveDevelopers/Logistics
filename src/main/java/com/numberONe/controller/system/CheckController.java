@@ -73,21 +73,41 @@ public class CheckController extends BaseController {
 	@ResponseBody
 	@RequestMapping("findByPage")
 	public LayTableUtils<CheckTaskAssignmentFormMap> findByPage(String page,
-			String limit) throws Exception {
+			String limit, HttpServletRequest req) throws Exception {
 		CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = getFormMap(CheckTaskAssignmentFormMap.class);
 
 		checkTaskAssignmentFormMap = toFormMap(checkTaskAssignmentFormMap,
 				page, limit, checkTaskAssignmentFormMap.getStr("orderby"));
 
-
-	
 		LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
-
+	
+		//获取当前登录人信息
+		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+        userFormMap     = (UserFormMap)Common.findUserSession(req);
+        int evaluatorId = (Integer) userFormMap.get("id");
+		checkTaskAssignmentFormMap.put("evaluatorId", evaluatorId);
+		
+		
+		Map map = new HashMap();
+		map.put("evaluatorId", evaluatorId);
+		//获取评论条数
+		
+		int i = checkMapper.findAssignTaskCount(map);
+		
 		layTableUtils.setCode(0);
-		layTableUtils.setCount(1000);
-		layTableUtils.setData(checkMapper
-				.findByPage(checkTaskAssignmentFormMap));
-
+		layTableUtils.setCount(i);
+		List list = null;
+		
+		
+		try {
+			list = checkMapper.findAssignTask(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		//layTableUtils.setData(checkMapper.findByPage(checkTaskAssignmentFormMap));
+		layTableUtils.setData(checkMapper.findAssignTask(map));
 		System.out.println(layTableUtils.toString());
 		return layTableUtils;
 
@@ -115,14 +135,13 @@ public class CheckController extends BaseController {
 	@RequestMapping("checkUI")
 	public String addUI(Model model) throws Exception {
 		String id = getPara("id");
+		String operationPostId = getPara("operationPostId");
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
-		userFormMap.put("id",   id);
+		userFormMap.put("id",   operationPostId);
 	 	List  userRes  =  null;
 		try {
 			  userRes  = userMapper.findUserById(userFormMap);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		 
 		Map<?, ?> map = (Map<?, ?>) userRes.get(0);
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
@@ -130,7 +149,12 @@ public class CheckController extends BaseController {
 		model.addAttribute("res",   res);
 		model.addAttribute("operationPost", map.get("userName").toString());
 		model.addAttribute("id", map.get("id").toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return Common.BACKGROUND_PATH + "/function/check/check";
+		
+		
 	}
 
 	@ResponseBody
@@ -190,7 +214,7 @@ public class CheckController extends BaseController {
 			updateMap.put("checkOptionId", i+"");
 			updateMap.put("operationPostId", (String)param.get("operationPostId"));
 			updateMap.put("evaluatorId", evaluatorId);
-			updateMap.put("monthId", month);
+			updateMap.put("month", month);
 			list.add(updateMap);
 		}
 		
