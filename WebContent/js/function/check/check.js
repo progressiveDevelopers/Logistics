@@ -9,7 +9,7 @@ $(function() {
  				dataType:"json",
  				success : function(data) {
  					if (data=="success") {
- 						layer.confirm('添加成功!是否关闭窗口?', function(index) {
+ 						layer.confirm('考评已提交!谢谢亲！', function(index) {
  							
  							var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
  							
