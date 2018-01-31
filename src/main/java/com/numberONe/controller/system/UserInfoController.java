@@ -95,101 +95,113 @@ public class UserInfoController extends BaseController {
             List<CheckResultFormMap> checkResultFormMapList = null;
             // 获取最新一个月的月份
             checkMonthFormMap = checkMonthMapper.getCurrentMonth();
-            // 获取所有的评分选项
-            checkOptionFormMap.set("deletestatus", "0");
-            checkOptionFromMapList = checkOptionMapper.findByWhere(checkOptionFormMap);
-            // 查询所有中后台人员
-            userInfoFormMap.set("roleid", 7);
-            userInfoFormMap.set("level", 5);
-            userInfoFormMap.set("deletestatus", '0');
-            List<UserInfoFormMap> zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
-            for(int i = 0 ; zhtUserInfoList.size() > i ; i++){
-            	// 针对每个中后台的优先级人数
-            	priorityCount = Integer.parseInt((String) parameterFormMap.get("value"));
-            	checkTaskAssignmentList = new ArrayList<>();
-            	checkResultFormMapList = new ArrayList<>();
-            	int alreadyCount = 0;// 记录选取的数量
-                checkRelationFormMap.set("relationUserId", zhtUserInfoList.get(i).get("userId"));
-//              checkRelationFormMap.set("relationUserId", 9);//测试
-                // 中后台选取的具有优先级的客户经理集合
-                List<CheckRelationFormMap> priorityCheckRelationList = checkRelationMapper
-                        .findUserRelationPage(checkRelationFormMap);
-                // 开始随机选取优先的客户经理
-                Set<String> set = new HashSet<String>();
-                if(priorityCheckRelationList != null){ //说明中后台人员选取了五位客户经理
-                    // 先取优先的客户经理
-                    while (alreadyCount < priorityCount) {
-                        int size = priorityCheckRelationList.size(); // 保证List执行remove方法没问题
-                        // 随机数
-                        int random = (int) (Math.random() * size);
-                        checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
-                        checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
-                        checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
-                        checkTaskAssignmentFormMap.set("evaluatorId", priorityCheckRelationList.get(random).get("userId"));// 评价人id
-                        checkTaskAssignmentFormMap.set("evaluator", priorityCheckRelationList.get(random).get("user"));// 评价人名字
-                        checkTaskAssignmentFormMap.set("operationPostId",priorityCheckRelationList.get(random).get("relationUserId"));// 被评价人id
-                        checkTaskAssignmentFormMap.set("operationPost",priorityCheckRelationList.get(random).get("relationUser"));// 被评价人名字
-                        checkTaskAssignmentFormMap.set("ifLike",1);// 是中后台自己推荐的五个人中的某一个
-                        checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
-                        
-                        set.add((String) priorityCheckRelationList.get(random).get("userId"));
-                        priorityCheckRelationList.remove(random);
-                        alreadyCount ++;
-                    }
-                }
-                
-                System.out.println("获取的set为 ：" + set.toString());
-                // 查询所有客户经理
-                userInfoFormMap.set("roleid", 6);
-                userInfoFormMap.set("level", 8);
+            // 判断当前月份是否已经分配任务
+            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
+            checkTaskAssignmentList = new ArrayList<>();
+            checkTaskAssignmentList = checkTaskAssignmentMapper.findByPage(checkTaskAssignmentFormMap);
+            if(checkTaskAssignmentList.isEmpty()){
+            	 
+                // 获取所有的评分选项
+                checkOptionFormMap.set("deletestatus", "0");
+                checkOptionFromMapList = checkOptionMapper.findByWhere(checkOptionFormMap);
+                // 查询所有中后台人员
+                userInfoFormMap.set("roleid", 7);
+                userInfoFormMap.set("level", 5);
                 userInfoFormMap.set("deletestatus", '0');
-                List<UserInfoFormMap> mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
-                // 开始随机选取普通客户经理
-                while (alreadyCount < count) {
-                    int random = (int) (Math.random() * mgeUserInfoList.size());
-                    // 先获取第一个随机的客户经理 看其是否已经被选 set无序
-                    System.out.println("获取的========" + mgeUserInfoList.get(random).get("userId"));
-                    set.add(String.valueOf(mgeUserInfoList.get(random).get("userId")));
-                    if (set.size() > priorityCount) { //
-                        checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
-                        checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
-                        checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
-                        checkTaskAssignmentFormMap.set("evaluatorId", mgeUserInfoList.get(random).get("userId"));// 评价人id
-                        checkTaskAssignmentFormMap.set("evaluator", mgeUserInfoList.get(random).get("userName"));// 评价人名字
-                        checkTaskAssignmentFormMap.set("operationPostId", zhtUserInfoList.get(i).get("userId"));// 被评价人id
-                        checkTaskAssignmentFormMap.set("operationPost", zhtUserInfoList.get(i).get("userName"));// 被评价人名字
-//                      checkTaskAssignmentFormMap.set("operationPostId", 9);// 被评价人id  测试
-//                      checkTaskAssignmentFormMap.set("operationPost", "刘松");// 被评价人名字
-                        checkTaskAssignmentFormMap.set("ifLike",0);// 不是中后台自己推荐的五个人中的某一个
-                        checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
-                        mgeUserInfoList.remove(random);
-                        alreadyCount++;
-                        priorityCount++;
-                    } else {
-                        // 说明取得是已经取到的 可以移除
-                        mgeUserInfoList.remove(random);
+                List<UserInfoFormMap> zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+                for(int i = 0 ; zhtUserInfoList.size() > i ; i++){
+                	// 针对每个中后台的优先级人数
+                	priorityCount = Integer.parseInt((String) parameterFormMap.get("value"));
+                	checkTaskAssignmentList = new ArrayList<>();
+                	checkResultFormMapList = new ArrayList<>();
+                	int alreadyCount = 0;// 记录选取的数量
+                    checkRelationFormMap.set("relationUserId", zhtUserInfoList.get(i).get("userId"));
+//                  checkRelationFormMap.set("relationUserId", 9);//测试
+                    // 中后台选取的具有优先级的客户经理集合
+                    List<CheckRelationFormMap> priorityCheckRelationList = checkRelationMapper
+                            .findUserRelationPage(checkRelationFormMap);
+                    // 开始随机选取优先的客户经理
+                    Set<String> set = new HashSet<String>();
+                    if(priorityCheckRelationList != null){ //说明中后台人员选取了五位客户经理
+                        // 先取优先的客户经理
+                        while (alreadyCount < priorityCount) {
+                            int size = priorityCheckRelationList.size(); // 保证List执行remove方法没问题
+                            // 随机数
+                            int random = (int) (Math.random() * size);
+                            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+                            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+                            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
+                            checkTaskAssignmentFormMap.set("evaluatorId", priorityCheckRelationList.get(random).get("userId"));// 评价人id
+                            checkTaskAssignmentFormMap.set("evaluator", priorityCheckRelationList.get(random).get("user"));// 评价人名字
+                            checkTaskAssignmentFormMap.set("operationPostId",priorityCheckRelationList.get(random).get("relationUserId"));// 被评价人id
+                            checkTaskAssignmentFormMap.set("operationPost",priorityCheckRelationList.get(random).get("relationUser"));// 被评价人名字
+                            checkTaskAssignmentFormMap.set("ifLike",1);// 是中后台自己推荐的五个人中的某一个
+                            checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
+                            
+                            set.add((String) priorityCheckRelationList.get(random).get("userId"));
+                            priorityCheckRelationList.remove(random);
+                            alreadyCount ++;
+                        }
                     }
-                }
-                // 获取所有待评价的选项
-                for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
-                    for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
-                        checkResultFormMap = new CheckResultFormMap();
-                        checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
-                        checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份 
-                        checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
-                        checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
-                        checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
-                        checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
-                        checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
-                        checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
-                        checkResultFormMapList.add(checkResultFormMap);
+                    
+                    System.out.println("获取的set为 ：" + set.toString());
+                    // 查询所有客户经理
+                    userInfoFormMap.set("roleid", 6);
+                    userInfoFormMap.set("level", 8);
+                    userInfoFormMap.set("deletestatus", '0');
+                    List<UserInfoFormMap> mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+                    // 开始随机选取普通客户经理
+                    while (alreadyCount < count) {
+                        int random = (int) (Math.random() * mgeUserInfoList.size());
+                        // 先获取第一个随机的客户经理 看其是否已经被选 set无序
+                        System.out.println("获取的========" + mgeUserInfoList.get(random).get("userId"));
+                        set.add(String.valueOf(mgeUserInfoList.get(random).get("userId")));
+                        if (set.size() > priorityCount) { //
+                            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+                            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+                            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
+                            checkTaskAssignmentFormMap.set("evaluatorId", mgeUserInfoList.get(random).get("userId"));// 评价人id
+                            checkTaskAssignmentFormMap.set("evaluator", mgeUserInfoList.get(random).get("userName"));// 评价人名字
+                            checkTaskAssignmentFormMap.set("operationPostId", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                            checkTaskAssignmentFormMap.set("operationPost", zhtUserInfoList.get(i).get("userName"));// 被评价人名字
+//                          checkTaskAssignmentFormMap.set("operationPostId", 9);// 被评价人id  测试
+//                          checkTaskAssignmentFormMap.set("operationPost", "刘松");// 被评价人名字
+                            checkTaskAssignmentFormMap.set("ifLike",0);// 不是中后台自己推荐的五个人中的某一个
+                            checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
+                            mgeUserInfoList.remove(random);
+                            alreadyCount++;
+                            priorityCount++;
+                        } else {
+                            // 说明取得是已经取到的 可以移除
+                            mgeUserInfoList.remove(random);
+                        }
                     }
+                    // 获取所有待评价的选项
+                    for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
+                        for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
+                            checkResultFormMap = new CheckResultFormMap();
+                            checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
+                            checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份 
+                            checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
+                            checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
+                            checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
+                            checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
+                            checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
+                            checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
+                            checkResultFormMapList.add(checkResultFormMap);
+                        }
+                    }
+                    
+                    // 批量增加评分人员
+                    checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
+                    // 批量增加评分人员对应的评分选项result表
+                    checkResultMapper.addCheckResultList(checkResultFormMapList);
                 }
-                
-                // 批量增加评分人员
-                checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
-                // 批量增加评分人员对应的评分选项result表
-                checkResultMapper.addCheckResultList(checkResultFormMapList);
+            }
+            else{
+            	return "该月份已经分配任务！！";
             }
            
         } catch (Exception e) {

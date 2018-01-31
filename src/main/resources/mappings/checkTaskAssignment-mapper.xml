@@ -35,6 +35,19 @@
 		 (#{monthId},#{month},#{evaluatorId},#{evaluator},#{operationPostId},#{operationPost},#{description})
 	</insert>
 	
+	 <select id="findByPage" resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
+        select
+        <include refid="selectId" />
+        from check_task_assignment
+        where 1 = 1
+        <if test="monthId != null and monthId != ''">
+            and monthId like '%${monthId}%'
+        </if>
+        <if test="month != null and month != ''">
+            and month like '%${month}%'
+        </if>
+    </select>
+	
 	<insert id="addTaskAssignList"  parameterType="java.util.List">
 		insert into check_task_assignment (
 		monthId,
