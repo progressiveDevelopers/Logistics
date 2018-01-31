@@ -215,19 +215,21 @@ public class CheckController extends BaseController {
 			updateMap.put("operationPostId", (String)param.get("operationPostId"));
 			updateMap.put("evaluatorId", evaluatorId);
 			updateMap.put("month", month);
+			updateMap.put("status", "1");
 			list.add(updateMap);
 		}
-		
-	    checkMapper.updateCheckResult(list);
-		
-		
- 
-		
-		
-		
-	 
 		//根据两个ID和评分选项进行查找，然后进行批量更新。
-	
+	    checkMapper.updateCheckResult(list);
+	    
+	    Map taskMap = new  HashMap();
+	    
+		
+		taskMap.put("operationPostId", (String)param.get("operationPostId"));
+		taskMap.put("evaluatorId", evaluatorId);
+		taskMap.put("month", month);
+	    
+	    checkMapper.updateCheckTaskAssignment(taskMap);
+		
 		return "success";
 	}
 

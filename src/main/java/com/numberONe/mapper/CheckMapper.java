@@ -27,6 +27,8 @@ public interface CheckMapper extends BaseMapper {
 	
 	//更新评论结果
 	public void updateCheckResult(List list);
+	//更新task任务分配表
+	public void updateCheckTaskAssignment(Map map);
 	
 	//查询客户经理的分配的详情
 	public List<CheckTaskAssignmentFormMap> findAssignTask(Map  map);

@@ -24,43 +24,58 @@
 	</sql>
 
 	<update id="updateCheckResult" parameterType="java.util.List">
-		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		<foreach collection="list" item="item" index="index" open=""
+			close="" separator=";">
 			update check_result
-			set checkResult =${item.checkResult}
-			where  month = ${item.month} 
+			set checkResult
+			=${item.checkResult}
+			where month = ${item.month}
 			and evaluatorId = ${item.evaluatorId}
-			and operationPostId = ${item.operationPostId}
+			and operationPostId =
+			${item.operationPostId}
 			and checkOptionId = ${item.checkOptionId}
 		</foreach>
 
 	</update>
-	
+
+	<update id="updateCheckTaskAssignment" parameterType="java.util.HashMap">
+
+		update check_task_assignment
+		set status = '1'
+		where month = ${month}
+		and evaluatorId = ${evaluatorId}
+		and operationPostId = ${operationPostId}
+
+	</update>
+
 	<sql id="selectTask">
 		id,
-		monthId,
-	 	evaluatorId,
-	 	evaluator,
-	 	operationPostId,
-	 	operationPost,
-	 	description,
-	 	createTime,
-	 	deletestatus,
-	 	ifLike,
-	 	status
+		month,
+		evaluatorId,
+		evaluator,
+		operationPostId,
+		operationPost,
+		description,
+		createTime,
+		deletestatus,
+		ifLike,
+		status
 	</sql>
-	
-	<select id="findAssignTask"  parameterType="java.util.HashMap"  resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
+
+	<select id="findAssignTask" parameterType="java.util.HashMap"
+		resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
 		select
 		<include refid="selectTask" />
-		from check_task_assignment 
-		where evaluatorId = #{evaluatorId}
+		from check_task_assignment
+		where evaluatorId = #{evaluatorId} and status = '0'
 	</select>
-	
-	<select id="findAssignTaskCount"  parameterType="java.util.HashMap"  resultType="Integer">
+
+	<select id="findAssignTaskCount" parameterType="java.util.HashMap"
+		resultType="Integer">
 		select
 		count(*)
-		from check_task_assignment 
-		where evaluatorId = #{evaluatorId}
+		from check_task_assignment
+		where evaluatorId = #{evaluatorId} and status = '0'
 	</select>
 
 </mapper>
