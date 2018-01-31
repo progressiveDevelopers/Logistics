@@ -135,19 +135,16 @@
     </select>
 
 
-    <select id="rateInfoDataAllMonth" resultType="map">
-        SELECT
-        result.`month`,result.evaluatorId,result.evaluator,result.score,task.ifLike FROM (
-        SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS
-        'score' FROM check_result t
-        WHERE t.`operationPostId` = #{id}
+    <select id="rateInfoDataAllMonth" resultType="map" >
+        SELECT result.`month`,result.evaluatorId,result.evaluator,result.score,task.ifLike FROM (
+        SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS 'score' FROM check_result t
+        WHERE   t.`operationPostId` = #{id} 
         GROUP BY t.evaluatorId,t.`monthId`
         ) result
-        INNER JOIN
-        check_task_assignment task
+        INNER JOIN 
+        check_task_assignment task 
         ON result.evaluatorId = task.evaluatorId AND result.`monthId` = task.`monthId`
-        WHERE
-        task.`operationPostId` = #{id}
+        WHERE   task.`operationPostId` = #{id} 
         ORDER BY result.`month`
     </select>
 

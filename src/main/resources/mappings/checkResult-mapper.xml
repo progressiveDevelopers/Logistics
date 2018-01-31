@@ -57,4 +57,25 @@
 		</if>
 	</select>
 	
+	<select id="findUserRate" resultType="map">
+		SELECT checkOption,AVG(checkResult) AS 'avg' FROM check_result 
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2}
+        AND id NOT IN (
+        SELECT id FROM (
+        SELECT id FROM check_result
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2} ORDER BY  checkResult DESC LIMIT 1
+        ) t1
+        UNION ALL
+        SELECT id FROM (
+        SELECT id FROM check_result
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2} ORDER BY  checkResult ASC LIMIT 1 
+        ) t2 )
+	</select>
+	
+   
+    <select id="findUserRateOption" resultType="int">
+        SELECT DISTINCT checkOptionId FROM check_result 
+        WHERE  operationPostId =#{0} AND monthId = #{1}
+    </select>
+	
 </mapper>

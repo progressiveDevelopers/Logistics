@@ -1,4 +1,5 @@
 package com.numberONe.controller.system;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -369,15 +370,6 @@ public class UserInfoController extends BaseController {
             }
             
             
-//            for (int i = 0,size = listData.size(); i < size; i++) {
-//                if(i == 0) {
-//                    
-//                    
-//                    
-//                }
-//                
-//                
-//            }
             
             
             
@@ -387,5 +379,29 @@ public class UserInfoController extends BaseController {
 
         return returnMap;
     }
-
+    
+    @RequestMapping("getUserRate")
+    @ResponseBody
+    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId){
+        
+        Map<String,BigDecimal> returnMap = new HashMap<String,BigDecimal>();
+        
+        List<Integer> optionIds = checkResultMapper.findUserRateOption(userId, monthId);
+        
+        Map<String,Object> rateMap = null;
+        try {
+            for (int i = 0,size = optionIds.size() ; i < size; i++) {
+                rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
+                returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return returnMap;
+    }
+    
+    
 }
+
+

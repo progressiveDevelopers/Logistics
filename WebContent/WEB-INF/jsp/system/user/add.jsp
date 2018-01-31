@@ -76,6 +76,8 @@ label[class^="btn btn-default"] {
                                     name="groupId" value="6">零售团队1</a></li>
                             <li><a href="#"><input type="radio"
                                     name="groupId" value="7">零售团队2</a></li>
+                            <li><a href="#"><input type="radio"
+                                    name="groupId" value="8">快运团队</a></li>
                         </ul>
                     </div>
                 </div>
