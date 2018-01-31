@@ -58,6 +58,9 @@
         <if test="roleid != null and roleid != ''">
             and roleid like '%${roleid}%'
         </if>
+        <if test="level != null and level != ''">
+            and `level` like '%${level}%'
+        </if>
         <if test="deletestatus != null and deletestatus != ''">
             and deletestatus like '%${deletestatus}%'
         </if>

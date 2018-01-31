@@ -71,7 +71,6 @@ public class UserInfoController extends BaseController {
     @RequestMapping("findUserInfoList")
     public String findUserInfoList() throws Exception {
         try {
-            int alreadyCount = 0;// 记录选取的数量
             UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
             CheckMonthFormMap checkMonthFormMap = new CheckMonthFormMap();
             CheckOptionFormMap checkOptionFormMap = new CheckOptionFormMap();
@@ -85,26 +84,31 @@ public class UserInfoController extends BaseController {
             int count = Integer.parseInt((String) parameterFormMap.get("value"));
             parameterFormMap = new ParameterFormMap();
             parameterFormMap.set("key", "priorityCount");
-            parameterFormMap.set("deletestatus", 0);
+            parameterFormMap.set("deletestatus", "0");
             parameterFormMap = (ParameterFormMap) parameterMapper.getByKey(parameterFormMap);
-            int priorityCount = Integer.parseInt((String) parameterFormMap.get("value")) ;
+            int priorityCount = 0 ;
             // 待评价的选项集合
             List<CheckOptionFormMap> checkOptionFromMapList = new ArrayList<>();
             // 一个中后台对应的多个评价人集合
-            List<CheckTaskAssignmentFormMap> checkTaskAssignmentList = new ArrayList<>();
+            List<CheckTaskAssignmentFormMap> checkTaskAssignmentList = null;
             // 对应的result表的具体细节
-            List<CheckResultFormMap> checkResultFormMapList = new ArrayList<>();
+            List<CheckResultFormMap> checkResultFormMapList = null;
             // 获取最新一个月的月份
             checkMonthFormMap = checkMonthMapper.getCurrentMonth();
             // 获取所有的评分选项
-            checkOptionFormMap.set("deletestatus", 0);
+            checkOptionFormMap.set("deletestatus", "0");
             checkOptionFromMapList = checkOptionMapper.findByWhere(checkOptionFormMap);
             // 查询所有中后台人员
             userInfoFormMap.set("roleid", 7);
             userInfoFormMap.set("level", 5);
-            userInfoFormMap.set("deletestatus", 0);
+            userInfoFormMap.set("deletestatus", '0');
             List<UserInfoFormMap> zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
             for(int i = 0 ; zhtUserInfoList.size() > i ; i++){
+            	// 针对每个中后台的优先级人数
+            	priorityCount = Integer.parseInt((String) parameterFormMap.get("value"));
+            	checkTaskAssignmentList = new ArrayList<>();
+            	checkResultFormMapList = new ArrayList<>();
+            	int alreadyCount = 0;// 记录选取的数量
                 checkRelationFormMap.set("relationUserId", zhtUserInfoList.get(i).get("userId"));
 //              checkRelationFormMap.set("relationUserId", 9);//测试
                 // 中后台选取的具有优先级的客户经理集合
@@ -138,7 +142,7 @@ public class UserInfoController extends BaseController {
                 // 查询所有客户经理
                 userInfoFormMap.set("roleid", 6);
                 userInfoFormMap.set("level", 8);
-                userInfoFormMap.set("deletestatus", 0);
+                userInfoFormMap.set("deletestatus", '0');
                 List<UserInfoFormMap> mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
                 // 开始随机选取普通客户经理
                 while (alreadyCount < count) {
@@ -166,28 +170,28 @@ public class UserInfoController extends BaseController {
                         mgeUserInfoList.remove(random);
                     }
                 }
-            }
-
-            // 获取所有待评价的选项
-            for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
-                for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
-                    checkResultFormMap = new CheckResultFormMap();
-                    checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
-                    checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份 
-                    checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
-                    checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
-                    checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
-                    checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
-                    checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
-                    checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
-                    checkResultFormMapList.add(checkResultFormMap);
+                // 获取所有待评价的选项
+                for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
+                    for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
+                        checkResultFormMap = new CheckResultFormMap();
+                        checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
+                        checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份 
+                        checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
+                        checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
+                        checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
+                        checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
+                        checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
+                        checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
+                        checkResultFormMapList.add(checkResultFormMap);
+                    }
                 }
+                
+                // 批量增加评分人员
+                checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
+                // 批量增加评分人员对应的评分选项result表
+                checkResultMapper.addCheckResultList(checkResultFormMapList);
             }
-            
-            // 批量增加评分人员
-            checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
-            // 批量增加评分人员对应的评分选项result表
-            checkResultMapper.addCheckResultList(checkResultFormMapList);
+           
         } catch (Exception e) {
             e.printStackTrace();
             return "任务分配失败！";
