@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.CheckResultMapper">
+	
+	<sql id="selectId">
+        `id`,
+        `monthId`,
+        `month`,
+        `evaluatorId`,
+        `evaluator`,
+        `operationPostId`,
+        `operationPost`,
+        `checkOptionId`,
+        `checkOption`,
+        `checkResult`,
+        `description`,
+        `createTime`,
+        `deletestatus`
+	</sql>
+	
+	<select id="findUserRate" resultType="map">
+		SELECT checkOption,AVG(checkResult) AS 'avg' FROM check_result 
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2}
+        AND id NOT IN (
+        SELECT id FROM (
+        SELECT id FROM check_result
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2} ORDER BY  checkResult DESC LIMIT 1
+        ) t1
+        UNION ALL
+        SELECT id FROM (
+        SELECT id FROM check_result
+        WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2} ORDER BY  checkResult ASC LIMIT 1 
+        ) t2 )
+	</select>
+	
+   
+    <select id="findUserRateOption" resultType="int">
+        SELECT DISTINCT checkOptionId FROM check_result 
+        WHERE  operationPostId =#{0} AND monthId = #{1}
+    </select>
+    
+</mapper>

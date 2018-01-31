@@ -28,7 +28,7 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
             shadeClose: true,
             shade: false ,
             maxmin: true, //开启最大化最小化按钮
-            area: ['893px', '600px'],
+            area: ['100%', '100%'],
             content: '/Logistics/userInfo/rateInfo.shtml?userId='+userId
           });
     } 

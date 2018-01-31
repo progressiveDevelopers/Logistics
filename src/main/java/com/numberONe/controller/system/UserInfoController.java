@@ -1,10 +1,10 @@
 package com.numberONe.controller.system;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserInfoView;
 import com.numberONe.mapper.CheckMonthMapper;
+import com.numberONe.mapper.CheckResultMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.util.Common;
 import com.numberONe.util.LayTableUtils;
@@ -33,6 +34,9 @@ public class UserInfoController extends BaseController {
 
     @Inject
     private CheckMonthMapper checkMonthMapper;
+    
+    @Inject
+    private CheckResultMapper checkResultMapper;
 
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
@@ -189,24 +193,32 @@ public class UserInfoController extends BaseController {
                 returnMap.put(month, returnList);
             }
             
-            
-//            for (int i = 0,size = listData.size(); i < size; i++) {
-//                if(i == 0) {
-//                    
-//                    
-//                    
-//                }
-//                
-//                
-//            }
-            
-            
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return returnMap;
     }
-
+    
+    @RequestMapping("getUserRate")
+    @ResponseBody
+    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId){
+        
+        Map<String,BigDecimal> returnMap = new HashMap<String,BigDecimal>();
+        
+        List<Integer> optionIds = checkResultMapper.findUserRateOption(userId, monthId);
+        
+        Map<String,Object> rateMap = null;
+        try {
+            for (int i = 0,size = optionIds.size() ; i < size; i++) {
+                rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
+                returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return returnMap;
+    }
+    
 }
