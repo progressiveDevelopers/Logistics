@@ -289,9 +289,17 @@ public class UserInfoController extends BaseController {
 
         // 当前用户的全量信息
         UserInfoView userInfoView = userInfoMapper.findById((Integer) userFormMap.get("id"));
-
+        
+        
+        List<UserInfoView> listUserInfoView = null;
+        
+        // 如果是张老师则可以查看两个团队的人员信息
         // 下属的信息全量
-        List<UserInfoView> listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
+        if((Integer) userFormMap.get("id") == 4) {
+            listUserInfoView = userInfoMapper.findSubordinateForZhang();
+        } else {
+            listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
+        }
 
         layTableUtils.setData(listUserInfoView);
 

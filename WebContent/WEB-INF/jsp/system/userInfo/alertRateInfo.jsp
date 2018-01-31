@@ -10,7 +10,6 @@
 }
 .bottomLeft{
     height:400px;
-    background: blue;
     width: 50%;
     float: left;
 }
@@ -26,8 +25,8 @@
 <%@include file="/common/common.jspf"%>
 
 <!--  aaaaaaaaaaaaaaa  -->
-<input type="text" value="${userId}"id="userId"/>
- <form class="layui-form">
+<input type="hidden" value="${userId}"id="userId"/>
+<%--  <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">日期</label>
     <div class="layui-input-block" style="width:150px">
@@ -38,7 +37,7 @@
       </select>
     </div>
   </div>
-</form>
+</form> --%>
 <div class="content">
     <div id="barMain"  class="top"></div>
     <div id="pieMain"  class="bottomLeft"></div>
@@ -48,10 +47,10 @@
 <script type="text/javascript" src="${ctx}/js/system/userInfo/alertRateInfo.js"></script>
 <!--  aaaaaaaaaaaaaaa  -->
 <script>
-layui.use('form', function(){
+/* layui.use('form', function(){
     var form = layui.form;
     // 如果html代码是后来才加载的，那么需要加上render（）方法执行渲染
     form.render();
-  });
+  }); */
 
 </script>
