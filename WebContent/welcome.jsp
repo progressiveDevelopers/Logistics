@@ -12,25 +12,26 @@
 
 <div class="layui-tab layui-tab-brief" lay-filter="demo">
   <ul class="layui-tab-title">
-    <li class="layui-this">演示说明111</li>
-    <li>日期</li>
+    <li class="layui-this">评分说明</li>
+    <!-- <li>日期</li>
     <li>分页</li>
-    <li>上传</li>
+    <li>上传</li> -->
   </ul>
   <div class="layui-tab-content">
     <div class="layui-tab-item layui-show">
     
       <div class="layui-carousel" id="test1">
         <div carousel-item>
-          <div><p class="layui-bg-green demo-carousel">在这里，你将以最直观的形式体验 layui！</p></div>
-          <div><p class="layui-bg-red demo-carousel">在编辑器中可以执行 layui 相关的一切代码</p></div>
-          <div><p class="layui-bg-blue demo-carousel">你也可以点击左侧导航针对性地试验我们提供的示例</p></div>
-          <div><p class="layui-bg-orange demo-carousel">如果最左侧的导航的高度超出了你的屏幕</p></div>
-          <div><p class="layui-bg-cyan demo-carousel">你可以将鼠标移入导航区域，然后滑动鼠标滚轮即可</p></div>
+          <div><p class="layui-bg-green demo-carousel"><b>服务量考评：</b>日常工作是否饱和，有效完成本职工作</p></div>
+          <div><p class="layui-bg-red demo-carousel"><b>服务时效：</b>对客户经理需求相应迅速，在承诺时间内完成</p></div>
+          <div><p class="layui-bg-blue demo-carousel"><b>服务质量：</b>按照服务承诺保质保量完成工作</p></div>
+          <div><p class="layui-bg-orange demo-carousel"><b>服务表现：</b>贯彻执行首问责任制，积极主动为客户经理排忧解难</p></div>
+          <div><p class="layui-bg-cyan demo-carousel"><b>服务态度：</b>工作热情、积极；处事态度端正</p></div>
+          <div><p class="layui-bg-cyan demo-carousel"><b>综合满意度打分：</b>对于综合工作满意度打分</p></div>
         </div>
       </div>
     </div>
-    <div class="layui-tab-item">
+   <!--  <div class="layui-tab-item">
       <div id="laydateDemo"></div>
     </div>
     <div class="layui-tab-item">
@@ -41,7 +42,7 @@
         <i class="layui-icon"></i>
         <p>点击上传，或将文件拖拽到此处</p>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -163,8 +164,8 @@ layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'elemen
   });
   
   //底部信息
-  var footerTpl = lay('#footer')[0].innerHTML;
-  lay('#footer')[0].innerHTML = layui.laytpl(footerTpl).render({});
+/*   var footerTpl = lay('#footer')[0].innerHTML;
+  lay('#footer')[0].innerHTML = layui.laytpl(footerTpl).render({}); */
 });
 </script>
 
@@ -201,14 +202,14 @@ layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'elemen
 
 
 
-<div class="container">
+<!-- <div class="container">
     <div class="page-header">
         <h2>Bootstrap Star Rating Examples
             <small>&copy; Kartik Visweswaran, Krajee.com</small>
         </h2>
     </div>
 
-    <!-- <form>
+    <form>
         <input id="input-21b" value="4" type="text" class="rating" data-min=0 data-max=5 data-step=0.2 data-size="lg"
                required title="">
         <div class="clearfix"></div>
@@ -244,7 +245,7 @@ layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'elemen
             <button type="button" class="btn btn-success">Create</button>
         </div>
     </form>
-    <hr> -->
+    <hr>
    
     
      <input id="rating-input" type="text" title=""/>
@@ -313,7 +314,7 @@ layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'elemen
             });
         });  
     </script>
-</div>
+</div> -->
 
 
 
