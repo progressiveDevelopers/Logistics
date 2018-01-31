@@ -27,12 +27,40 @@
 		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
 			update check_result
 			set checkResult =${item.checkResult}
-			where  monthId = ${item.monthId} 
+			where  month = ${item.monthId} 
 			and evaluatorId = ${item.evaluatorId}
 			and operationPostId = ${item.operationPostId}
 			and checkOptionId = ${item.checkOptionId}
 		</foreach>
 
 	</update>
+	
+	<sql id="selectTask">
+		id,
+		monthId,
+	 	evaluatorId,
+	 	evaluator,
+	 	operationPostId,
+	 	operationPost,
+	 	description,
+	 	createTime,
+	 	deletestatus,
+	 	ifLike,
+	 	status
+	</sql>
+	
+	<select id="findAssignTask"  parameterType="java.util.HashMap"  resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
+		select
+		<include refid="selectTask" />
+		from check_task_assignment 
+		where evaluatorId = #{evaluatorId}
+	</select>
+	
+	<select id="findAssignTaskCount"  parameterType="java.util.HashMap"  resultType="Integer">
+		select
+		count(*)
+		from check_task_assignment 
+		where evaluatorId = #{evaluatorId}
+	</select>
 
 </mapper>
