@@ -3,13 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/function/check/list.js"></script>
 
- 
+<h2 style='padding:0.2em 1em;'>${month} — 考评列表</h2>
 <table class="layui-hide" id="test" lay-filter="check"></table>
 
 <script type="text/html" id="barDemo">
-	 
-	  <a class="layui-btn layui-btn-sm" lay-event="check">评价</a>
-     
+	 <a class="layui-btn layui-btn-sm" lay-event="check">评价</a>
 </script>
 <!--    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>  -->
 	

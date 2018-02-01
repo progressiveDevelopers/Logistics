@@ -262,6 +262,7 @@ public class UserInfoController extends BaseController {
     public ModelAndView getSubordinateView(ModelAndView mv) throws Exception {
         List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
         mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/SubordinateView");
         return mv;
     }
@@ -307,8 +308,23 @@ public class UserInfoController extends BaseController {
     }
 
     @RequestMapping("rateInfo")
-    public ModelAndView rateInfo(ModelAndView mv,Integer userId) {
+    public ModelAndView rateInfo(ModelAndView mv,Integer userId) throws Exception {
         List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
+        if(userId == null) {
+            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
+        } else {
+            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
+            mv.addObject("userId", userId);
+        }
+        return mv;
+    }
+    
+    @RequestMapping("rateInfoMge")
+    public ModelAndView rateInfoMge(ModelAndView mv,Integer userId) throws Exception {
+        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
         mv.addObject("listCheckMonth", listCheckMonth);
         if(userId == null) {
             mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
@@ -318,6 +334,7 @@ public class UserInfoController extends BaseController {
         }
         return mv;
     }
+    
 
     @RequestMapping("rateInfoDataTargetMonth")
     @ResponseBody

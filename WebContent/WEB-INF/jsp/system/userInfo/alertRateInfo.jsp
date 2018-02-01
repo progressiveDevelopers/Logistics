@@ -26,6 +26,7 @@
 
 <!--  aaaaaaaaaaaaaaa  -->
 <input type="hidden" value="${userId}"id="userId"/>
+<h2 style='padding:0.2em 1em;'>${month } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
 <%--  <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">日期</label>

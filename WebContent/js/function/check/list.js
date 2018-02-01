@@ -21,9 +21,9 @@ $(function() {
 		    ,url: rootPath + '/check/findByPage.shtml' //数据接口
 		    ,page: true //开启分页
 		    ,cols: [[ //表头
-		       {field: 'id',      title: 'ID' , width: "10%",    sort: true, fixed: 'left'}
-		      ,{field: 'month'  , title: '月份', width: "30%",  sort: true}
-		      ,{field: 'operationPost', title: '姓名', width:"30%",   sort: true}
+		       {type: 'numbers',  title: '序号' , width: "10%",  sort: true, fixed: 'left'}
+		      ,{field: 'operationPost', title: '姓名', width:"20%",   sort: true}
+		      ,{field: 'description', title: '团队/岗位', width:"40%",   sort: true}
 		      ,{fixed: 'right', width: "30%", align:'center', toolbar: '#barDemo'}
 		    ]]
 		  });

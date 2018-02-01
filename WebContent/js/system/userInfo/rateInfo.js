@@ -3,7 +3,7 @@ var myLineChart = echarts.init(document.getElementById('lineMain'));
 var pieChart = echarts.init(document.getElementById('pieMain'));
 var pieData = [], pieObj 
 var data
-var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = []
+var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
 var exitFlag = false;
 /** 
  ** 除法函数，用来得到精确的除法结果
@@ -43,10 +43,12 @@ function drawBar() {
             }
             
             $.each(data, function(i, value) {
-                
                 var name =  String.fromCharCode(65+i);
+                
                   if(data[i].ifLike == "1"){
-                      name+="*"
+                          barColorList.push("#49bf5d");
+                  } else {
+                      barColorList.push('#0d6fb8');
                   }
                 
                 xdataBar.push(name)
@@ -114,7 +116,9 @@ function drawBar() {
                             },
                             itemStyle:{
                                 normal:{
-                                    color:'#0d6fb8'
+                                    color:function(params){
+                                        return barColorList[params.dataIndex]
+                                    }
                                 }
                             }
                     }]
@@ -159,6 +163,7 @@ function drawLine() {
                 });
                 avg = accDiv(sum,score.length);
                 ydataLine.push(avg);
+                $("#avg").text(avg)
                 console.log("avg====="+avg);
             }
             
