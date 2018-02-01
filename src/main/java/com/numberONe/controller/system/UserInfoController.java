@@ -262,7 +262,7 @@ public class UserInfoController extends BaseController {
     public ModelAndView getSubordinateView(ModelAndView mv) throws Exception {
         List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
         mv.addObject("listCheckMonth", listCheckMonth);
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
+        mv.addObject("month", checkMonthMapper.getCurrentMonth());
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/SubordinateView");
         return mv;
     }
@@ -294,7 +294,7 @@ public class UserInfoController extends BaseController {
         
         List<UserInfoView> listUserInfoView = null;
         
-        // 如果是张老师则可以查看两个团队的人员信息
+        // 如果是管理层则可以查看两个团队的人员信息
         // 下属的信息全量
         if(userInfoView.getLevel() >  10) {
             listUserInfoView = userInfoMapper.findSubordinateForMge();
@@ -306,42 +306,59 @@ public class UserInfoController extends BaseController {
 
         return layTableUtils;
     }
-
+    
+    /**
+     * 个人考评结果页面
+     * @param mv
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("rateInfo")
-    public ModelAndView rateInfo(ModelAndView mv,Integer userId) throws Exception {
-        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
-        mv.addObject("listCheckMonth", listCheckMonth);
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
-        if(userId == null) {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
-        } else {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
-            mv.addObject("userId", userId);
-        }
+    public ModelAndView rateInfo(ModelAndView mv) throws Exception {
+//        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+//        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("month", checkMonthMapper.getCurrentMonth());
+        mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
+       
         return mv;
     }
     
+    /**
+     * 管理层查看中后台员工考评结果页面（考评结果弹窗）
+     * @param mv
+     * @param userId
+     * @param userName
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("rateInfoMge")
-    public ModelAndView rateInfoMge(ModelAndView mv,Integer userId) throws Exception {
-        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
-        mv.addObject("listCheckMonth", listCheckMonth);
-        if(userId == null) {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
-        } else {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
-            mv.addObject("userId", userId);
-        }
+    public ModelAndView rateInfoMge(ModelAndView mv,Integer userId,String userName,Integer monthId) throws Exception {
+//        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+//        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("userId", userId);
+        mv.addObject("userName", userName);
+        mv.addObject("month", checkMonthMapper.findbyFrist("id", monthId.toString(), CheckMonthFormMap.class));
+        mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
         return mv;
     }
     
-
+    /**
+     * 考评结果 柱状图数据
+     * @param userId
+     * @param monthId
+     * @return
+     */
     @RequestMapping("rateInfoDataTargetMonth")
     @ResponseBody
     public List<Map<String, Object>> rateInfoDataTargetMonth(Integer userId, Integer monthId) {
         return userInfoMapper.getRateByMonthAndUser(userId, monthId);
     }
-
+    
+    /**
+     * 考评结果走势图数据
+     * @param userId
+     * @return
+     */
     @RequestMapping("rateInfoDataAllMonth")
     @ResponseBody
     public Map<String, Object> rateInfoDataAllMonth(Integer userId) {
@@ -405,6 +422,12 @@ public class UserInfoController extends BaseController {
         return returnMap;
     }
     
+    /**
+     * 考评结果 饼状图数据
+     * @param userId
+     * @param monthId
+     * @return
+     */
     @RequestMapping("getUserRate")
     @ResponseBody
     public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId){
