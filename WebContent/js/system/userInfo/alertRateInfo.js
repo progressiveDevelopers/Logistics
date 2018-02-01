@@ -3,7 +3,7 @@ var myLineChart = echarts.init(document.getElementById('lineMain'));
 var pieChart = echarts.init(document.getElementById('pieMain'));
 var pieData = [], pieObj 
 var data
-var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = []
+var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
 var exitFlag = false;
 /** 
  ** 除法函数，用来得到精确的除法结果
@@ -37,6 +37,7 @@ function drawBar() {
         url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId=1",
         success : function(data) {
             data = JSON.parse(data)
+            console.log("data="+data)
             if(data.length < 10){
                 exitFlag = true;
                 return;
@@ -44,10 +45,12 @@ function drawBar() {
             
             $.each(data, function(i, value) {
                 
-                var name =  String.fromCharCode(65+i);
-                  if(data[i].ifLike == "1"){
-                      name+="*"
-                  }
+                var name =  data[i].evaluator
+                    if(data[i].ifLike == "1"){
+                        barColorList.push("#49bf5d");
+                    } else {
+                        barColorList.push('#0d6fb8');
+                    }
                 
                 xdataBar.push(name)
                 ydataBar.push(data[i].score)
@@ -114,7 +117,9 @@ function drawBar() {
                             },
                         itemStyle:{
                             normal:{
-                                color:'#0d6fb8'
+                                color:function(params){
+                                    return barColorList[params.dataIndex]
+                                }
                             }
                         }
                     }]

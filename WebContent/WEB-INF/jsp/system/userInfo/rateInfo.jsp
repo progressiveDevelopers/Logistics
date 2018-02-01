@@ -24,7 +24,7 @@
 }
 </style>
 <!--  aaaaaaaaaaaaaaa  -->
-<h2 style='padding:0.2em 1em;'>${month } — 考评详情[本月平均分<span id="avg"></span>]</h2>
+<h2 style='padding:0.2em 1em;'>${month } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
 
 <div class="content">
