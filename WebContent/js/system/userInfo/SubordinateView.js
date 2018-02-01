@@ -6,7 +6,7 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
     elem: '#subordinateTbl'
     ,url: '/Logistics/userInfo/subordinateRate.shtml' //数据接口
     ,cols: [[ //表头
-      {field: 'userId', title: 'ID',  sort: true, fixed: 'left'}
+        {type: 'numbers',  title: '序号' , width: "10%",  sort: true, fixed: 'left'}
       ,{field: 'userName', title: '姓名',  sort: true}
       ,{field: 'userDescription', title: '岗位'}
       ,{width: 165, align:'center', toolbar: '#barDemo'}
@@ -29,7 +29,7 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
             shade: false ,
             maxmin: true, //开启最大化最小化按钮
             area: ['100%', '100%'],
-            content: '/Logistics/userInfo/rateInfo.shtml?userId='+userId
+            content: '/Logistics/userInfo/rateInfoMge.shtml?userId='+userId
           });
     } 
   });

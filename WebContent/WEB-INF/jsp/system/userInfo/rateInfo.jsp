@@ -24,7 +24,9 @@
 }
 </style>
 <!--  aaaaaaaaaaaaaaa  -->
+<h2 style='padding:0.2em 1em;'>${month } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
+
 <div class="content">
     <div id="barMain"  class="top"></div>
     <div id="pieMain"  class="bottomLeft"></div>

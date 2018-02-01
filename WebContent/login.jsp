@@ -5,8 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-<link href="/favicon.ico" type="image/x-icon" rel=icon>
-<link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
+<link href="${pageContext.request.contextPath}/tongshang.png" type="image/x-icon" rel="shortcut icon">
 <meta name="renderer" content="webkit">
 <title>物流与商业金融部后台管理系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
