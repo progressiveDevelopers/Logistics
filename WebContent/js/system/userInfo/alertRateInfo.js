@@ -163,6 +163,7 @@ function drawLine() {
                     sum += item;
                 });
                 avg = accDiv(sum,score.length);
+                avg = avg.toFixed(2); // 保留两位小数
                 $("#avg").text(avg)
                 ydataLine.push(avg);
                 console.log("avg====="+avg);
