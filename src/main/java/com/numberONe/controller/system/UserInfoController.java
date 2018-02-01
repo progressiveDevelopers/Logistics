@@ -296,8 +296,8 @@ public class UserInfoController extends BaseController {
         
         // 如果是张老师则可以查看两个团队的人员信息
         // 下属的信息全量
-        if((Integer) userFormMap.get("id") == 4) {
-            listUserInfoView = userInfoMapper.findSubordinateForZhang();
+        if(userInfoView.getLevel() >  10) {
+            listUserInfoView = userInfoMapper.findSubordinateForMge();
         } else {
             listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
         }

@@ -117,7 +117,7 @@
         where groupId = #{groupId} AND `level` &lt; 9
     </select>
     
-    <select id="findSubordinateForZhang" resultMap="userInfoView">
+    <select id="findSubordinateForMge" resultMap="userInfoView">
         SELECT
         userId,
         userName,
