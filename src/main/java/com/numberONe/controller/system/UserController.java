@@ -14,14 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.GroupFormMap;
 import com.numberONe.entity.ResUserFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
 import com.numberONe.exception.SystemException;
+import com.numberONe.mapper.GroupMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
@@ -39,6 +42,9 @@ import com.numberONe.util.PasswordHelper;
 public class UserController extends BaseController {
 	@Inject
 	private UserMapper userMapper;
+	
+	@Inject
+	private GroupMapper groupMapper;
 	
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -78,8 +84,12 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping("addUI")
-	public String addUI(Model model) throws Exception {
-		return Common.BACKGROUND_PATH + "/system/user/add";
+	public ModelAndView addUI(ModelAndView mv) throws Exception {
+	    
+	    mv.setViewName(Common.BACKGROUND_PATH + "/system/user/add");
+	    List<GroupFormMap> listGroup = groupMapper.finall();
+	    mv.addObject("listGroup", listGroup);
+		return mv;
 	}
 
 	@ResponseBody

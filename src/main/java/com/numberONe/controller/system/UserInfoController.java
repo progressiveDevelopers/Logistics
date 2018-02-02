@@ -216,7 +216,7 @@ public class UserInfoController extends BaseController {
     
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
-    public UserRelativeTreeUtil getUserRelativeTree() {
+    public UserRelativeTreeUtil getUserRelativeTree() throws Exception  {
         UserRelativeTreeUtil urt = new UserRelativeTreeUtil();
 
         urt.setName("物流与商业金融部");
@@ -262,7 +262,7 @@ public class UserInfoController extends BaseController {
     public ModelAndView getSubordinateView(ModelAndView mv) throws Exception {
         List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
         mv.addObject("listCheckMonth", listCheckMonth);
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
+        mv.addObject("month", checkMonthMapper.getCurrentMonth());
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/SubordinateView");
         return mv;
     }
@@ -294,10 +294,10 @@ public class UserInfoController extends BaseController {
         
         List<UserInfoView> listUserInfoView = null;
         
-        // 如果是张老师则可以查看两个团队的人员信息
+        // 如果是管理层则可以查看两个团队的人员信息
         // 下属的信息全量
-        if((Integer) userFormMap.get("id") == 4) {
-            listUserInfoView = userInfoMapper.findSubordinateForZhang();
+        if(userInfoView.getLevel() >  10) {
+            listUserInfoView = userInfoMapper.findSubordinateForMge();
         } else {
             listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
         }
@@ -306,45 +306,62 @@ public class UserInfoController extends BaseController {
 
         return layTableUtils;
     }
-
+    
+    /**
+     * 个人考评结果页面
+     * @param mv
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("rateInfo")
-    public ModelAndView rateInfo(ModelAndView mv,Integer userId) throws Exception {
-        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
-        mv.addObject("listCheckMonth", listCheckMonth);
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
-        if(userId == null) {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
-        } else {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
-            mv.addObject("userId", userId);
-        }
+    public ModelAndView rateInfo(ModelAndView mv) throws Exception {
+//        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+//        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("month", checkMonthMapper.getCurrentMonth());
+        mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
+       
         return mv;
     }
     
+    /**
+     * 管理层查看中后台员工考评结果页面（考评结果弹窗）
+     * @param mv
+     * @param userId
+     * @param userName
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("rateInfoMge")
-    public ModelAndView rateInfoMge(ModelAndView mv,Integer userId) throws Exception {
-        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
-        mv.addObject("month", checkMonthMapper.getCurrentMonth().get("description"));
-        mv.addObject("listCheckMonth", listCheckMonth);
-        if(userId == null) {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
-        } else {
-            mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
-            mv.addObject("userId", userId);
-        }
+    public ModelAndView rateInfoMge(ModelAndView mv,Integer userId,String userName,Integer monthId) throws Exception {
+//        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+//        mv.addObject("listCheckMonth", listCheckMonth);
+        mv.addObject("userId", userId);
+        mv.addObject("userName", userName);
+        mv.addObject("month", checkMonthMapper.findbyFrist("id", monthId.toString(), CheckMonthFormMap.class));
+        mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
         return mv;
     }
     
-
+    /**
+     * 考评结果 柱状图数据
+     * @param userId
+     * @param monthId
+     * @return
+     */
     @RequestMapping("rateInfoDataTargetMonth")
     @ResponseBody
-    public List<Map<String, Object>> rateInfoDataTargetMonth(Integer userId, Integer monthId) {
+    public List<Map<String, Object>> rateInfoDataTargetMonth(Integer userId, Integer monthId) throws Exception {
         return userInfoMapper.getRateByMonthAndUser(userId, monthId);
     }
-
+    
+    /**
+     * 考评结果走势图数据
+     * @param userId
+     * @return
+     */
     @RequestMapping("rateInfoDataAllMonth")
     @ResponseBody
-    public Map<String, Object> rateInfoDataAllMonth(Integer userId) {
+    public Map<String, Object> rateInfoDataAllMonth(Integer userId) throws Exception  {
         List<Map<String, Object>> listData = userInfoMapper.rateInfoDataAllMonth(userId);
 
         Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -363,7 +380,6 @@ public class UserInfoController extends BaseController {
          * 2018年3月 8 王林飞 60 0
          */
         String month = null;
-        try {
             for (Map<String, Object> map : listData) {
                 String tmpMonth = (String) map.get("month");
                 if (!returnMap.containsKey(tmpMonth)) {
@@ -394,39 +410,33 @@ public class UserInfoController extends BaseController {
                 returnMap.put(month, returnList);
             }
             
-            
-            
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return returnMap;
     }
     
+    /**
+     * 考评结果 饼状图数据
+     * @param userId
+     * @param monthId
+     * @return
+     */
     @RequestMapping("getUserRate")
     @ResponseBody
-    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId){
+    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId) throws Exception {
         
         Map<String,BigDecimal> returnMap = new HashMap<String,BigDecimal>();
         
         List<Integer> optionIds = checkResultMapper.findUserRateOption(userId, monthId);
         
         Map<String,Object> rateMap = null;
-        try {
-            for (int i = 0,size = optionIds.size() ; i < size; i++) {
-                rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
-                returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        
+        for (int i = 0,size = optionIds.size() ; i < size; i++) {
+            rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
+            returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
         }
+        
         
         return returnMap;
     }
     
     
 }
-
-

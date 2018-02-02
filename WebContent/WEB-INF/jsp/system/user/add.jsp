@@ -61,23 +61,16 @@ label[class^="btn btn-default"] {
                     <div class="btn-group m-r">
                         <button data-toggle="dropdown"
                             class="btn btn-sm btn-default dropdown-toggle">
-                            <span class="dropdown-label">信贷管理团队</span> <span class="caret"></span>
+                            <c:forEach items="${ listGroup }" var="group" begin="0" end="0" >
+                                <span class="dropdown-label">${ group.groupName }</span>
+                             </c:forEach> 
+                            <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-select">
-                            <li class="active"><a href="#"><input type="radio"
-                                    name="groupId" value="2" checked="checked">信贷管理团队</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="3">业务支持团队</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="4">交运团队1</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="5">交运团队2</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="6">零售团队1</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="7">零售团队2</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="groupId" value="8">快运团队</a></li>
+                             <c:forEach items="${ listGroup }" var="group" >
+                                <li><a href="#"><input type="radio"
+                                    name="groupId" value="${ group.id }">${ group.groupName }</a></li>  
+                             </c:forEach> 
                         </ul>
                     </div>
                 </div>

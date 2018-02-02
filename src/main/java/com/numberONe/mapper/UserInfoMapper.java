@@ -63,11 +63,11 @@ public interface UserInfoMapper extends BaseMapper {
     List<Map<String, Object>> rateInfoDataAllMonth(Integer userId);
     
     /**
-     * 张老师可以查看两个团队的人员信息
+     * 管理层可以查看两个团队的人员信息
      * 
      * @return
      */
-    List<UserInfoView> findSubordinateForZhang();
+    List<UserInfoView> findSubordinateForMge();
 
     
 }

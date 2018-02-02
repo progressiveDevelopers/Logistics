@@ -18,15 +18,28 @@
     width: 50%;
     float: left;
 }
-.clear{
-    float: clear;
+.clear1{
+     clear: both;
+}
+.tip{
+    float:left;
+    
+}
+.userName{
+   display: block;
+   font-size: 30px;
+   padding: 1em 0em 0em 50%;
 }
 </style>
 <%@include file="/common/common.jspf"%>
 
 <!--  aaaaaaaaaaaaaaa  -->
-<input type="hidden" value="${userId}"id="userId"/>
-<h2 style='padding:0.2em 1em;'>${month } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
+<input type="hidden" value="${userId}" id="userId"/>
+<input type="hidden" value="${month.id}" id="monthId"/>
+<h2 style='padding:0.2em 1em;' class="tip">${month.description } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2><span class="userName">${ userName }</span>
+<div class="clear1"></div>
+<h5 style='padding:0.5em 2.5em;color:#a4a5a2;' class="tip">总分60分,换算成百分制为<span id="avgPercent" style="color:#a4a5a2;font-size:20px;"></span>分</h5>
+<div class="clear1"></div>
 <%--  <form class="layui-form">
   <div class="layui-form-item">
     <label class="layui-form-label">日期</label>

@@ -34,10 +34,9 @@ function accDiv(arg1, arg2) {
 function drawBar() {
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId=1",
+        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
         success : function(data) {
             data = JSON.parse(data)
-            console.log("data="+data)
             if(data.length < 10){
                 exitFlag = true;
                 return;
@@ -96,9 +95,6 @@ function drawBar() {
                     tooltip: {
                         show: true
                     },
-                    legend: {
-                        data: ['总分']
-                    },
                     xAxis: [{
                         type: 'category',
                         data: xdataBar
@@ -150,23 +146,20 @@ function drawLine() {
                 xdataLine.push(i);
                 rateData = data[i];
                 var score = [],avg = 0,sum = 0;
-                console.log("-------------")
                 rateData.forEach((item) => {
                     score.push(item.score)
                 });
                 score = score.sort();
                 score.pop();  // 删除尾数
                 score.shift(); // 删除第一个元素
-                console.log("score====="+score);
                 
                 score.forEach(function (item, index, array) {
                     sum += item;
                 });
-                avg = accDiv(sum,score.length);
-                avg = avg.toFixed(2); // 保留两位小数
+                avg = accDiv(sum,score.length).toFixed(1);
                 $("#avg").text(avg)
+                $("#avgPercent").text(accDiv(avg,0.6).toFixed(1))
                 ydataLine.push(avg);
-                console.log("avg====="+avg);
             }
             
             
@@ -302,16 +295,15 @@ function drawPie(){
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId=1",
+        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
         success : function(data) {
             data = JSON.parse(data)
-            console.log("pieData==============="+data);
             
             for (var key in data) { // 遍历Array  
                 pieObj = new Object()
                 pieObj.name = key
                 legendData.push(key)
-                pieObj.value = data[key].toFixed(2)// 保留两位小数
+                pieObj.value = data[key].toFixed(1)// 保留两位小数
                 pieData.push(pieObj)
             }  
             
