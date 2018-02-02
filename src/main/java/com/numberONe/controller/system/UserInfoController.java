@@ -216,7 +216,7 @@ public class UserInfoController extends BaseController {
     
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
-    public UserRelativeTreeUtil getUserRelativeTree() {
+    public UserRelativeTreeUtil getUserRelativeTree() throws Exception  {
         UserRelativeTreeUtil urt = new UserRelativeTreeUtil();
 
         urt.setName("物流与商业金融部");
@@ -350,7 +350,7 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping("rateInfoDataTargetMonth")
     @ResponseBody
-    public List<Map<String, Object>> rateInfoDataTargetMonth(Integer userId, Integer monthId) {
+    public List<Map<String, Object>> rateInfoDataTargetMonth(Integer userId, Integer monthId) throws Exception {
         return userInfoMapper.getRateByMonthAndUser(userId, monthId);
     }
     
@@ -361,7 +361,7 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping("rateInfoDataAllMonth")
     @ResponseBody
-    public Map<String, Object> rateInfoDataAllMonth(Integer userId) {
+    public Map<String, Object> rateInfoDataAllMonth(Integer userId) throws Exception  {
         List<Map<String, Object>> listData = userInfoMapper.rateInfoDataAllMonth(userId);
 
         Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -380,7 +380,6 @@ public class UserInfoController extends BaseController {
          * 2018年3月 8 王林飞 60 0
          */
         String month = null;
-        try {
             for (Map<String, Object> map : listData) {
                 String tmpMonth = (String) map.get("month");
                 if (!returnMap.containsKey(tmpMonth)) {
@@ -411,14 +410,6 @@ public class UserInfoController extends BaseController {
                 returnMap.put(month, returnList);
             }
             
-            
-            
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return returnMap;
     }
     
@@ -430,26 +421,22 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping("getUserRate")
     @ResponseBody
-    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId){
+    public Map<String,BigDecimal> getUserRate(Integer userId,Integer monthId) throws Exception {
         
         Map<String,BigDecimal> returnMap = new HashMap<String,BigDecimal>();
         
         List<Integer> optionIds = checkResultMapper.findUserRateOption(userId, monthId);
         
         Map<String,Object> rateMap = null;
-        try {
-            for (int i = 0,size = optionIds.size() ; i < size; i++) {
-                rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
-                returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        
+        for (int i = 0,size = optionIds.size() ; i < size; i++) {
+            rateMap = checkResultMapper.findUserRate(userId, monthId, optionIds.get(i));
+            returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
         }
+        
         
         return returnMap;
     }
     
     
 }
-
-
