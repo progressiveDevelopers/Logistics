@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
 import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.CheckOptionFormMap;
@@ -70,6 +71,7 @@ public class UserInfoController extends BaseController {
     @ResponseBody
     @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @RequestMapping("findUserInfoList")
+    @SystemLog(module="任务分配",methods="分配评价人")//凡需要处理业务逻辑的.都需要记录操作日志
     public String findUserInfoList() throws Exception {
         try {
             UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
