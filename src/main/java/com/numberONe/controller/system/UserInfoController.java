@@ -363,7 +363,11 @@ public class UserInfoController extends BaseController {
     @ResponseBody
     public Map<String, Object> rateInfoDataAllMonth(Integer userId) throws Exception  {
         List<Map<String, Object>> listData = userInfoMapper.rateInfoDataAllMonth(userId);
-
+        
+        if(listData.size() == 0) {
+            return null;
+        }
+        
         Map<String, Object> returnMap = new HashMap<String, Object>();
         List<Map<String, Object>> returnList = null;
         /*

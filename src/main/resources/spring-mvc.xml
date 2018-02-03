@@ -87,5 +87,16 @@
 		<!-- 内存中的最大值 -->
 		<property name="maxInMemorySize" value="40960" />
 	</bean>
+    
+    <mvc:interceptors>  
+        <!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->  
+        <mvc:interceptor>  
+            <mvc:mapping path="/index.shtml"/>  
+            <mvc:mapping path="/index"/>  
+            <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->  
+            <bean class="com.numberONe.interceptor.PasswordInterceptor"/>  
+        </mvc:interceptor>  
+    </mvc:interceptors>  
+    
     <import resource="spring-mvc-shiro.xml"/>
 </beans>

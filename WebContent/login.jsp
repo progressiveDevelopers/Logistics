@@ -5,24 +5,26 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-<link href="${pageContext.request.contextPath}/tongshang.png" type="image/x-icon" rel="shortcut icon">
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<link href="${ctx}/tongshang.png" type="image/x-icon" rel="shortcut icon">
 <meta name="renderer" content="webkit">
 <title>物流与商业金融部后台管理系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/min.css">
-<link rel="stylesheet"	href="${pageContext.servletContext.contextPath }/admin_files/login.css">
-<link	href="${pageContext.servletContext.contextPath }/admin_files/css.css"	rel="stylesheet" type="text/css">
+<link rel="stylesheet"	href="${ctx}/admin_files/min.css">
+<link rel="stylesheet"	href="${ctx}/admin_files/login.css">
+<link	href="${ctx }/admin_files/css.css"	rel="stylesheet" type="text/css">
+<%@include file="/common/common.jspf"%>
 <!--[if lt IE 9]> 
 	<script src="${ctx}/js/jquery/ie/html5shiv.js"></script> 
 	<script src="${ctx}/js/jquery/ie/respond.min.js"></script>
 <![endif]-->
 </head>
 <body onload="javascript:to_top()" 
-	style="background-image: url('${pageContext.servletContext.contextPath }/admin_files/9.jpg');margin-top:0px;background-repeat:no-repeat;background-size: 100% auto;">
+	style="background-image: url('${ctx }/admin_files/9.jpg');margin-top:0px;background-repeat:no-repeat;background-size: 100% auto;">
 	<div id="loginbox" style="padding-top: 10%;">
 		<form id="loginform" name="loginform" class="form-vertical"
 			style="background-color: rgba(0, 0, 0, 0.5) !important; background: #000; filter: alpha(opacity = 50); *background: #000; *filter: alpha(opacity = 50); /*黑色透明背景结束*/ color: #FFF; bottom: 0px; right: 0px; border: 1px solid #000;"
-			action="${pageContext.servletContext.contextPath }/login.shtml"
+			action="${ctx }/login.shtml"
 			method="post">
 			<div class="control-group normal_text">
 				<table style="width: 100%">
@@ -36,7 +38,7 @@
 				<div class="controls">
 					<div class="main_input_box">
 						<span class="add-on bg_ly" style="background: #28b779"><img
-							src="${pageContext.servletContext.contextPath }/admin_files/account_1.png"
+							src="${ctx }/admin_files/account_1.png"
 							alt="请输入账号.."></span><input type="text" placeholder="username" name="username" value=""
 							style="height: 32px; margin-bottom: 0px;"/>
 					</div>
@@ -46,7 +48,7 @@
 				<div class="controls">
 					<div class="main_input_box">
 						<span class="add-on bg_ly"><img
-							src="${pageContext.servletContext.contextPath }/admin_files/lock_1.png"
+							src="${ctx }/admin_files/lock_1.png"
 							alt="请输入密码.."></span><input type="password" placeholder="password" name="password" value=""
 							style="height: 32px; margin-bottom: 0px;"/>
 					</div>
@@ -62,8 +64,11 @@
 		</form>
 	</div>
 	<script type="text/javascript">
-		if ("${error}" != "") {
-			alert("${error}");
+		if ("${error}" != "" || "${param.error}" != "") {
+			alert("${error}"+ "${param.error}");
+			if("${change}" == "1" || "${param.change}" == "1"){
+			    updatePasswordLayer();
+			}
 		};
 		function checkUserForm() {
 			document.loginform.submit();
