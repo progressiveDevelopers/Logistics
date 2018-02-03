@@ -88,5 +88,21 @@
 		from check_task_assignment
 		where evaluatorId = #{evaluatorId} and status = '0'
 	</select>
+	
+	<select id="findTaskList" parameterType="java.util.HashMap"
+		resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
+		select
+		*
+		from check_task_assignment
+		where operationPostId = #{operationPostId} 
+	</select>
+	
+	<select id="getAllResult" parameterType="java.util.HashMap"
+		resultType="String">
+		SELECT 
+		SUM(checkResult)
+		 FROM check_result 
+		 where operationPostId = #{operationPostId}   and month = ${month}  GROUP BY evaluatorId
+	</select>
 
 </mapper>

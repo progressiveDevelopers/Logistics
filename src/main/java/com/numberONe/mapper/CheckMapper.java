@@ -36,4 +36,10 @@ public interface CheckMapper extends BaseMapper {
 	//查询客户经理分配的人数
 	public Integer findAssignTaskCount(Map  map);
 	
+	//查询所有task被评价的详情
+	public List<CheckTaskAssignmentFormMap> findTaskList(Map  map);
+	
+	//查询所有评价的结果
+	public List<String> getAllResult(Map  map);
+	
 }

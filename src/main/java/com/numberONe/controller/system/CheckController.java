@@ -6,7 +6,9 @@
  */
 package com.numberONe.controller.system;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,28 +16,21 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
 
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckAvgResultFormMap;
 import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.CheckOptionFormMap;
 import com.numberONe.entity.CheckResultFormMap;
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
-import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
-import com.numberONe.entity.UserGroupsFormMap;
-import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.CheckMapper;
 import com.numberONe.mapper.CheckMonthMapper;
 import com.numberONe.mapper.UserMapper;
@@ -182,6 +177,12 @@ public class CheckController extends BaseController {
 	}
 	
 	
+	/**
+	 * @param param
+	 * @param req
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping("updateCheckResult")
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
@@ -191,17 +192,13 @@ public class CheckController extends BaseController {
 		//登录客户信息
         userFormMap = (UserFormMap)Common.findUserSession(req);
         int evaluatorId = (Integer) userFormMap.get("id");
-        
+        //建立  平均分
+        CheckAvgResultFormMap avgResult =  new CheckAvgResultFormMap();;
         //获取当前月份
         CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
         String month = (String) checkMonthFormMap.get("month");
-        
-        
-        
         // 当前用户的全量信息
         // UserInfoView userInfoView = userInfoMapper.findById((Integer) userFormMap.get("id"));
-
-		
 		
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
 		List  res  = checkMapper.findByWhere(checkOptionFormMap);
@@ -209,8 +206,7 @@ public class CheckController extends BaseController {
 		Map<String, String> map = new  HashMap();
 		String[] option = null;
 		
-		
-		 List<Map> list = new ArrayList<Map>();  
+		List<Map> list = new ArrayList<Map>();  
 		for (int i = 1; i < num + 1; i++) {
 			Map<String, Comparable> updateMap  = new  HashMap<String, Comparable>();
 			map.put(i + "", (String)param.get(i));
@@ -234,6 +230,43 @@ public class CheckController extends BaseController {
 	    
 	    checkMapper.updateCheckTaskAssignment(taskMap);
 		
+	    int j = 0 ; //
+	    Map map2 = new HashMap();
+		map2.put("operationPostId", (String)param.get("operationPostId"));
+		map2.put("month", month);
+		// 获取被评价人的所有评价人  并遍历判断当前用户是否是最后一位评价者
+		List<CheckTaskAssignmentFormMap> taskList = checkMapper.findTaskList(map2);
+	    for(CheckTaskAssignmentFormMap taskAssign : taskList){
+	    	if(taskAssign.getInt("status") == 0){
+	    		j++;
+	    		break;//代表当前的登录员不是最后一个评价
+	    	}
+	    }
+	    
+	    if(j == 0){//代表当前是最后一个评价,求该被评价人的平均分  保存到avg表
+	    	map2 = new HashMap();
+	    	map2.put("operationPostId", (String)param.get("operationPostId"));
+			map2.put("month", month);
+	    	List resultList = checkMapper.getAllResult(map2);
+	    	try {
+	    		Collections.sort(resultList); // 对获取的List进行排序
+	    		resultList.remove(0); // 去掉最小的数
+	    		resultList.remove(resultList.size()-1); // 去掉最大的数
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	    	int sum = 0;
+			for(int i = 0; i<resultList.size() ; i++){
+				sum += Integer.parseInt((String) resultList.get(i));
+			}
+			DecimalFormat df=new DecimalFormat("0.0"); // 保留一个小数
+			avgResult.set("monthid", checkMonthFormMap.get("id"));//月份
+			avgResult.set("month", month);//月
+			avgResult.set("nameid", (String)param.get("operationPostId"));//被评价人
+			avgResult.set("name",  taskList.get(0).get("operationPost"));
+			avgResult.set("allscore", df.format((float)sum/resultList.size()));// 平均数
+			checkMapper.addEntity(avgResult);
+	    }
 		return "success";
 	}
 
