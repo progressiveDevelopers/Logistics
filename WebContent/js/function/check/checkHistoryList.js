@@ -23,7 +23,7 @@ $(function() {
 		    ,cols: [[ //表头
 		       {type: 'numbers',  title: '序号' , width: "10%",  sort: true, fixed: 'left'}
 		       ,{field: 'month', title: '月份', width:"40%",   sort: true}
-		      ,{field: 'operationPost', title: '姓名', width:"40%",   sort: true}
+		      ,{field: 'operationPost', title: '姓名', width:"30%",   sort: true}
 		      ,{field: 'result', title: '评分结果', width:"20%",   sort: true}
 		    ]]
 		  });

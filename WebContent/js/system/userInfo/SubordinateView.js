@@ -8,7 +8,7 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
     ,cols: [[ //表头
         {type: 'numbers',  title: '序号' , width: "10%", fixed: 'left'}
       ,{field: 'userName', title: '姓名',  sort: true}
-      ,{field: 'userDescription', title: '团队/岗位'}
+      ,{field: 'userDescription', title: '团队/岗位',sort: true}
       ,{field: 'allscore',title: '平均分' , align:'center',sort: true,templet: function(d){
           if(d.allscore == undefined){
               console.log('1')

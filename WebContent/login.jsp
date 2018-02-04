@@ -55,11 +55,11 @@
 				</div>
 			</div>
 			<div class="form-actions">
-				<span class="pull-left" style="width: 33%"><a href="#"
+				<span class="pull-left" style="width: 33%;" ><a href="javascript:alert('即将上线，敬请期待')"
 					class="flip-link btn btn-info" id="to-recover">忘记密码？</a></span>
 					 <span
 					class="pull-right"><a type="submit"
-					href="javascript:checkUserForm()" class="btn btn-success">登&nbsp;&nbsp;录</a></span>
+					href="javascript:checkUserForm()" class="btn btn-success" >登&nbsp;&nbsp;录</a></span>
 			</div>
 		</form>
 	</div>
