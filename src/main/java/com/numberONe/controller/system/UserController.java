@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -208,6 +209,8 @@ public class UserController extends BaseController {
 		PasswordHelper passwordHelper = new PasswordHelper();
 		passwordHelper.encryptPassword(userFormMap);
 		userMapper.editEntity(userFormMap);
+		//更改密码之后注销用户信息 
+		SecurityUtils.getSubject().logout(); 
 		return "success";
 	}
 }

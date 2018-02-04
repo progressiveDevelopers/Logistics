@@ -67,8 +67,9 @@ label[class^="btn btn-default"] {
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-select">
-                             <c:forEach items="${ listGroup }" var="group" >
-                                <li><a href="#"><input type="radio"
+                             <c:forEach items="${ listGroup }" var="group" varStatus="i" >
+                                <li <c:if test="${i.index == 0}"> class="active" </c:if>>
+                                <a href="#"><input type="radio" <c:if test="${i.index == 0}"> checked="checked" </c:if>
                                     name="groupId" value="${ group.id }">${ group.groupName }</a></li>  
                              </c:forEach> 
                         </ul>

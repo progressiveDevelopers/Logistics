@@ -26,8 +26,8 @@
 <!--  aaaaaaaaaaaaaaa  -->
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
 <input type="hidden" value="${month.id }" id="monthId">
-<h2 style='padding:0.2em 1em;'>${month.description } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
-<h5 style='padding:0.5em 2.5em;color:#a4a5a2;'>总分60分,换算成百分制为<span id="avgPercent" style="color:#a4a5a2;font-size:20px;"></span>分</h5>
+<h2 style='padding:0.2em 1em;' id="parentAvg">${month.description } — 本月分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
+<h5 style='padding:0.5em 2.5em;color:#a4a5a2;' id="parentAvgPercent">总分60分,换算成百分制为<span id="avgPercent" style="color:#a4a5a2;font-size:20px;"></span>分</h5>
 
 <div class="content">
     <div id="barMain"  class="top"></div>
