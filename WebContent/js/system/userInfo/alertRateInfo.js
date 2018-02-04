@@ -83,7 +83,7 @@ function drawBar() {
             
             if(zeroCount != 0){
                 msg=msg.substring(0, msg.length-1)
-                layer.alert('还有'+zeroCount+'人没有评论，他们是'+msg+"。", {
+                layer.alert('还有'+zeroCount+'人未评分，他们是'+msg+"。", {
                     icon: 0,
                     skin: 'layer-ext-moon',
                     yes: function(index, layero){
