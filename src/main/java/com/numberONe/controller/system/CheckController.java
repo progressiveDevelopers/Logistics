@@ -6,6 +6,7 @@
  */
 package com.numberONe.controller.system;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -259,12 +260,13 @@ public class CheckController extends BaseController {
 			for(int i = 0; i<resultList.size() ; i++){
 				sum += Integer.parseInt((String) resultList.get(i));
 			}
-			DecimalFormat df=new DecimalFormat("0.0"); // 保留一个小数
+			BigDecimal b = new BigDecimal((double)sum/resultList.size());
+			double avg = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue(); // 四舍五入取一个小数点
 			avgResult.set("monthid", checkMonthFormMap.get("id"));//月份
 			avgResult.set("month", month);//月
 			avgResult.set("nameid", (String)param.get("operationPostId"));//被评价人
 			avgResult.set("name",  taskList.get(0).get("operationPost"));
-			avgResult.set("allscore", df.format((float)sum/resultList.size()));// 平均数
+			avgResult.set("allscore", avg);// 平均数
 			checkMapper.addEntity(avgResult);
 	    }
 		return "success";
