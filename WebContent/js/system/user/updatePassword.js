@@ -5,7 +5,7 @@ function updatePasswordLayer(){
 	layer.open({
 	    type: 2,
 	    title:'修改密码',
-	    area: ['550px', '360px'],
+	    area: ['550px', '65%'],
 	    skin: 'layui-layer-rim', //加上边框
 	    content: [rootPath+'/user/updatePassword.shtml', 'no']
 	});
