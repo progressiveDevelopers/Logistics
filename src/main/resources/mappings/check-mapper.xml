@@ -104,5 +104,26 @@
 		 FROM check_result 
 		 where operationPostId = #{operationPostId}   and month = ${month}  GROUP BY evaluatorId
 	</select>
+	
+	<!-- 获取历史记录   -->
+	<select id="getCheckHistoryList" parameterType="java.util.HashMap"  resultType="java.util.HashMap">
+	   SELECT 
+	   		b.month as month,
+	   		b.operationPost as operationPost,
+	   		sum(a.checkresult) as result
+	   FROM check_result a,
+	   (SELECT evaluatorId,operationPostId,operationPost,month FROM check_task_assignment where`status`='1' and evaluatorId=#{evaluatorId} and month=#{month}) b
+	   where a.evaluatorId=b.evaluatorId AND a.operationPostId = b.operationPostId
+	   GROUP BY a.operationPostId
+ 
+	</select>
+	
+	<select id="getCheckHistoryListCount" parameterType="java.util.HashMap"
+		resultType="Integer">
+		select
+		count(*)
+		from check_task_assignment
+		where evaluatorId = #{evaluatorId} and status = '1'
+	</select>
 
 </mapper>

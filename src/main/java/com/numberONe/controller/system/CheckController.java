@@ -116,6 +116,8 @@ public class CheckController extends BaseController {
 
 	@RequestMapping("resList")
 	public String resListUI(Model model) throws Exception {
+		
+		
 		return Common.BACKGROUND_PATH + "/function/check/resList";
 	}
 
@@ -132,6 +134,68 @@ public class CheckController extends BaseController {
 		return pageView;
 	}
 
+	/** 
+	 * @Title: checkHistoryList 
+	 * @Description: 客户经理查看自己的评分历史
+	 * @author: gaoguofeng 
+	 * @email: 18516523981@163.com
+	 * @date: 2018年2月4日 下午12:04:21 
+	 */
+	@RequestMapping("checkHistoryList")
+	public String checkHistoryList(Model model) throws Exception {
+		 //获取当前月份
+        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+        String month = (String) checkMonthFormMap.get("month");
+        
+        model.addAttribute("month", month);
+		
+		return Common.BACKGROUND_PATH + "/function/check/checkHistoryList";
+	}
+
+	@ResponseBody
+	@RequestMapping("findHistoryListByPage")
+	public LayTableUtils<CheckTaskAssignmentFormMap> findHistoryListByPage(String pageNow, String pageSize, HttpServletRequest req)
+			throws Exception {
+		CheckResultFormMap checkResultFormMap = getFormMap(CheckResultFormMap.class);
+
+/*		checkResultFormMap = toFormMap(checkResultFormMap, pageNow, pageSize,
+				checkResultFormMap.getStr("orderby"));*/
+		
+		//登录客户信息
+		UserFormMap userFormMap = getFormMap(UserFormMap.class);
+        userFormMap = (UserFormMap)Common.findUserSession(req);
+        int evaluatorId = (Integer) userFormMap.get("id");
+        checkResultFormMap.put("evaluatorId", evaluatorId);
+        
+        
+    	Map map = new HashMap();
+		map.put("evaluatorId", evaluatorId);
+		
+		 //获取当前月份
+        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+        String month = (String) checkMonthFormMap.get("month");
+		
+		map.put("month", month);
+        
+		//获取评论条数
+		  checkResultFormMap.put("month", month);
+ 		int count = checkMapper.getCheckHistoryListCount(map);
+		
+        List  historyList = checkMapper.getCheckHistoryList(checkResultFormMap);
+        
+      
+        LayTableUtils<CheckTaskAssignmentFormMap> layTableUtils = new LayTableUtils<CheckTaskAssignmentFormMap>();
+        
+        layTableUtils.setCode(0);
+		layTableUtils.setCount(count);
+		//pageView.setRecords(checkMapper.getCheckHistoryList(checkResultFormMap));
+        layTableUtils.setData(historyList);
+		System.out.println(layTableUtils.toString());
+		return layTableUtils;
+	}
+	
+	
+	
 	@RequestMapping("checkUI")
 	public String addUI(Model model) throws Exception {
 		String id = getPara("id");

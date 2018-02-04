@@ -42,4 +42,10 @@ public interface CheckMapper extends BaseMapper {
 	//查询所有评价的结果
 	public List<String> getAllResult(Map  map);
 	
+	//客户经理可以看到自己评论的结果
+	public List<String> getCheckHistoryList(Map  map);
+	
+	//客户经理可以看到自己评论的结果的数量
+	public Integer getCheckHistoryListCount(Map  map);
+	
 }
