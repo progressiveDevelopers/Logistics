@@ -42,7 +42,7 @@ action="${ctx}/check/updateCheckResult.shtml">
 			<div class="layui-form-item ">
 				<label class="layui-form-label">${key.checkOption}</label>
 				<div class="layui-input-block" id = "${key.id}" >
-					<input id='${key.id}' value="4" type="text" class="rating"
+					<input id='${key.id}' value="6" type="text" class="rating"
 						data-min=0 data-max=10 data-step=1    name = 'option${key.id}' data-size="lg" required   
 						title="">
 				</div>

@@ -99,40 +99,47 @@
         where userId = #{id}
     </select>
 
-    <select id="findSubordinate" resultMap="userInfoView">
+    <select id="findSubordinate" resultType="map">
         SELECT
-        userId,
-        userName,
-        accountName,
-        userDescription,
-        deletestatus,
-        roleId,
-        roleName,
-        `level`,
-        state,
-        groupId,
-        groupName
+        	u.userId,
+        	u.userName,
+        	u.accountName,
+        	u.userDescription,
+        	u.roleId,
+        	u.roleName,
+        	u.`level`,
+        	u.state,
+        	u.groupId,
+        	u.groupName,
+        	result.allscore
         FROM
-        user_info
-        where groupId = #{groupId} AND `level` &lt; 9
+        	user_info u
+        LEFT JOIN check_avg_result result ON u.userId = result.nameid
+        WHERE
+        	u.groupId = #{0}  AND u.`level` &lt; 9 
+            AND (result.monthId = #{1} OR result.monthId IS NULL)
     </select>
     
-    <select id="findSubordinateForMge" resultMap="userInfoView">
+    <select id="findSubordinateForMge" resultType="map">
         SELECT
-        userId,
-        userName,
-        accountName,
-        userDescription,
-        deletestatus,
-        roleId,
-        roleName,
-        `level`,
-        state,
-        groupId,
-        groupName
+        	u.userId,
+        	u.userName,
+        	u.accountName,
+        	u.userDescription,
+        	u.roleId,
+        	u.roleName,
+        	u.`level`,
+        	u.state,
+        	u.groupId,
+        	u.groupName,
+        	result.allscore
         FROM
-        user_info
-        where groupId in (2,3) AND `level` &lt; 9
+        	user_info u
+        LEFT JOIN check_avg_result result ON u.userId = result.nameid
+        WHERE
+        	u.groupId IN (2, 3)
+        AND u.`level` &lt; 9 
+        AND (result.monthId = #{0} OR result.monthId IS NULL)
     </select>
 
 

@@ -38,16 +38,6 @@ public interface UserInfoMapper extends BaseMapper {
     UserInfoView findById(Integer id);
 
     /**
-     * 根据当前用户信息查询其下属
-     * 在同一个组,但是等级又比当前用户低
-     * 在layui table 中展示
-     * 
-     * @param userInfoView 当前用户信息
-     * @return
-     */
-    List<UserInfoView> findSubordinate(UserInfoView userInfoView);
-
-    /**
      * 根据月份和用的id查看评分
      * @param userId 用户id
      * @param MonthId 月份id
@@ -61,13 +51,22 @@ public interface UserInfoMapper extends BaseMapper {
      * @return
      */
     List<Map<String, Object>> rateInfoDataAllMonth(Integer userId);
-    
+
     /**
-     * 管理层可以查看两个团队的人员信息
+     * 根据当前用户信息查询其下属
+     * 在同一个组,但是等级又比当前用户低
+     * 在layui table 中展示
+     * 
+     * @param userInfoView 当前用户信息
+     * @return
+     */
+    List<Map<String, Object>> findSubordinate(UserInfoView userInfoView, Integer monthId);
+
+    /**
+     * 管理层可以查看两个团队的人员信息和平均分
      * 
      * @return
      */
-    List<UserInfoView> findSubordinateForMge();
+    List<Map<String, Object>> findSubordinateForMge(Integer mongthId);
 
-    
 }

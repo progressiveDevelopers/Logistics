@@ -278,13 +278,13 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping("subordinateRate")
     @ResponseBody
-    public LayTableUtils<UserInfoView> getSubordinate(HttpServletRequest request) throws Exception {
+    public LayTableUtils<Map<String,Object>> getSubordinate(HttpServletRequest request) throws Exception {
 
-        LayTableUtils<UserInfoView> layTableUtils = new LayTableUtils<UserInfoView>();
+        LayTableUtils<Map<String,Object>> layTableUtils = new LayTableUtils<Map<String,Object>>();
 
         layTableUtils.setCode(0);
         layTableUtils.setCount(1000);
-
+        Integer monthId = checkMonthMapper.getCurrentMonth().getInt("id");
         // 当验证都通过后，把用户信息放在session里
         UserFormMap userFormMap = getFormMap(UserFormMap.class);
 
@@ -294,14 +294,14 @@ public class UserInfoController extends BaseController {
         UserInfoView userInfoView = userInfoMapper.findById((Integer) userFormMap.get("id"));
         
         
-        List<UserInfoView> listUserInfoView = null;
+        List<Map<String,Object>> listUserInfoView = null;
         
         // 如果是管理层则可以查看两个团队的人员信息
         // 下属的信息全量
         if(userInfoView.getLevel() >  10) {
-            listUserInfoView = userInfoMapper.findSubordinateForMge();
+            listUserInfoView = userInfoMapper.findSubordinateForMge(monthId);
         } else {
-            listUserInfoView = userInfoMapper.findSubordinate(userInfoView);
+            listUserInfoView = userInfoMapper.findSubordinate(userInfoView,monthId);
         }
 
         layTableUtils.setData(listUserInfoView);
@@ -443,6 +443,5 @@ public class UserInfoController extends BaseController {
         
         return returnMap;
     }
-    
     
 }

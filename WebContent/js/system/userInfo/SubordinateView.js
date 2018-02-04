@@ -9,6 +9,14 @@ layui.use([ 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], funct
         {type: 'numbers',  title: '序号' , width: "10%", fixed: 'left'}
       ,{field: 'userName', title: '姓名',  sort: true}
       ,{field: 'userDescription', title: '团队/岗位'}
+      ,{field: 'allscore',title: '平均分' , align:'center',sort: true,templet: function(d){
+          if(d.allscore == undefined){
+              console.log('1')
+              return '<span style="color:red;" >未评完</span>'
+          } else {
+              return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
+          }
+      }}
       ,{width: 165, align:'center', toolbar: '#barDemo'}
     ]]
   });
