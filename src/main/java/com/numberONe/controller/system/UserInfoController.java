@@ -1,6 +1,9 @@
 package com.numberONe.controller.system;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,10 +13,13 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.numberONe.annotation.SystemLog;
@@ -69,10 +75,10 @@ public class UserInfoController extends BaseController {
      * @throws Exception
      */
     @ResponseBody
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @RequestMapping("findUserInfoList")
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @SystemLog(module="任务分配",methods="分配评价人")//凡需要处理业务逻辑的.都需要记录操作日志
-    public String findUserInfoList() throws Exception {
+    public void findUserInfoList() throws Exception {
         try {
             UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
             CheckMonthFormMap checkMonthFormMap = new CheckMonthFormMap();
@@ -81,6 +87,15 @@ public class UserInfoController extends BaseController {
             ParameterFormMap parameterFormMap = new ParameterFormMap();
             CheckResultFormMap checkResultFormMap = null;
             CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = null;
+            // 获取当前月的上个月 yyyyMM
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+            Date date = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.MONTH, -1);      //当前月的上个月  （-1改为1的话，为取当前月
+            String preMonth = sdf.format( cal.getTime());// 当前月的上个月
+            checkMonthFormMap.set("month", preMonth);
+            checkMonthMapper.addEntity(checkMonthFormMap);// 新增月份
             parameterFormMap.set("key", "count");
             parameterFormMap.set("deletestatus", 0);
             parameterFormMap = (ParameterFormMap) parameterMapper.getByKey(parameterFormMap);
@@ -203,15 +218,15 @@ public class UserInfoController extends BaseController {
                     checkResultMapper.addCheckResultList(checkResultFormMapList);
                 }
             }
-            else{
+            /*else{
             	return "该月份已经分配任务！！";
-            }
+            }*/
            
         } catch (Exception e) {
             e.printStackTrace();
-            return "任务分配失败！";
+          //  return "任务分配失败！";
         }
-        return "任务分配成功！";
+       // return "任务分配成功！";
     }
     
     

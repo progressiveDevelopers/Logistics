@@ -17,8 +17,10 @@
  
     <!-- 定时器开关 开始 -->
 	<task:annotation-driven />
-	<!-- 标注类型 的事务配置 如果使用注解事务。就放开
-	<tx:annotation-driven />-->
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>  
+	<context:component-scan base-package="com.numberONe.util"/>
+	<!-- 标注类型 的事务配置 如果使用注解事务。就放开 -->
+	<tx:annotation-driven />
 	
 	<!-- 统一异常处理方式 -->
 	<bean id="exceptionHandler" class="com.numberONe.exception.MyExceptionHandler"/>
