@@ -1,5 +1,6 @@
 package com.numberONe.controller.system;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,13 +89,16 @@ public class UserInfoController extends BaseController {
             CheckResultFormMap checkResultFormMap = null;
             CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = null;
             // 获取当前月的上个月 yyyyMM
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");//save into check_month month
+            DateFormat df = new SimpleDateFormat("yyyy年M月");// save into check_month description
             Date date = new Date();
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             cal.add(Calendar.MONTH, -1);      //当前月的上个月  （-1改为1的话，为取当前月
             String preMonth = sdf.format( cal.getTime());// 当前月的上个月
+            String disPreMonth = df.format( cal.getTime());// 当前月的上个月 显示为:xxxx年x月
             checkMonthFormMap.set("month", preMonth);
+            checkMonthFormMap.set("description", disPreMonth);
             checkMonthMapper.addEntity(checkMonthFormMap);// 新增月份
             parameterFormMap.set("key", "count");
             parameterFormMap.set("deletestatus", 0);
