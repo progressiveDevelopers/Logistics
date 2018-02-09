@@ -36,7 +36,7 @@ function drawBar() {
         type : "GET",
         url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
         success : function(data) {
-            
+            console.log(1)
             if(data.length == 0 || data == null || data == 'null' || data == "[]"){
                 layer.alert('本月评分数据还未生成。', {
                     icon: 0,
@@ -183,7 +183,7 @@ function drawLine() {
             // 指定图表的配置项和数据
             option2 = {
                 title : {
-                    text : '分数统计',
+                    text : '分数统计1111',
                     x:'center'
                 },
                 legend : {

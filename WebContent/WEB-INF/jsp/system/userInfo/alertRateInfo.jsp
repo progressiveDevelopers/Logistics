@@ -40,18 +40,7 @@
 <div class="clear1"></div>
 <h5 style='padding:0.5em 2.5em;color:#a4a5a2;' class="tip">总分60分,换算成百分制为<span id="avgPercent" style="color:#a4a5a2;font-size:20px;"></span>分</h5>
 <div class="clear1"></div>
-<%--  <form class="layui-form">
-  <div class="layui-form-item">
-    <label class="layui-form-label">日期</label>
-    <div class="layui-input-block" style="width:150px">
-      <select name="city" lay-verify="required" id="month">
-        <c:forEach  items="${listCheckMonth}"  var="month" >
-           <option value="${ month.id }">${ month.description }</option>
-        </c:forEach>
-      </select>
-    </div>
-  </div>
-</form> --%>
+
 <div class="content">
     <div id="barMain"  class="top"></div>
     <div id="pieMain"  class="bottomLeft"></div>
@@ -60,11 +49,3 @@
 </div>
 <script type="text/javascript" src="${ctx}/js/system/userInfo/alertRateInfo.js"></script>
 <!--  aaaaaaaaaaaaaaa  -->
-<script>
-/* layui.use('form', function(){
-    var form = layui.form;
-    // 如果html代码是后来才加载的，那么需要加上render（）方法执行渲染
-    form.render();
-  }); */
-
-</script>
