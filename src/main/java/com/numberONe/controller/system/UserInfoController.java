@@ -215,7 +215,11 @@ public class UserInfoController extends BaseController {
     }
     
     
-    
+    /**
+     * 得到部门结构目录树
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "userRelativeTree")
     @ResponseBody
     public UserRelativeTreeUtil getUserRelativeTree() throws Exception  {
@@ -271,20 +275,21 @@ public class UserInfoController extends BaseController {
 
     /**
      * 人员信息
-     * 得到当前人员下属的信息
+     * 得到用户团队人员信息
+     * 
+     * @param monthId 月份id
      * 
      * @return
      * @throws Exception
      */
     @RequestMapping("subordinateRate")
     @ResponseBody
-    public LayTableUtils<Map<String,Object>> getSubordinate(HttpServletRequest request) throws Exception {
+    public LayTableUtils<Map<String,Object>> getSubordinate(HttpServletRequest request,Integer monthId) throws Exception {
 
         LayTableUtils<Map<String,Object>> layTableUtils = new LayTableUtils<Map<String,Object>>();
 
         layTableUtils.setCode(0);
         layTableUtils.setCount(1000);
-        Integer monthId = checkMonthMapper.getCurrentMonth().getInt("id");
         // 当验证都通过后，把用户信息放在session里
         UserFormMap userFormMap = getFormMap(UserFormMap.class);
 
@@ -317,8 +322,8 @@ public class UserInfoController extends BaseController {
      */
     @RequestMapping("rateInfo")
     public ModelAndView rateInfo(ModelAndView mv) throws Exception {
-//        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
-//        mv.addObject("listCheckMonth", listCheckMonth);
+        List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+        mv.addObject("listCheckMonth", listCheckMonth);
         mv.addObject("month", checkMonthMapper.getCurrentMonth());
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/rateInfo");
        
@@ -328,8 +333,8 @@ public class UserInfoController extends BaseController {
     /**
      * 管理层查看中后台员工考评结果页面（考评结果弹窗）
      * @param mv
-     * @param userId
-     * @param userName
+     * @param userId 员工id
+     * @param userName  员工姓名
      * @return
      * @throws Exception
      */
@@ -339,7 +344,7 @@ public class UserInfoController extends BaseController {
 //        mv.addObject("listCheckMonth", listCheckMonth);
         mv.addObject("userId", userId);
         mv.addObject("userName", userName);
-        mv.addObject("month", checkMonthMapper.findbyFrist("id", monthId.toString(), CheckMonthFormMap.class));
+        mv.addObject("month", checkMonthMapper.findByAttribute("id", monthId.toString(), CheckMonthFormMap.class).get(0));
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/alertRateInfo");
         return mv;
     }
@@ -386,36 +391,46 @@ public class UserInfoController extends BaseController {
          * 2018年3月 8 王林飞 60 0
          */
         String month = null;
-            for (Map<String, Object> map : listData) {
-                String tmpMonth = (String) map.get("month");
-                if (!returnMap.containsKey(tmpMonth)) {
-                    if (returnMap.size() == 0) { // 第一个
-                        returnMap.put(tmpMonth, null);
-                        month = tmpMonth;
-                        if (returnList != null) {
-                            returnMap.put(month, returnList);
-                        }
-                    } else { //  中间
-                        returnMap.put(tmpMonth, null);
-                        if (returnList != null) {
-                            returnMap.put(month, returnList);
-                        }
+        for (Map<String, Object> map : listData) {
+            String tmpMonth = (String) map.get("month");
+            if (!returnMap.containsKey(tmpMonth)) {
+                if (returnMap.size() == 0) { // 第一个
+                    returnMap.put(tmpMonth, null);
+                    month = tmpMonth;
+                    if (returnList != null) {
+                        returnMap.put(month, returnList);
                     }
-                    returnList = new ArrayList<Map<String, Object>>();
-                    returnList.add(map);
-                } else {
-                    returnList.add(map);
+                } else { //  中间
+                    returnMap.put(tmpMonth, null);
+                    if (returnList != null) {
+                        returnMap.put(month, returnList);
+                    }
                 }
+                returnList = new ArrayList<Map<String, Object>>();
+                returnList.add(map);
+            } else {
+                returnList.add(map);
+            }
 
-                month = tmpMonth;
-            }
-            
-            // 最后一个
-            returnMap.put(month, null);
-            if (returnList != null) {
-                returnMap.put(month, returnList);
-            }
-            
+            month = tmpMonth;
+        }
+        
+        // 最后一个
+        returnMap.put(month, null);
+        if (returnList != null) {
+            returnMap.put(month, returnList);
+        }
+          
+//        for(int i = 0,size = listData.size(); i < size;i ++) {
+//            String tmpMonth = (String) listData.get(i).get("month");
+//            //第一个要转换的数据
+//            if(i == 0) {
+//                
+//            }
+//            
+//            
+//        }
+        
         return returnMap;
     }
     
