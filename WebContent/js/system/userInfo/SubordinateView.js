@@ -1,6 +1,7 @@
-layui.use([ 'laypage', 'layer', 'table','form'], function(){
+layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   var table = layui.table //表格
   var form = layui.form
+  var element = layui.element;
   
   //执行一个 table 实例
   
@@ -8,18 +9,47 @@ layui.use([ 'laypage', 'layer', 'table','form'], function(){
           elem: '#subordinateTbl'
           ,url: '/Logistics/userInfo/subordinateRate.shtml?monthId='+$('#monthId').val() //数据接口
           ,cols: [[ //表头
-              {type: 'numbers',  title: '序号' , width: "10%", fixed: 'left'}
+             {type: 'numbers',  title: '序号' , width: "10%", fixed: 'left'}
             ,{field: 'userName', title: '姓名',  sort: true}
             ,{field: 'userDescription', title: '团队/岗位',sort: true}
-            ,{field: 'allscore',title: '平均分' , align:'center',sort: true,templet: function(d){
-                if(d.allscore == undefined){
-                    return '<span style="color:red;" >未评完</span>'
+            ,{field: 'allscore',title: '平均分/进度' , align:'center',sort: true,templet: function(d){
+                if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: '/Logistics/task/',
+                        cache: false,
+                        async: false,
+                        success: function(data){
+                            flag = data;
+                        }
+                     })
+                    
+                    
+                    var rand = Math.round(Math.random()*10)
+                    return "<div class='progressHover'><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
+                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+rand+"/10'></div>"+
+                    "</div></div>"
                 } else {
                     return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
                 }
             }}
             ,{width: 165, align:'center', toolbar: '#barDemo'}
-          ]]
+            ,
+          ]],
+          done: function(res, curr, count){ // table渲染结束回调
+                  element.render(); // 渲染进度条
+                  $('.progressHover').hover(
+                      function () {
+                          layer.tips('正在查询请稍等。。。', this, {
+                              tips: [1, '#78BA32']
+                            });
+                      },
+                      function () {
+                          
+                      }
+                  )
+                }
         };
   
   table.render(tableOpt);
@@ -45,6 +75,18 @@ layui.use([ 'laypage', 'layer', 'table','form'], function(){
           });
     } 
   });
+  
+  
+  //注：layuiTable是table原始容器的属性 lay-filter="对应的值"
+  //排序事件
+  table.on('sort(layuiTable)', function(obj){ 
+      element.render();
+      $('.progressHover').click(function () {
+              console.log("我在孤独的另一边没有尽头");
+          }
+      )
+    });
+  
   
   // 如果html代码是后来才加载的，那么需要加上render（）方法执行渲染
   form.render();

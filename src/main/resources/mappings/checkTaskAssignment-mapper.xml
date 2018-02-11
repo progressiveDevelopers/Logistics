@@ -69,5 +69,28 @@
    		,#{item.ifLike})
   		</foreach>
 	</insert>
+    
+    <select id="countComplete" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            check_task_assignment task
+        WHERE
+            task.monthId = #{monthId}
+        AND task.operationPostId = #{operationPostId}
+        AND task.`status` = 1
+        
+    </select>
 	
+    <select id="notCompleted" resultType="string">
+        SELECT
+            task.evaluator
+        FROM
+            check_task_assignment task
+        WHERE
+            task.monthId = #{monthId}
+        AND task.operationPostId = #{operationPostId}
+        AND task.`status` = 0
+    </select>
+    
 </mapper>
