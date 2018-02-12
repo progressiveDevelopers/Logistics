@@ -1,4 +1,5 @@
 package com.numberONe.controller.system;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -42,7 +44,9 @@ import com.numberONe.mapper.CheckTaskAssignmentMapper;
 import com.numberONe.mapper.ParameterMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.util.Common;
+import com.numberONe.util.JsonUtils;
 import com.numberONe.util.LayTableUtils;
+import com.numberONe.util.POIUtils;
 import com.numberONe.util.UserRelativeTreeUtil;
 
 @Controller
@@ -291,6 +295,25 @@ public class UserInfoController extends BaseController {
         mv.setViewName(Common.BACKGROUND_PATH + "/system/userInfo/SubordinateView");
         return mv;
     }
+    
+    @RequestMapping("/export")
+	public void download(HttpServletRequest request, HttpServletResponse response,Integer monthId) throws IOException {
+		String fileName = "考评列表";
+		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
+		//exportData = 
+		// [{"colkey":"sql_info","name":"SQL语句","hide":false},
+		// {"colkey":"total_time","name":"总响应时长","hide":false},
+		// {"colkey":"avg_time","name":"平均响应时长","hide":false},
+		// {"colkey":"record_time","name":"记录时间","hide":false},
+		// {"colkey":"call_count","name":"请求次数","hide":false}
+		// ]
+		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
+
+		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
+
+		List<Map<String,Object>> listUserInfoView  = userInfoMapper.findSubordinateForMge(monthId);
+		POIUtils.exportToExcel(response, listMap, listUserInfoView, fileName);
+	}
 
     /**
      * 人员信息

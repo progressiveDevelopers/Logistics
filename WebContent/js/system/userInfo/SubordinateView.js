@@ -54,6 +54,7 @@ layui.use([ 'laypage', 'layer', 'table','form'], function(){
       tableOpt.url =  '/Logistics/userInfo/subordinateRate.shtml?monthId='+ data.value
       $('#monthId').val(data.value)
       $('#monthDescription').text(data.elem.selectedOptions["0"].childNodes["0"].nodeValue)
+      $('#search').attr('href',"javascript:grid.exportData('"+"/userInfo/export.shtml?monthId=" + data.value+"')")
       table.render(tableOpt);
   });
   

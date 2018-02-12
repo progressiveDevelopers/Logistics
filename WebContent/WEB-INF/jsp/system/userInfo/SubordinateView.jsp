@@ -13,6 +13,7 @@
            <option value="${ month.id }">${ month.description }</option>
         </c:forEach>
       </select>
+      <a href="javascript:grid.exportData('/userInfo/export.shtml?monthId=${ month.id }')" class="btn btn-info" id="search">导出excel</a>
     </div>
   </div>
 </form>
@@ -24,5 +25,31 @@
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看评分</a>
 </script>
 <script>
-
+var grid = null;
+$(function() {
+	grid = lyGrid({
+		pagId : 'paging',
+		l_column : [{
+			colkey : "userName",
+			name : "姓名",
+			isSort:true,
+		}, {
+			colkey : "userDescription",
+			name : "团队/岗位",
+			isSort:true,
+		}, {
+			colkey : "allscore",
+			name : "平均分"
+		} ],
+		jsonUrl : rootPath + '/user/findByPage.shtml',
+		checkbox : true,
+		serNumber : true 
+	});
+	$("#search").click("click", function() {// 绑定查询按扭
+		var searchParams = $("#searchForm").serializeJson();// 初始化传参数
+		grid.setOptions({
+			data : searchParams
+		});
+	});
+});
 </script>
