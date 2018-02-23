@@ -99,47 +99,88 @@
         where userId = #{id}
     </select>
 
-    <select id="findSubordinate" resultType="map">
+    <select id="findSubordinateRate" resultType="map">
         SELECT
-        	u.userId,
-        	u.userName,
-        	u.accountName,
-        	u.userDescription,
-        	u.roleId,
-        	u.roleName,
-        	u.`level`,
-        	u.state,
-        	u.groupId,
-        	u.groupName,
-        	result.allscore
+            t.userId,
+            t.userName,
+            t.accountName,
+            t.userDescription,
+            t.roleId,
+            t.roleName,
+            t.`level`,
+            t.state,
+            t.groupId,
+            t.groupName,
+            m.allscore
         FROM
-        	user_info u
-        LEFT JOIN check_avg_result result ON u.userId = result.nameid
-        WHERE
-        	u.groupId = #{0}  AND u.`level` &lt; 9 
-            AND (result.monthId = #{1} OR result.monthId IS NULL)
+            (
+            SELECT
+                u.userId,
+                u.userName,
+                u.accountName,
+                u.userDescription,
+                u.roleId,
+                u.roleName,
+                u.`level`,
+                u.state,
+                u.groupId,
+                u.groupName
+            FROM
+                user_info u
+            WHERE
+                u.groupId = #{0.groupId}  AND u.`level` = 5
+        ) t
+        LEFT JOIN (
+            SELECT
+                result.nameid,
+                result.allscore
+            FROM
+                check_avg_result result
+            WHERE
+                result.monthid = #{1}
+        ) m ON t.userId = m.nameId
     </select>
     
-    <select id="findSubordinateForMge" resultType="map">
+    <select id="findSubordinateRateForMge" resultType="map">
         SELECT
-        	u.userId,
-        	u.userName,
-        	u.accountName,
-        	u.userDescription,
-        	u.roleId,
-        	u.roleName,
-        	u.`level`,
-        	u.state,
-        	u.groupId,
-        	u.groupName,
-        	result.allscore
+    		t.userId,
+    		t.userName,
+    		t.accountName,
+    		t.userDescription,
+    		t.roleId,
+    		t.roleName,
+    		t.`level`,
+    		t.state,
+    		t.groupId,
+    		t.groupName,
+    		m.allscore
         FROM
-        	user_info u
-        LEFT JOIN check_avg_result result ON u.userId = result.nameid
-        WHERE
-        	u.groupId IN (2, 3)
-        AND u.`level` &lt; 9 
-        AND (result.monthId = #{0} OR result.monthId IS NULL)
+        	(
+    		SELECT
+    			u.userId,
+    			u.userName,
+    			u.accountName,
+    			u.userDescription,
+    			u.roleId,
+    			u.roleName,
+    			u.`level`,
+    			u.state,
+    			u.groupId,
+    			u.groupName
+    		FROM
+    			user_info u
+    		WHERE
+    			u.`level` = 5
+        ) t
+        LEFT JOIN (
+        	SELECT
+        		result.nameid,
+        		result.allscore
+        	FROM
+        		check_avg_result result
+        	WHERE
+        		result.monthid = #{mongthId}
+        ) m ON t.userId = m.nameId
     </select>
 
 

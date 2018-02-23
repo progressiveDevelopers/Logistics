@@ -323,9 +323,9 @@ public class UserInfoController extends BaseController {
         // 如果是管理层则可以查看两个团队的人员信息
         // 下属的信息全量
         if(userInfoView.getLevel() >  10) {
-            listUserInfoView = userInfoMapper.findSubordinateForMge(monthId);
+            listUserInfoView = userInfoMapper.findSubordinateRateForMge(monthId);
         } else {
-            listUserInfoView = userInfoMapper.findSubordinate(userInfoView,monthId);
+            listUserInfoView = userInfoMapper.findSubordinateRate(userInfoView,monthId);
         }
 
         layTableUtils.setData(listUserInfoView);

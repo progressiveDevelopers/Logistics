@@ -70,7 +70,7 @@
   		</foreach>
 	</insert>
     
-    <select id="countComplete" resultType="int">
+    <select id="countCompleteRate" resultType="int">
         SELECT
             count(*)
         FROM
@@ -82,7 +82,7 @@
         
     </select>
 	
-    <select id="notCompleted" resultType="string">
+    <select id="notCompletedRate" resultType="string">
         SELECT
             task.evaluator
         FROM

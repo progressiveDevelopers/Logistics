@@ -18,7 +18,7 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 * @return
 	 * @throws Exception
 	 */
-	public Integer countComplete(Map<String,Object> param) throws Exception;
+	public Integer countCompleteRate(Map<String,Object> param) throws Exception;
 	
 	/**
 	 * 查询还未完成评分的客户经理名字
@@ -26,6 +26,6 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> notCompleted(Map<String,Object> param) throws Exception;
+	public List<String> notCompletedRate(Map<String,Object> param) throws Exception;
 	
 }

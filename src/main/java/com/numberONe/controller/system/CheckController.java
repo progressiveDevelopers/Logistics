@@ -34,6 +34,7 @@ import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.mapper.CheckMapper;
 import com.numberONe.mapper.CheckMonthMapper;
+import com.numberONe.mapper.CheckTaskAssignmentMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.plugin.PageView;
 import com.numberONe.util.Common;
@@ -57,6 +58,8 @@ public class CheckController extends BaseController {
 	private UserMapper userMapper;
 	@Inject
 	private CheckMonthMapper checkMonthMapper;
+	@Inject
+	private CheckTaskAssignmentMapper  checkTaskAssignmentMapper;
 
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -335,5 +338,39 @@ public class CheckController extends BaseController {
 	    }
 		return "success";
 	}
-
+	
+	
+	/**
+	 * 查询评分进度
+	 * @param operationPostId 被评价人id
+	 * @param monthId
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping("rateProgress")
+	@ResponseBody
+	public Integer rateProgress (Integer operationPostId,Integer monthId) throws Exception {
+	    Map<String,Object> param = new HashMap<String,Object>();
+	    param.put("operationPostId", operationPostId);
+	    param.put("monthId", monthId);
+	   return  checkTaskAssignmentMapper.countCompleteRate(param);
+	}
+	
+	
+	/**
+     * 查询还有哪些客户经理没有评分
+     * @param operationPostId 被评价人id
+     * @param monthId
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping("notRatePeople")
+    @ResponseBody
+    public List<String> notCompleted (Integer operationPostId,Integer monthId) throws Exception {
+        Map<String,Object> param = new HashMap<String,Object>();
+        param.put("operationPostId", operationPostId);
+        param.put("monthId", monthId);
+       return  checkTaskAssignmentMapper.notCompletedRate(param);
+    }
+	
 }
