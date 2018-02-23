@@ -23,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.controller.index.BaseController;
@@ -86,10 +87,12 @@ public class CheckController extends BaseController {
         userFormMap     = (UserFormMap)Common.findUserSession(req);
         int evaluatorId = (Integer) userFormMap.get("id");
 		checkTaskAssignmentFormMap.put("evaluatorId", evaluatorId);
-		
-		
+		// 获取月份  根据月份查询待评价人
+		CheckMonthFormMap monthForm  = checkMonthMapper.getCurrentMonth();
+		String month = (String) monthForm.get("month");
 		Map map = new HashMap();
 		map.put("evaluatorId", evaluatorId);
+		map.put("month", month);
 		//获取评论条数
 		
 		int i = checkMapper.findAssignTaskCount(map);
@@ -142,14 +145,14 @@ public class CheckController extends BaseController {
 	 * @date: 2018年2月4日 下午12:04:21 
 	 */
 	@RequestMapping("checkHistoryList")
-	public String checkHistoryList(Model model) throws Exception {
+	public ModelAndView checkHistoryList(ModelAndView mv) throws Exception {
+		//获取所有月份
+		List<CheckMonthFormMap> listCheckMonth = checkMonthMapper.getAllMonthByDesc();
+        mv.addObject("listCheckMonth", listCheckMonth);
 		 //获取当前月份
-        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
-        String month = (String) checkMonthFormMap.get("month");
-        
-        model.addAttribute("month", month);
-		
-		return Common.BACKGROUND_PATH + "/function/check/checkHistoryList";
+        mv.addObject("month", checkMonthMapper.getCurrentMonth());
+        mv.setViewName(Common.BACKGROUND_PATH + "/function/check/checkHistoryList");
+		return mv;
 	}
 
 	@ResponseBody
@@ -167,18 +170,20 @@ public class CheckController extends BaseController {
         int evaluatorId = (Integer) userFormMap.get("id");
         checkResultFormMap.put("evaluatorId", evaluatorId);
         
+        // 根据页面请求的月份获取数量
+        String monthId = req.getParameter("monthId");
         
     	Map map = new HashMap();
 		map.put("evaluatorId", evaluatorId);
 		
 		 //获取当前月份
-        CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
-        String month = (String) checkMonthFormMap.get("month");
+        /*CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+        String month = (String) checkMonthFormMap.get("month");*/
 		
-		map.put("month", month);
+		map.put("monthId", monthId);
         
 		//获取评论条数
-		  checkResultFormMap.put("month", month);
+		checkResultFormMap.put("monthId", monthId);
  		int count = checkMapper.getCheckHistoryListCount(map);
 		
         List  historyList = checkMapper.getCheckHistoryList(checkResultFormMap);
