@@ -405,72 +405,10 @@ public class UserInfoController extends BaseController {
      * @param userId
      * @return
      */
-    @RequestMapping("rateInfoDataAllMonth")
+    @RequestMapping("rateInfoForLine")
     @ResponseBody
-    public Map<String, Object> rateInfoDataAllMonth(Integer userId) throws Exception  {
-        List<Map<String, Object>> listData = userInfoMapper.rateInfoDataAllMonth(userId);
-        
-        if(listData.size() == 0) {
-            return null;
-        }
-        
-        Map<String, Object> returnMap = new HashMap<String, Object>();
-        List<Map<String, Object>> returnList = null;
-        /*
-         * month evaluatorId evaluator total 
-         * 2018年2月 4 骆敬忠 59 0 
-         * 2018年2月 5 郭雪山 41 1 
-         * 2018年2月 6 范毛毛 70 1 
-         * 2018年2月 7 王维 58 0 
-         * 2018年2月 8 王林飞 60 0 
-         * 2018年3月 4 骆敬忠 59 0 
-         * 2018年3月 5 郭雪山 41 1 
-         * 2018年3月 6 范毛毛 70 1
-         * 2018年3月 7 王维 58 0
-         * 2018年3月 8 王林飞 60 0
-         */
-        String month = null;
-        for (Map<String, Object> map : listData) {
-            String tmpMonth = (String) map.get("month");
-            if (!returnMap.containsKey(tmpMonth)) {
-                if (returnMap.size() == 0) { // 第一个
-                    returnMap.put(tmpMonth, null);
-                    month = tmpMonth;
-                    if (returnList != null) {
-                        returnMap.put(month, returnList);
-                    }
-                } else { //  中间
-                    returnMap.put(tmpMonth, null);
-                    if (returnList != null) {
-                        returnMap.put(month, returnList);
-                    }
-                }
-                returnList = new ArrayList<Map<String, Object>>();
-                returnList.add(map);
-            } else {
-                returnList.add(map);
-            }
-
-            month = tmpMonth;
-        }
-        
-        // 最后一个
-        returnMap.put(month, null);
-        if (returnList != null) {
-            returnMap.put(month, returnList);
-        }
-          
-//        for(int i = 0,size = listData.size(); i < size;i ++) {
-//            String tmpMonth = (String) listData.get(i).get("month");
-//            //第一个要转换的数据
-//            if(i == 0) {
-//                
-//            }
-//            
-//            
-//        }
-        
-        return returnMap;
+    public List<Map<String, Object>> rateInfoForLine(Integer userId) throws Exception  {
+        return userInfoMapper.rateInfoForLine(userId);
     }
     
     /**
@@ -494,8 +432,21 @@ public class UserInfoController extends BaseController {
             returnMap.put((String)rateMap.get("checkOption"), (BigDecimal)rateMap.get("avg"));
         }
         
-        
         return returnMap;
     }
+    
+    /**
+     *  指定月份的平均分
+     * @param userId 用户的id
+     * @param monthId 月份id
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("targetMonthAvgScore")
+    @ResponseBody
+    public Double targetMonthAvgScore(Integer userId,Integer monthId) throws Exception  {
+        return userInfoMapper.targetMonthAvgScore(userId,monthId);
+    }
+    
     
 }

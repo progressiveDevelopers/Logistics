@@ -13,14 +13,14 @@ public interface UserInfoMapper extends BaseMapper {
      * 得到所有组信息
      * @return
      */
-    List<UserRelativeTreeUtil> findAllGroup();
+    List<UserRelativeTreeUtil> findAllGroup() throws Exception;
 
     /**
      * 得到指定组的角色信息
      * @param id 组id
      * @return
      */
-    List<UserRelativeTreeUtil> findTargetRole(Integer id);
+    List<UserRelativeTreeUtil> findTargetRole(Integer id) throws Exception;
 
     /**
      * 得到指定组制定角色的用户信息
@@ -28,7 +28,7 @@ public interface UserInfoMapper extends BaseMapper {
      * @param roleId 角色id
      * @return
      */
-    List<UserRelativeTreeUtil> findTargetUser(Integer groupId, Integer roleId);
+    List<UserRelativeTreeUtil> findTargetUser(Integer groupId, Integer roleId) throws Exception;
 
     /**
      * 根据用户id查询全量信息
@@ -43,14 +43,14 @@ public interface UserInfoMapper extends BaseMapper {
      * @param MonthId 月份id
      * @return
      */
-    List<Map<String, Object>> getRateByMonthAndUser(Integer userId, Integer MonthId);
+    List<Map<String, Object>> getRateByMonthAndUser(Integer userId, Integer MonthId) throws Exception;
 
     /**
-     * 
+     * 得到个人月平均分走势图
      * @param userId
      * @return
      */
-    List<Map<String, Object>> rateInfoDataAllMonth(Integer userId);
+    List<Map<String, Object>> rateInfoForLine(Integer userId) throws Exception;
 
     /**
      * 根据当前用户信息查询其下属
@@ -60,7 +60,7 @@ public interface UserInfoMapper extends BaseMapper {
      * @param userInfoView 当前用户信息
      * @return
      */
-    List<Map<String, Object>> findSubordinateRate(UserInfoView userInfoView, Integer monthId);
+    List<Map<String, Object>> findSubordinateRate(UserInfoView userInfoView, Integer monthId) throws Exception;
 
     /**
      * 管理层可以查看两个团队的人员信息和平均分
@@ -68,5 +68,13 @@ public interface UserInfoMapper extends BaseMapper {
      * @return
      */
     List<Map<String, Object>> findSubordinateRateForMge(Integer mongthId);
-
+    
+    /**
+     *  指定月份的平均分
+     * @param userId 用户的id
+     * @param monthId 月份id
+     * @return
+     * @throws Exception
+     */
+    Double targetMonthAvgScore(Integer userId,Integer monthId) throws Exception;
 }

@@ -5,12 +5,28 @@ var pieData = [], pieObj
 var data
 var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
 var exitFlag = false
+
+layui.use('form', function(){
+    var form = layui.form;
+    // 如果html代码是后来才加载的，那么需要加上render（）方法执行渲染
+    form.render();
+    
+    form.on('select(month)', function(data){
+        $('#monthDescription').text(data.elem.selectedOptions["0"].childNodes["0"].nodeValue)
+        // 重置echarts中的参数
+        pieData = [],xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
+        targetMonthAvgScore(data.value)
+        drawBar(data.value)
+        drawPie(data.value)
+    });
+});
+
 /** 
- ** 除法函数，用来得到精确的除法结果
- ** 说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
- ** 调用：accDiv(arg1,arg2)
- ** 返回值：arg1除以arg2的精确结果
- **/
+ * 除法函数，用来得到精确的除法结果
+ * 说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
+ * 调用：accDiv(arg1,arg2)
+ * 返回值：arg1除以arg2的精确结果
+ */
 function accDiv(arg1, arg2) {
     var t1 = 0, t2 = 0, r1, r2
     try {
@@ -30,15 +46,19 @@ function accDiv(arg1, arg2) {
     }
 }
 
-
-function drawBar() {
+// 柱状图
+function drawBar(monthId) {
+    if(monthId == null){
+        monthId = $('#monthId').val()
+    }
+    
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
+        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             
-            if(data.length == 0 || data == null || data == 'null' || data == '[]'){
-                layer.alert('本月评分数据还未生成。', {
+            if( data == null || data == 'null' || data == '[]' || data.length == 0 ){
+                layer.alert('本月评分数据还未完成。', {
                     icon: 0,
                     skin: 'layer-ext-moon'
                   })
@@ -84,12 +104,6 @@ function drawBar() {
               return
             }
             
-
-            // 加载饼状图
-            drawPie()
-            // 加载折线图
-            drawLine()
-            
             var option = {
                     tooltip: {
                         show: true
@@ -133,6 +147,7 @@ function drawBar() {
     
 }
 
+// 折现图
 function drawLine() {
     
     if(exitFlag){
@@ -141,30 +156,13 @@ function drawLine() {
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataAllMonth.shtml?userId="+$('#userId').val(),
+        url : "/Logistics/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
         success : function(data) {
             data = JSON.parse(data)
-            var rateData
             for(i in data) {//i 就是键，data[i]就是值
-                xdataLine.push(i)
-                rateData = data[i]
-                var score = [],avg = 0,sum = 0
-                rateData.forEach((item) => {
-                    score.push(item.score)
-                })
-                score = score.sort()
-                score.pop()  // 删除尾数
-                score.shift() // 删除第一个元素
-                
-                score.forEach(function (item, index, array) {
-                    sum += item
-                })
-                avg = accDiv(sum,score.length).toFixed(1)
-                $("#avg").text(avg)
-                $("#avgPercent").text(accDiv(avg,0.6).toFixed(1))
-                ydataLine.push(avg)
+                xdataLine.push(data[i].month)
+                ydataLine.push(data[i].allscore)
             }
-            
             
             // 指定图表的配置项和数据
             option2 = {
@@ -206,7 +204,8 @@ function drawLine() {
     
 }
 
-function drawPie(){
+// 饼状图
+function drawPie(monthId){
     
     if(exitFlag){
         return
@@ -214,14 +213,14 @@ function drawPie(){
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
+        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             data = JSON.parse(data)
             for (var key in data) { // 遍历Array  
                 pieObj = new Object()
                 pieObj.name = key
                 legendData.push(key)
-                pieObj.value = data[key].toFixed(1)// 保留两位小数
+                pieObj.value = data[key].toFixed(1)// 保留一位小数
                 pieData.push(pieObj)
             }  
             
@@ -274,6 +273,30 @@ function drawPie(){
     
 }
 
+// 指定月份的平均分
+function targetMonthAvgScore(monthId){
+    
+    $.ajax({
+        type : "GET",
+        url : "/Logistics/userInfo/targetMonthAvgScore.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        success : function(data) {
+            console.log(data)
+            $('#avg').text(data)
+            $('#avgPercent').text(accDiv(data,0.6).toFixed(1))
+        }
+    })
+    
+}
+
 $(function() {
-    drawBar()
+    //monthId 会自动匹配 id为 monthId 的元素
+    drawBar(monthId.value)
+     // 加载饼状图
+    drawPie(monthId.value)
+    // 加载折线图
+    drawLine()
+    
+    
+    // 得到平均数
+    targetMonthAvgScore(monthId.value)
 })
