@@ -55,7 +55,5 @@ layui.use('form', function(){
     form.on('select(month)', function(data){
         console.log(data);
   	});
-    
-    
 });
 </script>

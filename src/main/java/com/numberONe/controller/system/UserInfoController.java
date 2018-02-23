@@ -16,13 +16,10 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.numberONe.annotation.SystemLog;
@@ -311,7 +308,7 @@ public class UserInfoController extends BaseController {
 
 		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
 
-		List<Map<String,Object>> listUserInfoView  = userInfoMapper.findSubordinateForMge(monthId);
+		List<Map<String,Object>> listUserInfoView  = userInfoMapper.findSubordinateRateForMge(monthId);
 		POIUtils.exportToExcel(response, listMap, listUserInfoView, fileName);
 	}
 
@@ -346,9 +343,9 @@ public class UserInfoController extends BaseController {
         // 如果是管理层则可以查看两个团队的人员信息
         // 下属的信息全量
         if(userInfoView.getLevel() >  10) {
-            listUserInfoView = userInfoMapper.findSubordinateForMge(monthId);
+            listUserInfoView = userInfoMapper.findSubordinateRateForMge(monthId);
         } else {
-            listUserInfoView = userInfoMapper.findSubordinate(userInfoView,monthId);
+            listUserInfoView = userInfoMapper.findSubordinateRate(userInfoView,monthId);
         }
 
         layTableUtils.setData(listUserInfoView);

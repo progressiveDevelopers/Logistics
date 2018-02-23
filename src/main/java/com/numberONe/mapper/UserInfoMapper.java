@@ -56,17 +56,17 @@ public interface UserInfoMapper extends BaseMapper {
      * 根据当前用户信息查询其下属
      * 在同一个组,但是等级又比当前用户低
      * 在layui table 中展示
-     * 
+     * 在xml文件中调用  ${0} = userInfoView ${1} = monthId
      * @param userInfoView 当前用户信息
      * @return
      */
-    List<Map<String, Object>> findSubordinate(UserInfoView userInfoView, Integer monthId);
+    List<Map<String, Object>> findSubordinateRate(UserInfoView userInfoView, Integer monthId);
 
     /**
      * 管理层可以查看两个团队的人员信息和平均分
      * 
      * @return
      */
-    List<Map<String, Object>> findSubordinateForMge(Integer mongthId);
+    List<Map<String, Object>> findSubordinateRateForMge(Integer mongthId);
 
 }
