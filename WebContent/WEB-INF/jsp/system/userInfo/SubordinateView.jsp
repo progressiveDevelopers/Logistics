@@ -13,12 +13,40 @@
            <option value="${ month.id }">${ month.description }</option>
         </c:forEach>
       </select>
-      <a href="javascript:grid.exportData('/userInfo/export.shtml?monthId=${ month.id }')" class="btn btn-info" id="search">导出excel</a>
+    </div>
+    <div>
+    <a class="btn btn-info" id="exportExcel"  style="margin-left: 30px;">导出excel</a>
     </div>
   </div>
 </form>
 <table class="layui-hide" id="subordinateTbl" lay-filter="layuiTable"></table>
-<div id="echarts" style="height:50%"></div>
+
+<div id="exportArea" style="display:none;">
+<form class="layui-form">
+  <div class="layui-form-item" >
+    <label class="layui-form-label" style="float: left;font-size: 18px;width:180px;">开始日期:</label>
+    <div class="layui-input-block" style="width:150px;float: left;margin-left:10px;">
+      <select id="beginMonth" >
+        <c:forEach  items="${listCheckMonth}"  var="month" >
+           <option value="${ month.id }">${ month.description }</option>
+        </c:forEach>
+      </select>
+    </div>
+  </div>
+  
+  <div class="layui-form-item" >
+    <label class="layui-form-label" style="float: left;font-size: 18px;width:180px;">结束日期:</label>
+    <div class="layui-input-block" style="width:150px;float: left;margin-left:10px;">
+      <select  id="endMonth" >
+        <c:forEach  items="${listCheckMonth}"  var="month" >
+           <option value="${ month.id }">${ month.description }</option>
+        </c:forEach>
+      </select>
+    </div>
+  </div>
+</form>
+
+</div>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/system/userInfo/SubordinateView.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/common/lyGrid.js"></script>
 <script type="text/html" id="barDemo">
@@ -31,12 +59,13 @@ $(function() {
 		pagId : 'paging',
 		l_column : [{
 			colkey : "userName",
-			name : "姓名",
-			isSort:true,
+			name : "姓名"
 		}, {
 			colkey : "userDescription",
-			name : "团队/岗位",
-			isSort:true,
+			name : "团队/岗位"
+		}, {
+			colkey : "month",
+			name : "月份"
 		}, {
 			colkey : "allscore",
 			name : "平均分"
@@ -45,11 +74,6 @@ $(function() {
 		checkbox : true,
 		serNumber : true 
 	});
-	$("#search").click("click", function() {// 绑定查询按扭
-		var searchParams = $("#searchForm").serializeJson();// 初始化传参数
-		grid.setOptions({
-			data : searchParams
-		});
-	});
+	
 });
 </script>

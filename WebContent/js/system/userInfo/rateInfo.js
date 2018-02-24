@@ -1,23 +1,21 @@
-var myBarChart = echarts.init(document.getElementById('barMain'))
-var myLineChart = echarts.init(document.getElementById('lineMain'))
-var pieChart = echarts.init(document.getElementById('pieMain'))
+var rateInfo = $('#rateInfo').html() // 将评分提示信息备份下来
+var barChart = null // 柱状图
+    ,pieChart  = null // 饼状图
+    ,lineChart = null // 折线图
 var pieData = [], pieObj 
 var data
 var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
-var exitFlag = false
 
 layui.use('form', function(){
     var form = layui.form;
-    // 如果html代码是后来才加载的，那么需要加上render（）方法执行渲染
+    // 如果html代码是后来才加载的，那么需要加上render()方法执行渲染
     form.render();
     
     form.on('select(month)', function(data){
         $('#monthDescription').text(data.elem.selectedOptions["0"].childNodes["0"].nodeValue)
-        // 重置echarts中的参数
-        pieData = [],xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
-        targetMonthAvgScore(data.value)
-        drawBar(data.value)
-        drawPie(data.value)
+        // 开始渲染echarts
+        drawEcharts(data.value)
+        
     });
 });
 
@@ -46,30 +44,42 @@ function accDiv(arg1, arg2) {
     }
 }
 
+// 当月评分是否完成
+function isComplete(monthId){
+    var result;
+    $.ajax({
+        type: "POST",
+        url: '/Logistics/check/rateProgress.shtml?operationPostId='+$('#userId').val()+'&monthId='+monthId,
+        async: false,// 让ajax进行同步请求
+        success: function(data){
+            
+            if(+data < 10){
+                layer.alert('还有'+(10 - data)+'人未完成评分', {
+                    icon: 0,
+                    skin: 'layer-ext-moon'
+                  })
+                  $("#parentAvg").text("请稍后查看")
+                  $("#parentAvgPercent").text('')
+                  result = false
+            } else {
+                result = true
+            }
+        }
+     })
+    
+    return result;
+}
+
+
 // 柱状图
 function drawBar(monthId) {
-    if(monthId == null){
-        monthId = $('#monthId').val()
-    }
     
     $.ajax({
         type : "GET",
         url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             
-            if( data == null || data == 'null' || data == '[]' || data.length == 0 ){
-                layer.alert('本月评分数据还未完成。', {
-                    icon: 0,
-                    skin: 'layer-ext-moon'
-                  })
-                  $("#parentAvg").text("请稍后查看")
-                  $("#parentAvgPercent").text('')
-                  exitFlag = true
-                  return
-            }
-            
             data = JSON.parse(data)
-            var zeroCount = 0
             
             $.each(data, function(i, value) {
                 var name =  String.fromCharCode(65+i)
@@ -82,27 +92,10 @@ function drawBar(monthId) {
                 
                 score = data[i].score
                 
-                if(score == 0){
-                    zeroCount++
-                }
-                
                 xdataBar.push(name)
                 ydataBar.push(score)
                 
             })
-            
-            
-            if(zeroCount != 0){
-                layer.alert('还有'+zeroCount+'人没有评论，请稍后查看。', {
-                    icon: 0,
-                    skin: 'layer-ext-moon'
-                  })
-              
-              $("#parentAvg").text("请稍后查看")
-              $("#parentAvgPercent").text('')
-              exitFlag = true
-              return
-            }
             
             var option = {
                     tooltip: {
@@ -140,20 +133,15 @@ function drawBar(monthId) {
             
                 
             // 当setOption第二个参数为true时，会阻止数据合并
-            myBarChart.setOption(option, true) 
+            barChart.setOption(option, true) 
         }
     })      
     
     
 }
 
-// 折现图
+// 折线图
 function drawLine() {
-    
-    if(exitFlag){
-        return
-    }
-    
     $.ajax({
         type : "GET",
         url : "/Logistics/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
@@ -198,7 +186,7 @@ function drawLine() {
                 } ]
             }
             
-            myLineChart.setOption(option2, true)
+            lineChart.setOption(option2, true)
         }
     })
     
@@ -206,10 +194,6 @@ function drawLine() {
 
 // 饼状图
 function drawPie(monthId){
-    
-    if(exitFlag){
-        return
-    }
     
     $.ajax({
         type : "GET",
@@ -280,7 +264,6 @@ function targetMonthAvgScore(monthId){
         type : "GET",
         url : "/Logistics/userInfo/targetMonthAvgScore.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
-            console.log(data)
             $('#avg').text(data)
             $('#avgPercent').text(accDiv(data,0.6).toFixed(1))
         }
@@ -288,15 +271,37 @@ function targetMonthAvgScore(monthId){
     
 }
 
+//开始渲染echarts
+function drawEcharts(monthId){
+ // 重置echarts中的参数
+    pieData = [],xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
+    if(isComplete(monthId)){
+        $('#rateInfo').html(rateInfo)
+        if(barChart == null || pieChart == null || lineChart == null){
+            barChart = echarts.init(document.getElementById('barMain'))  
+            pieChart = echarts.init(document.getElementById('pieMain'))
+            lineChart = echarts.init(document.getElementById('lineMain'))
+        }
+        // 加载柱状图
+        drawBar(monthId)
+        // 加载饼状图
+        drawPie(monthId)
+        // 加载折线图
+        drawLine()
+        // 得到平均数
+        targetMonthAvgScore(monthId)
+    } else {
+        // 销毁echarts
+        barChart.dispose()
+        barChart = null
+        pieChart.dispose()
+        pieChart = null
+        lineChart.dispose()
+        lineChart = null
+    }
+}
+
 $(function() {
     //monthId 会自动匹配 id为 monthId 的元素
-    drawBar(monthId.value)
-     // 加载饼状图
-    drawPie(monthId.value)
-    // 加载折线图
-    drawLine()
-    
-    
-    // 得到平均数
-    targetMonthAvgScore(monthId.value)
+    drawEcharts(monthId.value)
 })

@@ -23,11 +23,12 @@
     float: clear;
 }
 </style>
-<!--  aaaaaaaaaaaaaaa  -->
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
 <input type="hidden" value="${ month.id }" id="monthId">
+<div id="rateInfo">
 <h2 style='padding:0.2em 1em;' id="parentAvg"><span id="monthDescription">${ month.description }</span> — 考评分数<span id="avg" style="color:#2038bf;font-size:45px;"></span></h2>
 <h5 style='padding:0.5em 2.5em;color:#a4a5a2;' id="parentAvgPercent">总分60分,换算成百分制为<span id="avgPercent" style="color:#a4a5a2;font-size:20px;"></span>分</h5>
+</div>
  <form class="layui-form">
   <div class="layui-form-item" >
     <label class="layui-form-label" style="float: left;font-size: 18px;width:180px;">请选择考评日期:</label>

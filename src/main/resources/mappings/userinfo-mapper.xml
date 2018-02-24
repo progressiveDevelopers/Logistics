@@ -224,4 +224,82 @@
         ORDER BY
         	res.monthid
     </select>
+    
+    
+    
+    <select id="exportSubordinateRate" resultType="map" parameterType="map">
+       SELECT
+            t.userName,
+            t.userDescription,
+						m.`month`,
+            m.allscore
+        FROM
+            (
+            SELECT
+                u.userId,
+                u.userName,
+                u.accountName,
+                u.userDescription,
+                u.roleId,
+                u.roleName,
+                u.`level`,
+                u.state,
+                u.groupId,
+                u.groupName
+            FROM
+                user_info u
+            WHERE
+                u.groupId = #{userInfoView.groupId}  AND u.`level` = 5
+        ) t
+        LEFT JOIN (
+            SELECT
+                result.nameid,
+                result.allscore,
+							  result.`month`
+            FROM
+                check_avg_result result
+            WHERE
+                result.monthid &gt;= #{beginMonth} AND result.monthid &lt;= #{endMonth}
+        ) m ON t.userId = m.nameId
+        ORDER BY m.`month` DESC
+    </select>
+    
+    <select id="exportSubordinateRateForMge" resultType="map" parameterType="map">
+        SELECT
+            t.userName,
+            t.userDescription,
+						m.`month`,
+            m.allscore
+        FROM
+            (
+            SELECT
+                u.userId,
+                u.userName,
+                u.accountName,
+                u.userDescription,
+                u.roleId,
+                u.roleName,
+                u.`level`,
+                u.state,
+                u.groupId,
+                u.groupName
+            FROM
+                user_info u
+            WHERE
+                u.`level` = 5
+        ) t
+        LEFT JOIN (
+            SELECT
+                result.nameid,
+                result.allscore,
+							  result.`month`
+            FROM
+                check_avg_result result
+            WHERE
+                result.monthid &gt;= #{beginMonth} AND result.monthid &lt;= #{endMonth}
+        ) m ON t.userId = m.nameId
+        ORDER BY m.`month` DESC
+    </select>
+    
+    
 </mapper>

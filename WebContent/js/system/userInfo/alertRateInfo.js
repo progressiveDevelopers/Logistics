@@ -1,6 +1,4 @@
-var myBarChart = echarts.init(document.getElementById('barMain'))
-var myLineChart = echarts.init(document.getElementById('lineMain'))
-var pieChart = echarts.init(document.getElementById('pieMain'))
+var barChart, pieChart,lineChart 
 var pieData = [], pieObj 
 var data
 var xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
@@ -30,80 +28,25 @@ function accDiv(arg1, arg2) {
     }
 }
 
-
-function drawBar() {
+// 柱状图
+function drawBar(monthId) {
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+$('#monthId').val(),
+        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
-            console.log(1)
-            if(data.length == 0 || data == null || data == 'null' || data == "[]"){
-                layer.alert('本月评分数据还未生成。', {
-                    icon: 0,
-                    skin: 'layer-ext-moon',
-                    yes: function(index, layero){
-                        var index = parent.layer.getFrameIndex(window.name) //先得到当前iframe层的索引
-                        parent.layer.close(index) //再执行关闭  
-                    },
-                    end: function () {
-                        var index = parent.layer.getFrameIndex(window.name) //先得到当前iframe层的索引
-                        parent.layer.close(index) //再执行关闭  
-                    }
-                  })
-                  exitFlag = true
-                  return
-            }
-            
             data = JSON.parse(data)
-            var zeroCount = 0
-            var msg = ''
-            
-            
             $.each(data, function(i, value) {
-                
                 var name =  data[i].evaluator
-                    if(data[i].ifLike == "1"){
-                        barColorList.push("#49bf5d")
-                    } else {
-                        barColorList.push('#0d6fb8')
-                    }
                 
-                score = data[i].score
-                
-                if(score == 0){
-                    msg+=name+","
-                    zeroCount++
+                if(data[i].ifLike == "1"){
+                    barColorList.push("#49bf5d")
+                } else {
+                    barColorList.push('#0d6fb8')
                 }
                 
                 xdataBar.push(name)
-                ydataBar.push(score)
-                
-                
+                ydataBar.push(data[i].score)
             })
-            
-            if(zeroCount != 0){
-                msg=msg.substring(0, msg.length-1)
-                layer.alert('还有'+zeroCount+'人未评分，他们是'+msg+"。", {
-                    icon: 0,
-                    skin: 'layer-ext-moon',
-                    yes: function(index, layero){
-                        var index = parent.layer.getFrameIndex(window.name) //先得到当前iframe层的索引
-                        parent.layer.close(index) //再执行关闭  
-                    },
-                    end: function () {
-                        var index = parent.layer.getFrameIndex(window.name) //先得到当前iframe层的索引
-                        parent.layer.close(index) //再执行关闭  
-                    }
-                  })
-              
-              exitFlag = true
-              return
-            }
-            
-            // 加载饼状图
-            drawPie()
-            // 加载折线图
-            drawLine()
             
             var option = {
                     tooltip: {
@@ -138,93 +81,67 @@ function drawBar() {
             
                 
             // 当setOption第二个参数为true时，会阻止数据合并
-            myBarChart.setOption(option, true) 
+            barChart.setOption(option, true) 
         }
     })      
     
     
 }
 
+// 折线图
 function drawLine() {
-    
-    if(exitFlag){
-        return
-    }
-    
-    $.ajax({
-        type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataAllMonth.shtml?userId="+$('#userId').val(),
-        success : function(data) {
-            data = JSON.parse(data)
-            var rateData
-            for(i in data) {//i 就是键，data[i]就是值
-                xdataLine.push(i)
-                rateData = data[i]
-                var score = [],avg = 0,sum = 0
-                rateData.forEach((item) => {
-                    score.push(item.score)
-                })
-                score = score.sort()
-                score.pop()  // 删除尾数
-                score.shift() // 删除第一个元素
-                
-                score.forEach(function (item, index, array) {
-                    sum += item
-                })
-                avg = accDiv(sum,score.length).toFixed(1)
-                $("#avg").text(avg)
-                $("#avgPercent").text(accDiv(avg,0.6).toFixed(1))
-                ydataLine.push(avg)
-            }
-            
-            
-            
-            
-            // 指定图表的配置项和数据
-            option2 = {
-                title : {
-                    text : '分数统计1111',
-                    x:'center'
-                },
-                legend : {
-                    data : [ '平均分' ]
-                },
-                xAxis : {
-                    type : 'category',
-                    data : xdataLine
-                },
-                yAxis : {
-                    type : 'value',
-                    max: 60
-                },
-                series : [ {
-                    name : '分数',
-                    type : 'line',
-                    data : ydataLine,
-                    label:{ 
-                        normal:{ 
-                        show: true} 
-                    },
-                  markLine : {
-                      data : [ {
-                          type : 'average',
-                          name : '平均值'
-                      } ]
-                  }
-                } ]
-            }
-            
-            myLineChart.setOption(option2, true)
-        }
-    })
-    
+ $.ajax({
+     type : "GET",
+     url : "/Logistics/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
+     success : function(data) {
+         data = JSON.parse(data)
+         for(i in data) {//i 就是键，data[i]就是值
+             xdataLine.push(data[i].month)
+             ydataLine.push(data[i].allscore)
+         }
+         
+         // 指定图表的配置项和数据
+         option2 = {
+             title : {
+                 text : '分数统计',
+                 x:'center'
+             },
+             legend : {
+                 data : [ '平均分' ]
+             },
+             xAxis : {
+                 type : 'category',
+                 data : xdataLine
+             },
+             yAxis : {
+                 type : 'value',
+                 max: 60
+             },
+             series : [ {
+                 name : '分数',
+                 type : 'line',
+                 data : ydataLine,
+                 label:{ 
+                     normal:{ 
+                     show: true} 
+                 },
+               markLine : {
+                   data : [ {
+                       type : 'average',
+                       name : '平均值'
+                   } ]
+               }
+             } ]
+         }
+         
+         lineChart.setOption(option2, true)
+     }
+ })
+ 
 }
 
-function drawPie(){
-    
-    if(exitFlag){
-        return
-    }
+// 饼状图
+function drawPie(monthId){
     
     $.ajax({
         type : "GET",
@@ -289,6 +206,68 @@ function drawPie(){
     
 }
 
+
+//指定月份的平均分
+function targetMonthAvgScore(monthId){
+    $.ajax({
+        type : "GET",
+        url : "/Logistics/userInfo/targetMonthAvgScore.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        success : function(data) {
+            $('#avg').text(data)
+            $('#avgPercent').text(accDiv(data,0.6).toFixed(1))
+        }
+    })
+    
+}
+
+//当月评分是否完成
+function isComplete(monthId){
+    var result;
+    $.ajax({
+        type: "POST",
+        url: '/Logistics/check/rateProgress.shtml?operationPostId='+$('#userId').val()+'&monthId='+monthId,
+        async: false,// 让ajax进行同步请求
+        success: function(data){
+            
+            if(+data < 10){
+                layer.alert('还有'+(10 - data)+'人未完成评分', {
+                    icon: 0,
+                    skin: 'layer-ext-moon'
+                  })
+                  $("#parentAvg").text("请稍后查看")
+                  $("#parentAvgPercent").text('')
+                  result = false
+            } else {
+                result = true
+            }
+        }
+     })
+    
+    return result;
+}
+
+
+// 开始渲染echarts
+function drawEcharts(monthId){
+    // 重置echarts中的参数
+   if(isComplete(monthId)){
+       barChart = echarts.init(document.getElementById('barMain'))  
+       pieChart = echarts.init(document.getElementById('pieMain'))
+       lineChart = echarts.init(document.getElementById('lineMain'))
+       
+       // 加载柱状图
+       drawBar(monthId)
+       // 加载饼状图
+       drawPie(monthId)
+       // 加载折线图
+       drawLine()
+       // 得到平均数
+       targetMonthAvgScore(monthId)
+   }
+}
+
 $(function() {
-    drawBar()
+    //monthId 会自动匹配 id为 monthId 的元素
+    drawEcharts(monthId.value)
 })
+

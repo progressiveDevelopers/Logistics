@@ -1,6 +1,7 @@
+var form = null;
 layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   var table = layui.table //表格
-  var form = layui.form
+  form = layui.form
   var element = layui.element;
   
   //执行一个 table 实例
@@ -37,53 +38,57 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
           ]],
           done: function(res, curr, count){ // table渲染结束回调
                   element.render(); // 渲染进度条
-                  // 给进度条所在的单元格添加悬浮事件
-                  $('.progressHover').parent().hover(
-                      function () {
-                          var obj = this;
-                          layer.tips('正在查询请稍等。。。', obj, {
-                              tips: [1, '#78BA32'], // 绿色
-                              time: 1000
-                            });
-                          // 设置定时，并不是悬浮上去就执行查询操作
-                          timer=setTimeout(function(){
-                              var userId = $(obj).find(".operationPostId").text()
-                              $.ajax({
-                                  type: "POST",
-                                  url: '/Logistics/check/notRatePeople.shtml?operationPostId='+userId+'&monthId='+$('#monthId').val(),
-                                  success: function(data){
-                                      var msg = "";
-                                      data = JSON.parse(data)
-                                      $.each(data,function(i, v){
-                                          msg += v+","
-                                      })
-                                      msg=msg.substring(0, msg.length-1)
-                                      layer.tips(msg+'还未评分', obj, {
-                                          tips: [1, '#78BA32'], // 绿色
-                                          time: 12000 //显示12s
-                                        })
-                                  }
-                               })
-                          },1000);
-                      },
-                      function () {
-                          // 当鼠标移除时清除定时任务
-                          if(timer) {
-                              clearTimeout(timer)
-                          }
-                      }
-                  )
-                 // 悬浮事件 end
-                 // 详情按钮禁用
-                 // 根绝进度条找到当前行的查看详情按钮
-                 var aobj = $('.progressHover').parent().parent().next().find('a')
-                 // 添加禁用样式
-                 aobj.addClass("layui-btn-disabled")
-                 // 移除事件绑定
-                 aobj.removeAttr("lay-event")
-                  
+                  progressHover();
                }
         };
+  
+  //给进度条所在的单元格添加悬浮事件
+  function progressHover(){
+      $('.progressHover').parent().hover(
+          function () {
+              var obj = this;
+              layer.tips('正在查询请稍等。。。', obj, {
+                  tips: [1, '#78BA32'], // 绿色
+                  time: 1000
+                });
+              // 设置定时，并不是悬浮上去就执行查询操作
+              timer=setTimeout(function(){
+                  var userId = $(obj).find(".operationPostId").text()
+                  $.ajax({
+                      type: "POST",
+                      url: '/Logistics/check/notRatePeople.shtml?operationPostId='+userId+'&monthId='+$('#monthId').val(),
+                      success: function(data){
+                          var msg = "";
+                          data = JSON.parse(data)
+                          $.each(data,function(i, v){
+                              msg += v+","
+                          })
+                          msg=msg.substring(0, msg.length-1)
+                          layer.tips(msg+'还未评分', obj, {
+                              tips: [1, '#78BA32'], // 绿色
+                              time: 12000 //显示12s
+                            })
+                      }
+                   })
+              },1000);
+          },
+          function () {
+              // 当鼠标移除时清除定时任务
+              if(timer) {
+                  clearTimeout(timer)
+              }
+          }
+      )
+     // 悬浮事件 end
+     // 详情按钮禁用
+     // 根绝进度条找到当前行的查看详情按钮
+     var aobj = $('.progressHover').parent().parent().next().find('a')
+     // 添加禁用样式
+     aobj.addClass("layui-btn-disabled")
+     // 移除事件绑定
+     aobj.removeAttr("lay-event")
+      
+  }
   
   // 渲染 table
   table.render(tableOpt)
@@ -96,7 +101,6 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
       var data = rowData.data //获得当前行数据
     ,layEvent = rowData.event; //获得 lay-event 对应的值
     if(layEvent === 'detail'){
-        console.log(this)
         //弹出层iframe窗
         var month = $('#month').val()
         var userId = data.userId
@@ -120,6 +124,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   table.on('sort(layuiTable)', function(obj){
       // table 按列排序之后重新渲染进度条
       element.render();
+      progressHover();
     });
   
   // 下拉框change事件
@@ -132,3 +137,32 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   });
   
 });
+
+$('#exportExcel').click(function(){
+    var url,beginMonth,endMonth
+    layer.open({
+        type: 1
+        ,title:"请选择日期区间"
+        ,closeBtn: false
+        ,area: ['500px', '350px']
+        ,shade: 0.8
+        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+        ,btn: ['导出excel', '取消']
+        ,btnAlign: 'c'
+        ,moveType: 1 //拖拽模式，0或者1
+        ,content: $('#exportArea').html()
+        ,success: function(layero){ // 弹窗的内容
+            // 渲染form表单元素,下拉框
+            form.render()
+            beginMonth = layero.find('#beginMonth')
+            endMonth = layero.find('#endMonth')
+        }
+        ,yes:function(index){
+            url = '/userInfo/export.shtml?beginMonth='+beginMonth.val()+'&endMonth='+endMonth.val()
+            grid.exportData(url)
+            layer.close(index);
+        }
+        
+      });
+})
+

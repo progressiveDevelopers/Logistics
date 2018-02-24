@@ -77,4 +77,23 @@ public interface UserInfoMapper extends BaseMapper {
      * @throws Exception
      */
     Double targetMonthAvgScore(Integer userId,Integer monthId) throws Exception;
+    
+    /**
+     * 导出两个团队的人员信息和平均分
+     * @param param 包含 开始月份和结束月份 id
+     * @return
+     */
+    List<Map<String, Object>> exportSubordinateRateForMge(Map<String, Object> param);
+    
+    /**
+     * 根据当前用户信息导出查询其下属的信息和平均分
+     * 在同一个组,但是等级又比当前用户低
+     * @param param 包含当前用户信息，开始月份和结束月份 id
+     * @return
+     */
+    List<Map<String, Object>> exportSubordinateRate(Map<String, Object> param);
+    
+    
+    
+    
 }

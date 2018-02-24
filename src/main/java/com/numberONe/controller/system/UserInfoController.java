@@ -1,5 +1,4 @@
 package com.numberONe.controller.system;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -294,21 +293,41 @@ public class UserInfoController extends BaseController {
     }
     
     @RequestMapping("/export")
-	public void download(HttpServletRequest request, HttpServletResponse response,Integer monthId) throws IOException {
+	public void download(HttpServletRequest request, HttpServletResponse response,Integer beginMonth,Integer endMonth) throws Exception {
+        
 		String fileName = "考评列表";
 		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
-		//exportData = 
-		// [{"colkey":"sql_info","name":"SQL语句","hide":false},
-		// {"colkey":"total_time","name":"总响应时长","hide":false},
-		// {"colkey":"avg_time","name":"平均响应时长","hide":false},
-		// {"colkey":"record_time","name":"记录时间","hide":false},
-		// {"colkey":"call_count","name":"请求次数","hide":false}
-		// ]
 		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
 		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
 
-		List<Map<String,Object>> listUserInfoView  = userInfoMapper.findSubordinateRateForMge(monthId);
+		//---------------------------
+		
+		// 当前账户信息
+        UserFormMap userMge = getFormMap(UserFormMap.class);
+        userMge = (UserFormMap) Common.findUserSession(request);
+
+        // 当前用户的全量信息
+        UserInfoView userInfoView = userInfoMapper.findById((Integer) userMge.get("id"));
+
+        List<Map<String,Object>> listUserInfoView = null;
+        
+        // 如果是管理层则可以查看两个团队的人员信息
+        // 下属的信息全量
+        
+        Map<String,Object> param = new HashMap<String,Object>();
+        
+        param.put("userInfoView", userInfoView);
+        param.put("beginMonth", beginMonth);
+        param.put("endMonth", endMonth);
+        
+        if(userInfoView.getLevel() >  10) {
+            listUserInfoView = userInfoMapper.exportSubordinateRateForMge(param);
+        } else {
+            listUserInfoView = userInfoMapper.exportSubordinateRate(param);
+        }
+      //---------------------------
+		
 		POIUtils.exportToExcel(response, listMap, listUserInfoView, fileName);
 	}
 
