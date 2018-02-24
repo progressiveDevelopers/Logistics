@@ -77,7 +77,7 @@
 		a.status,
 		b.description as description
 		from check_task_assignment as  a ,ly_user as  b  
-		where evaluatorId = #{evaluatorId} and status = '0' and a.operationPostId = b.id
+		where evaluatorId = #{evaluatorId} and status = '0' and a.operationPostId = b.id and a.month = #{month}
 	</select>
 
 
@@ -86,7 +86,7 @@
 		select
 		count(*)
 		from check_task_assignment
-		where evaluatorId = #{evaluatorId} and status = '0'
+		where evaluatorId = #{evaluatorId} and status = '0' and month = #{month}
 	</select>
 	
 	<select id="findTaskList" parameterType="java.util.HashMap"
@@ -112,8 +112,8 @@
 	   		b.operationPost as operationPost,
 	   		sum(a.checkresult) as result
 	   FROM check_result a,
-	   (SELECT evaluatorId,operationPostId,operationPost,month FROM check_task_assignment where`status`='1' and evaluatorId=#{evaluatorId} and month=#{month}) b
-	   where a.evaluatorId=b.evaluatorId AND a.operationPostId = b.operationPostId
+	   (SELECT evaluatorId,operationPostId,operationPost,month FROM check_task_assignment where`status`='1' and evaluatorId=#{evaluatorId} and monthId=#{monthId}) b
+	   where a.evaluatorId=b.evaluatorId AND a.operationPostId = b.operationPostId AND a.`month` = b.`month`
 	   GROUP BY a.operationPostId
  
 	</select>
@@ -123,7 +123,7 @@
 		select
 		count(*)
 		from check_task_assignment
-		where evaluatorId = #{evaluatorId} and status = '1'
+		where evaluatorId = #{evaluatorId} and status = '1' and monthId = #{monthId}
 	</select>
 
 </mapper>
