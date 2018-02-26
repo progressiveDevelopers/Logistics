@@ -94,7 +94,7 @@
 		select
 		*
 		from check_task_assignment
-		where operationPostId = #{operationPostId} 
+		where operationPostId = #{operationPostId} and month = #{month}
 	</select>
 	
 	<select id="getAllResult" parameterType="java.util.HashMap"
