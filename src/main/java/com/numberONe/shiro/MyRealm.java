@@ -99,6 +99,7 @@ public class MyRealm extends AuthorizingRealm {
 			Session session = SecurityUtils.getSubject().getSession();
 			session.setAttribute("userSession", userFormMaps.get(0));
 			session.setAttribute("userSessionId", userFormMaps.get(0).get("id"));
+			session.setAttribute("username", username);// 登陆帐号
 			session.setAttribute("userInfoSession", userInfoMapper.findById((Integer) userFormMaps.get(0).get("id")));
 			return authenticationInfo;
 		} else {

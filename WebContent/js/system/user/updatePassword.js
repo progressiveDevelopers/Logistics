@@ -2,12 +2,12 @@ function updatePasswordLayer(){
 	//加载层
  	var index = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
 	//iframe层-禁滚动条
-	layer.open({
+ 	layer.open({
 	    type: 2,
 	    title:'修改密码',
-	    area: ['550px', '65%'],
+	    area: ['550px', '250px'],
 	    skin: 'layui-layer-rim', //加上边框
-	    content: [rootPath+'/user/updatePassword.shtml', 'no']
+	    content: [rootPath+'/user/updatePassword.shtml?change='+$('#change').val(), 'no']
 	});
 	//关闭加载效果
 	layer.close(index);
@@ -31,6 +31,21 @@ jQuery.validator.addMethod("same", function(value, element) {
 
 //加入数据校验证
 $(function() {
+    
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+           var str = url.substr(1);
+           strs = str.split("&");
+           for(var i = 0; i < strs.length; i ++) {
+              theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+           }
+        }
+        return theRequest;
+     }
+    
+    console.log('112');
 	$("#formUpdatePwd").validate({
 		submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
 			ly.ajaxSubmit(form, {// 验证新增是否成功
@@ -38,11 +53,25 @@ $(function() {
 				dataType : "json",//ajaxSubmi带有文件上传的。不需要设置json
 				success : function(data) {
 					if (data == "success") {
-						layer.confirm('修改密码成功!是否关闭窗口?', function(index) {
-							layer.close(index);
-							var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-							parent.layer.close(index); //再执行关闭   
-						});
+					    layer.msg('修改密码成功', {
+					        time: 0 //不自动关闭
+					        ,btn: ['我知道了']
+					        ,yes: function(index){
+					            console.log('11233333333');
+					            //--------------
+					            
+					            var param = GetRequest()['change']
+					            
+					            if(param != '1'){
+					                window.parent.location.reload();
+					            }
+					            
+					            //--------------
+					            
+					            var parindex = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+					            parent.layer.close(parindex); //再执行关闭 
+					        }
+					      });
 					} else {
 						layer.msg('修改密码失败！', {icon: 5});
 					}

@@ -28,10 +28,7 @@ $(function() {
 							    ]]
 							  });
  							
- 							
  							parent.layer.close(index); //再执行关闭 
- 							
- 						
  							
 				        	return false;
  						});
@@ -43,8 +40,6 @@ $(function() {
  			});
  		},
  		
- 		
- 		
  		errorPlacement : function(error, element) {//自定义提示错误位置
  			$(".l_err").css('display','block');
  			//element.css('border','3px solid #FFCCCC');
@@ -54,17 +49,6 @@ $(function() {
  			$(".l_err").css('display','none');
  		}
  	});
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 });
 

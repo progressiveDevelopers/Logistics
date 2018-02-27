@@ -22,6 +22,7 @@
 <body onload="javascript:to_top()" 
 	style="background-image: url('${ctx }/admin_files/9.jpg');margin-top:0px;background-repeat:no-repeat;background-size: 100% auto;">
 	<div id="loginbox" style="padding-top: 10%;">
+    <input type="hidden" id="change" value="${param.change}">
 		<form id="loginform" name="loginform" class="form-vertical"
 			style="background-color: rgba(0, 0, 0, 0.5) !important; background: #000; filter: alpha(opacity = 50); *background: #000; *filter: alpha(opacity = 50); /*黑色透明背景结束*/ color: #FFF; bottom: 0px; right: 0px; border: 1px solid #000;"
 			action="${ctx }/login.shtml"
@@ -67,15 +68,16 @@
 		if ("${error}" != "" || "${param.error}" != "") {
 			alert("${error}"+ "${param.error}");
 			if("${change}" == "1" || "${param.change}" == "1"){
-			    updatePasswordLayer();
+			    $("input[name='username']").val('${param.username}')
+			    updatePasswordLayer()
 			}
 		};
 		function checkUserForm() {
-			document.loginform.submit();
+			document.loginform.submit()
 		}
 		function to_top(){
 			if(window != top){
-		        top.location.href=location.href;
+		        top.location.href=location.href
 		    }
 		}
 	</script>

@@ -22,6 +22,7 @@ public class PasswordInterceptor implements HandlerInterceptor {
         System.out.println(session.getAttribute("password")); 
         if("123456789".equals(session.getAttribute("password"))) {
             mv.addObject("error", "密码过于简单请及时修改");
+            mv.addObject("username",session.getAttribute("username"));
             mv.addObject("change", 1);
             mv.setViewName("redirect:login.shtml");
         }

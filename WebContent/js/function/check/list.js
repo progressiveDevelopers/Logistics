@@ -27,8 +27,6 @@ $(function() {
 		      ,{fixed: 'right', width: "30%", align:'center', toolbar: '#barDemo'}
 		    ]]
 		  });
-		  
-		
 	
 		//监听工具条
 		  table.on('tool(check)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -54,14 +52,26 @@ $(function() {
 		    		type : 2,
 		    		area : [ "950px", "80%" ],
 		    		isOutAnim: 6,
-		    		content : rootPath + '/check/checkUI.shtml?id='+ id + '&operationPost=' +  operationPost + '&operationPostId=' +   operationPostId                  
+		    		content : rootPath + '/check/checkUI.shtml?id='+ id + '&operationPost=' +  operationPost + '&operationPostId=' +   operationPostId,
+		    		end:function(){
+		    	          table.render({
+		    	             elem: '#test'
+		    	            ,skin: 'line' //行边框风格
+		    	            ,even: true //开启隔行背景
+		    	            ,url: rootPath + '/check/findByPage.shtml' //数据接口
+		    	            ,page: true //开启分页
+		    	            ,cols: [[ //表头
+		    	               {type: 'numbers',  title: '序号' , width: "10%",  sort: true, fixed: 'left'}
+		    	              ,{field: 'operationPost', title: '姓名', width:"20%",   sort: true}
+		    	              ,{field: 'description', title: '团队/岗位', width:"40%",   sort: true}
+		    	              ,{fixed: 'right', width: "30%", align:'center', toolbar: '#barDemo'}
+		    	            ]]
+		    	          });
+		    		}
 		    	});
 		    }
 		  });
-		  
-		  
 
-		  
 		  //分页
 		  laypage.render({
 		    elem: 'pageDemo' //分页容器的id
@@ -74,21 +84,5 @@ $(function() {
 		      }
 		    }
 		  });
-		
-	
-	
-	
-	
 	});
-	
- 
-	  
-	  
-	  
-	  
 });
-
-
- 
-
-
