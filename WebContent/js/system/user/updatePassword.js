@@ -45,7 +45,6 @@ $(function() {
         return theRequest;
      }
     
-    console.log('112');
 	$("#formUpdatePwd").validate({
 		submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
 			ly.ajaxSubmit(form, {// 验证新增是否成功
@@ -57,17 +56,10 @@ $(function() {
 					        time: 0 //不自动关闭
 					        ,btn: ['我知道了']
 					        ,yes: function(index){
-					            console.log('11233333333');
-					            //--------------
-					            
 					            var param = GetRequest()['change']
-					            
 					            if(param != '1'){
 					                window.parent.location.reload();
 					            }
-					            
-					            //--------------
-					            
 					            var parindex = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 					            parent.layer.close(parindex); //再执行关闭 
 					        }

@@ -110,13 +110,10 @@ public class CheckController extends BaseController {
 			e.printStackTrace();
 		}
 		
-		
 		//layTableUtils.setData(checkMapper.findByPage(checkTaskAssignmentFormMap));
 		layTableUtils.setData(checkMapper.findAssignTask(map));
 		System.out.println(layTableUtils.toString());
 		return layTableUtils;
-
-
 	}
 
 	@RequestMapping("resList")
