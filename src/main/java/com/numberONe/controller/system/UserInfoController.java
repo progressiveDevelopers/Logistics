@@ -295,14 +295,18 @@ public class UserInfoController extends BaseController {
     @RequestMapping("/export")
 	public void download(HttpServletRequest request, HttpServletResponse response,Integer beginMonth,Integer endMonth) throws Exception {
         
+        if(beginMonth > endMonth) {
+            Integer temp = beginMonth;
+            beginMonth = endMonth;
+            endMonth = temp;
+        }
+        
 		String fileName = "考评列表";
 		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
 		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
 		List<Map<String, Object>> listMap = JsonUtils.parseJSONList(exportData);
 
-		//---------------------------
-		
 		// 当前账户信息
         UserFormMap userMge = getFormMap(UserFormMap.class);
         userMge = (UserFormMap) Common.findUserSession(request);
@@ -326,7 +330,6 @@ public class UserInfoController extends BaseController {
         } else {
             listUserInfoView = userInfoMapper.exportSubordinateRate(param);
         }
-      //---------------------------
 		
 		POIUtils.exportToExcel(response, listMap, listUserInfoView, fileName);
 	}

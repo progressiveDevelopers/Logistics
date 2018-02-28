@@ -1,4 +1,5 @@
 var form = null;
+var month = $('#beginMonth').val()
 layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   var table = layui.table //表格
   form = layui.form
@@ -134,6 +135,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
       $('#monthDescription').text(data.elem.selectedOptions["0"].childNodes["0"].nodeValue)
       $('#search').attr('href',"javascript:grid.exportData('"+"/userInfo/export.shtml?monthId=" + data.value+"')")
       table.render(tableOpt);
+      month = data.value
   });
   
 });
@@ -152,10 +154,13 @@ $('#exportExcel').click(function(){
         ,moveType: 1 //拖拽模式，0或者1
         ,content: $('#exportArea').html()
         ,success: function(layero){ // 弹窗的内容
-            // 渲染form表单元素,下拉框
-            form.render()
             beginMonth = layero.find('#beginMonth')
             endMonth = layero.find('#endMonth')
+            // 指定下拉框的值
+            beginMonth.val(month)
+            endMonth.val(month)
+            // 选中指定值
+            form.render('select');
         }
         ,yes:function(index){
             url = '/userInfo/export.shtml?beginMonth='+beginMonth.val()+'&endMonth='+endMonth.val()

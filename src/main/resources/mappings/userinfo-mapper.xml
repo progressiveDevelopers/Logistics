@@ -261,7 +261,7 @@
             WHERE
                 result.monthid &gt;= #{beginMonth} AND result.monthid &lt;= #{endMonth}
         ) m ON t.userId = m.nameId
-        ORDER BY m.`month` DESC
+        ORDER BY m.`month` DESC, m.nameid ASC 
     </select>
     
     <select id="exportSubordinateRateForMge" resultType="map" parameterType="map">
@@ -298,7 +298,7 @@
             WHERE
                 result.monthid &gt;= #{beginMonth} AND result.monthid &lt;= #{endMonth}
         ) m ON t.userId = m.nameId
-        ORDER BY m.`month` DESC
+        ORDER BY m.`month` DESC, m.nameid ASC 
     </select>
     
     
