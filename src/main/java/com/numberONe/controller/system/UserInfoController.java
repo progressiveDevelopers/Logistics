@@ -302,6 +302,12 @@ public class UserInfoController extends BaseController {
         }
         
 		String fileName = "考评列表";
+		
+		if(beginMonth.equals(endMonth) ) {
+		    CheckMonthFormMap month = checkMonthMapper.findbyFrist("id",beginMonth.toString(),CheckMonthFormMap.class);
+		    fileName += "("+month.getStr("description")+")";
+		}
+		
 		UserFormMap userFormMap = findHasHMap(UserFormMap.class);
 		String exportData = userFormMap.getStr("exportData");// 列表头的json字符串
 
