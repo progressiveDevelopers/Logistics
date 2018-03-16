@@ -21,11 +21,19 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	public Integer countCompleteRate(Map<String,Object> param) throws Exception;
 	
 	/**
-	 * 查询还未完成评分的客户经理名字
+	 * 查询此中后台人员还有哪些客户经理没有对其评价
 	 * @param param 包含月份Id和中后台人员Id
 	 * @return
 	 * @throws Exception
 	 */
 	public List<String> notCompletedRate(Map<String,Object> param) throws Exception;
+
+	/**
+	 * 查询最近月份还未完成评分工作的客户经理名称
+	 * @param param 包含月份Id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String,Object>> notCompletedRateForAll(Map<String,Object> param) throws Exception;
 	
 }

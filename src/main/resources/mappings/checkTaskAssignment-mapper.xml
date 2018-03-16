@@ -93,4 +93,19 @@
         AND task.`status` = 0
     </select>
     
+    <select id="notCompletedRateForAll" resultType="map">
+        SELECT
+            task.evaluatorId,
+        	task.evaluator,
+        	COUNT(task.evaluator) AS `num`
+        FROM
+            check_task_assignment task
+        WHERE
+            task.monthId = #{monthId}
+        AND task.`status` = 0
+        AND task.deletestatus = 0
+        GROUP BY task.evaluator
+    </select>
+    
+    
 </mapper>

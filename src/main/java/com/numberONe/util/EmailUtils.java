@@ -21,8 +21,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.numberONe.constant.BaseConstant;
+import com.numberONe.constant.EmailConstant;
 
 /**
  * 简单的邮件发送
@@ -31,7 +33,9 @@ import com.numberONe.constant.BaseConstant;
  * 
  */
 public class EmailUtils {
-
+    
+    private  static  final Logger log = LoggerFactory.getLogger(EmailUtils.class);
+    
     public static Properties properties = getEmailProps();
 
     
@@ -51,38 +55,39 @@ public class EmailUtils {
     }
 
     @Test
-    public void unRate() throws IOException, AddressException, MessagingException {
+    public void unRate() throws Exception {
 
-        String htmlTemp = getEmailTemplate(BaseConstant.TEMP_UNRATE);
+        String htmlTemp = getEmailTemplate(EmailConstant.TEMP_UNRATE);
 
         String content = htmlTemp.replace("${name}", "陈宇浩").replace("${LogisticsAddress}",
-                getProperty(BaseConstant.LOGISTICS_ADDRESS));
+                getProperty(EmailConstant.LOGISTICS_ADDRESS));
 
-        sendHtmlMail("chenyh.me@gmail.com", getProperty(BaseConstant.LOGISTICS_ADDRESS), content);
+        //sendHtmlMail("chenyh.me@gmail.com", getProperty(EmailConstant.LOGISTICS_ADDRESS), content);
     }
     
+    
     @Test
-    public void uPwd() throws AddressException, IOException, MessagingException {
+    public void uPwd() throws Exception {
         
-        String htmlTemp = getEmailTemplate(BaseConstant.TEMP_UPWD);
+        String htmlTemp = getEmailTemplate(EmailConstant.TEMP_UPWD);
         String content = htmlTemp.replace("${name}", "陈宇浩")
                 .replace("${newpwd}","123456");
 
-        sendHtmlMail("chenyh.me@gmail.com",getProperty(BaseConstant.EMAIL_TITLE_UPWD), content);
+        sendHtmlMail("chenyh.me@gmail.com",getProperty(EmailConstant.EMAIL_TITLE_UPWD), content);
         
     }
     
     
     // 得到邮件HTML模板
-    public static String getEmailTemplate(String tempName) throws FileNotFoundException {
+    public static String getEmailTemplate(String tempName) throws Exception {
         String str = null;
         try (FileInputStream in = new FileInputStream(EmailUtils.class
                 .getResource(properties.getProperty(tempName)).getFile());
                 InputStreamReader reader = new InputStreamReader(in);
                 BufferedReader br = new BufferedReader(reader)){
             str = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new Exception(e);
         }
 
         return str;
@@ -97,9 +102,8 @@ public class EmailUtils {
      * @throws MessagingException 
      * @throws AddressException 
      */
-    public void sendHtmlMail(String toEmail,String subject, String centent)
+    public static void sendHtmlMail(String toEmail,String subject, String centent)
             throws IOException, AddressException, MessagingException {
-
         // 0.1 确定连接位置
         Properties props = new Properties();
         // 设置邮箱smtp服务器的地址，
@@ -120,7 +124,6 @@ public class EmailUtils {
         };
 
         Session session = Session.getDefaultInstance(props, authenticator);
-
         // 2 创建消息html版
         MimeMessage message = new MimeMessage(session);
         // 2.1 发件人 我们自己的邮箱地址，就是名称
@@ -134,7 +137,7 @@ public class EmailUtils {
         message.setContent(centent, "text/html;charset=UTF-8");
         // 3发送消息
         Transport.send(message);
-        System.out.println("发送成功");
+        log.error("邮件发送成功内容--》"+centent);
     }
     
     
@@ -169,7 +172,10 @@ public class EmailUtils {
         Transport.send(message);// 发送
 
     }
-
+    
+    /**
+     * 从email.properties得到指定key的值
+     * */
     public static String getProperty(String key) {
         return properties.getProperty(key);
     }

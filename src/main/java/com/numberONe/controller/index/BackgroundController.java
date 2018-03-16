@@ -1,17 +1,20 @@
 package com.numberONe.controller.index;
 
 import java.io.BufferedInputStream;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,10 +25,10 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,12 +36,17 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.mysql.jdbc.Connection;
+import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserLoginFormMap;
+import com.numberONe.exception.ConfigFileNotFondException;
+import com.numberONe.exception.PasswordErrorExpection;
 import com.numberONe.mapper.ResourcesMapper;
+import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserLoginMapper;
 import com.numberONe.util.Common;
+import com.numberONe.util.EmailUtils;
 import com.numberONe.util.TreeObject;
 import com.numberONe.util.TreeUtil;
 
@@ -59,6 +67,9 @@ public class BackgroundController extends BaseController {
 
 	@Inject
 	private UserLoginMapper userLoginMapper;
+	
+	@Inject
+	private UserInfoMapper userInfoMapper;
 	
 	/**
 	 * @return
@@ -230,4 +241,47 @@ public class BackgroundController extends BaseController {
 		return "/install";
 	}
 
+	
+	@RequestMapping("unrate/sendEmail")
+	@ResponseBody
+	public Map<String,String> sendEmailForUnrate(@RequestBody Map<String,List<Integer>> param) {
+	    Map<String,String> result = new HashMap<>(); 
+	    
+        result.put("code", "200");
+        result.put("msg", "操作成功");
+	    
+	    List<Integer> ids = param.get("evaluatorId");
+	    
+	    if(ids == null || ids.size() == 0) {
+	        result.put("code", "500");
+	        return result;
+	    }
+	    
+	    List<Map<String, Object>> listUserInfo = userInfoMapper.findByIds(ids);
+	    
+	    // 得到邮件模板
+	    String emailTemplate = null;
+        try {
+            emailTemplate = EmailUtils.getEmailTemplate(EmailConstant.TEMP_UNRATE+"1");
+        } catch (Exception e) {
+            throw new ConfigFileNotFondException();
+        }
+        
+	    // 替换关键字
+        String shiftContent = emailTemplate.replace("${LogisticsAddress}",
+                EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
+	    
+	    listUserInfo.stream()
+	                .forEach((x) -> {
+                        String targetContent = shiftContent.replace("${name}", (String)x.get("userName"));
+                            try {
+                                EmailUtils.sendHtmlMail((String)x.get("email"), EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), targetContent);
+                            } catch (IOException | MessagingException e) {
+                                throw new PasswordErrorExpection("请检查网络和发送方邮件密码是否正确");
+                            }
+	                });
+	    return result;
+	}
+	
+	
 }

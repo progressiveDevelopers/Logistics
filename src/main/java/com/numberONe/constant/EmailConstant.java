@@ -1,11 +1,11 @@
 package com.numberONe.constant;
 
 /**
- * 全局常量
+ * email 常量key值
  * @author ChenYuhao
  *
  */
-public class BaseConstant {
+public class EmailConstant {
     
     /** 邮件模板（HTML)路径（未评分） */
     public static final String TEMP_UNRATE = "emailTempPathForUnRate";
@@ -21,5 +21,4 @@ public class BaseConstant {
 
     /** 邮件标题（修改密码） */
     public static final String EMAIL_TITLE_UPWD = "emailTitleForUpwd";
-
 }

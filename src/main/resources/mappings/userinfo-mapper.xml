@@ -46,7 +46,15 @@
         <result column="groupId" property="groupId" />
         <result column="groupName" property="groupName" />
     </resultMap>
-
+    
+    
+    <select id="findByIds" parameterType="list" resultType="map"> 
+        SELECT userName,email FROM ly_user WHERE id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            ${id}
+        </foreach>
+    </select>
+    
     <select id="findByPage" resultType="com.numberONe.entity.UserInfoFormMap">
         select
         <include refid="selectId" />

@@ -93,7 +93,12 @@ public interface UserInfoMapper extends BaseMapper {
      */
     List<Map<String, Object>> exportSubordinateRate(Map<String, Object> param);
     
-    
+    /**
+     * 通过Integer数组查询用户信息 包含姓名和邮箱
+     * @param ids id
+     * @return
+     */
+    List<Map<String, Object>> findByIds(List<Integer> ids);
     
     
 }

@@ -359,7 +359,7 @@ public class CheckController extends BaseController {
 	
 	
 	/**
-     * 查询还有哪些客户经理没有评分
+     * 查询此中后台人员还有谁没有对其评价
      * @param operationPostId 被评价人id
      * @param monthId
      * @return
@@ -374,4 +374,32 @@ public class CheckController extends BaseController {
        return  checkTaskAssignmentMapper.notCompletedRate(param);
     }
 	
+    /**
+     * 查询还有哪些客户经理没有完成评分进度
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping("rateProgressData")
+    @ResponseBody
+    public LayTableUtils<Map<String,Object>> rateProgress () throws Exception {
+        Map<String,Object> param = new HashMap<String,Object>();
+        param.put("monthId", checkMonthMapper.getCurrentMonth().get("id"));
+        LayTableUtils<Map<String,Object>> layTableUtils = new LayTableUtils<>();
+        
+        layTableUtils.setCode(0);
+        layTableUtils.setCount(1000);
+        layTableUtils.setData(checkTaskAssignmentMapper.notCompletedRateForAll(param));
+        
+        
+       return  layTableUtils;
+    }
+    
+    /** 
+     * 评分进度页面
+     */
+    @RequestMapping("rateProgressView")
+    public String notRatePeopleForAll () throws Exception {
+        return Common.BACKGROUND_PATH + "/function/check/rateProgress";
+    }
+    
 }
