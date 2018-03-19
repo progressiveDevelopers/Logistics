@@ -201,16 +201,23 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
 	@SystemLog(module="系统管理",methods="用户管理-修改密码")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editPassword() throws Exception{
+	public String editPassword(HttpServletRequest request) throws Exception{
 		// 当验证都通过后，把用户信息放在session里
-		UserFormMap userFormMap = getFormMap(UserFormMap.class);
-		userFormMap.put("password", userFormMap.get("newpassword"));
+	    UserFormMap userFormMap = getFormMap(UserFormMap.class);
+	    String newpassword = (String) userFormMap.get("newpassword");
+		userFormMap.put("password", newpassword);
+		
+		// 将信息保存在request中保存以便发送邮件
+		UserFormMap newuserFormMap = (UserFormMap) userMapper.findUserById(userFormMap);
+		request.setAttribute("newUserFormMap", newuserFormMap);
+		newuserFormMap.put("password", newpassword);
+		
 		//这里对修改的密码进行加密
 		PasswordHelper passwordHelper = new PasswordHelper();
 		passwordHelper.encryptPassword(userFormMap);
 		userMapper.editEntity(userFormMap);
 		//更改密码之后注销用户信息 
-		SecurityUtils.getSubject().logout(); 
+		SecurityUtils.getSubject().logout();
 		return "success";
 	}
 }

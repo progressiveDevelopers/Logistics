@@ -97,12 +97,12 @@ public class EmailUtils {
      * 
      * @param toEmail 发送给谁
      * @param subject 邮件标题
-     * @param centent 邮件内容
+     * @param content 邮件内容
      * @throws IOException 
      * @throws MessagingException 
      * @throws AddressException 
      */
-    public static void sendHtmlMail(String toEmail,String subject, String centent)
+    public static void sendHtmlMail(String toEmail,String subject, String content)
             throws IOException, AddressException, MessagingException {
         // 0.1 确定连接位置
         Properties props = new Properties();
@@ -134,10 +134,10 @@ public class EmailUtils {
         message.setSubject(properties.getProperty("emailTitleForUnRate"));
         // 2.4 正文
         // 设置编码，防止发送的内容中文乱码。
-        message.setContent(centent, "text/html;charset=UTF-8");
+        message.setContent(content, "text/html;charset=UTF-8");
         // 3发送消息
         Transport.send(message);
-        log.error("邮件发送成功内容--》"+centent);
+        log.error("邮件发送成功内容--》"+content);
     }
     
     
@@ -180,7 +180,12 @@ public class EmailUtils {
         return properties.getProperty(key);
     }
     
-    
+    /**
+     * 从email.properties得到指定key的值
+     * */
+    public void  resetProperty(String key) {
+        properties = getEmailProps();
+    }
     
 }
 

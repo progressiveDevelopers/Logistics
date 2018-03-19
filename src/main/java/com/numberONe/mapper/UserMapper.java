@@ -10,6 +10,6 @@ public interface UserMapper extends BaseMapper{
 
 	public List<UserFormMap> findUserPage(UserFormMap userFormMap);
 	
-	public List<UserFormMap> findUserById(UserFormMap userFormMap);
+	public UserFormMap findUserById(UserFormMap userFormMap);
 	
 }

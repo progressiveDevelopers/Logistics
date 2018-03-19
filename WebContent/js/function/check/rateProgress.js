@@ -68,14 +68,12 @@ $("#sendEmail").click(function(){
                   url: rootPath+"/unrate/sendEmail.shtml",
                   contentType:'application/json;charset=utf-8',
                   data: JSON.stringify(data),
-                  success: function(msg){
-                      layer.msg(msg);
+                  success: function(data){
+                      data = JSON.parse(data);
+                      layer.msg(data.msg)
                   },
                   error: function(XMLHttpRequest, textStatus, errorThrown){
-                      
-                      console.log(XMLHttpRequest.status)
-                      console.log(XMLHttpRequest.responseText)
-                      layer.msg(XMLHttpRequest.responseText);
+                      layer.msg(XMLHttpRequest.responseText)
                   }
                   
                });

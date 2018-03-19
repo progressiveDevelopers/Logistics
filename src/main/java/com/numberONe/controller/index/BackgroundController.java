@@ -40,8 +40,6 @@ import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserLoginFormMap;
-import com.numberONe.exception.ConfigFileNotFondException;
-import com.numberONe.exception.PasswordErrorExpection;
 import com.numberONe.mapper.ResourcesMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserLoginMapper;
@@ -247,13 +245,11 @@ public class BackgroundController extends BaseController {
 	public Map<String,String> sendEmailForUnrate(@RequestBody Map<String,List<Integer>> param) {
 	    Map<String,String> result = new HashMap<>(); 
 	    
-        result.put("code", "200");
-        result.put("msg", "操作成功");
+        result.put("msg", "邮件发送成功");
 	    
 	    List<Integer> ids = param.get("evaluatorId");
 	    
 	    if(ids == null || ids.size() == 0) {
-	        result.put("code", "500");
 	        return result;
 	    }
 	    
@@ -262,22 +258,24 @@ public class BackgroundController extends BaseController {
 	    // 得到邮件模板
 	    String emailTemplate = null;
         try {
-            emailTemplate = EmailUtils.getEmailTemplate(EmailConstant.TEMP_UNRATE+"1");
+            emailTemplate = EmailUtils.getEmailTemplate(EmailConstant.TEMP_UNRATE);
         } catch (Exception e) {
-            throw new ConfigFileNotFondException();
+           e.printStackTrace();
+           result.put("msg", "email配置文件找不到啦，赶紧联系管理员");
+           return result;
         }
         
 	    // 替换关键字
         String shiftContent = emailTemplate.replace("${LogisticsAddress}",
                 EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
 	    
-	    listUserInfo.stream()
-	                .forEach((x) -> {
+	    listUserInfo.forEach((x) -> {
                         String targetContent = shiftContent.replace("${name}", (String)x.get("userName"));
                             try {
                                 EmailUtils.sendHtmlMail((String)x.get("email"), EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), targetContent);
-                            } catch (IOException | MessagingException e) {
-                                throw new PasswordErrorExpection("请检查网络和发送方邮件密码是否正确");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                result.put("msg", "请检查网络和发送方邮件密码是否正确");
                             }
 	                });
 	    return result;

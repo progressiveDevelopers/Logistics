@@ -19,7 +19,8 @@
 		description,
 		locked,
 		credentialsSalt,
-		createTime
+		createTime,
+        email
 	</sql>
 
 	<select id="findUserPage" resultType="com.numberONe.entity.UserFormMap">

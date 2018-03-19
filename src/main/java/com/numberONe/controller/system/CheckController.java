@@ -206,17 +206,15 @@ public class CheckController extends BaseController {
 		String operationPostId = getPara("operationPostId");
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
 		userFormMap.put("id",   operationPostId);
-	 	List  userRes  =  null;
+	 	UserFormMap userRes  =  null;
 		try {
 			  userRes  = userMapper.findUserById(userFormMap);
-		
 		 
-		Map<?, ?> map = (Map<?, ?>) userRes.get(0);
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
 		List  res  = checkMapper.findByWhere(checkOptionFormMap);
 		model.addAttribute("res",   res);
-		model.addAttribute("operationPost", map.get("userName").toString());
-		model.addAttribute("id", map.get("id").toString());
+		model.addAttribute("operationPost", userRes.get("userName").toString());
+		model.addAttribute("id", userRes.get("id").toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

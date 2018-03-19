@@ -7,10 +7,17 @@ package com.numberONe.constant;
  */
 public class EmailConstant {
     
-    /** 邮件模板（HTML)路径（未评分） */
+    /** 
+     * 邮件模板（HTML)路径（未评分）
+     * 需要替换${name},${LogisticsAddress}
+     *  */
     public static final String TEMP_UNRATE = "emailTempPathForUnRate";
 
-    /** 邮件模板（HTML)路径（修改密码提醒） */
+    /** 
+     * 邮件模板（HTML)路径（修改密码提醒）
+     * 需要替换 ${name},${newpassword}
+     * 
+     *  */
     public static final String TEMP_UPWD = "emailTempPathForUpwd";
     
     /** 评分系统外网访问地址  */
