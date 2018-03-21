@@ -94,7 +94,7 @@
             <mvc:mapping path="/index.shtml"/>  
             <mvc:mapping path="/index"/>  
             <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->  
-            <bean class="com.numberONe.interceptor.PasswordInterceptor"/>  
+            <bean class="com.numberONe.interceptor.SimplePasswordInterceptor"/>  
         </mvc:interceptor>
          <mvc:interceptor>  
             <mvc:mapping path="/user/editPassword.shtml"/>  

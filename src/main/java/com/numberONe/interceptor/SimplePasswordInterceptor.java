@@ -8,7 +8,7 @@ import org.apache.shiro.session.Session;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-public class PasswordInterceptor implements HandlerInterceptor {
+public class SimplePasswordInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2,

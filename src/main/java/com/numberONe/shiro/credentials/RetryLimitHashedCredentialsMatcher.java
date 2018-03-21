@@ -10,8 +10,10 @@ import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.util.ByteSource;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import com.numberONe.enums.LoginType;
+import com.numberONe.shiro.EasyTypeToken;
 
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher {
     private Cache<String, AtomicInteger> passwordRetryCache;
@@ -21,10 +23,24 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
     }
 
     @Override
-    public boolean doCredentialsMatch(AuthenticationToken token,
-        AuthenticationInfo info) {
+    public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String username = (String) token.getPrincipal();
-
+        
+        EasyTypeToken easyToken = new EasyTypeToken();
+        
+        try {
+            // 强转出错说明使用的帐号密码登陆
+            // 否则说明是免密登陆
+            easyToken = (EasyTypeToken) token;
+        } catch (Exception e) {
+            System.out.println("不要担心这个错误，这只是强转错误");
+            e.printStackTrace();
+        }
+        
+        //如果是免密登陆则直接返回true
+        if (LoginType.NOPASSWD.equals(easyToken.getType())) {
+            return true;
+        }
         // retry count + 1
         AtomicInteger retryCount = passwordRetryCache.get(username);
 
@@ -47,13 +63,14 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
 
         return matches;
     }
-	
-	/**
-	* build user password
-	*/
-	public String buildCredentials(String userName, String password,String credentialsSalt) {
-		SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName,password,ByteSource.Util.bytes(userName + credentialsSalt),userName);
-		AuthenticationToken token = new UsernamePasswordToken(userName, password);
-		return super.hashProvidedCredentials(token, authenticationInfo).toString();
+
+    /**
+    * build user password
+    */
+    public String buildCredentials(String userName, String password, String credentialsSalt) {
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName,
+                password, ByteSource.Util.bytes(userName + credentialsSalt), userName);
+        AuthenticationToken token = new UsernamePasswordToken(userName, password);
+        return super.hashProvidedCredentials(token, authenticationInfo).toString();
     }
 }

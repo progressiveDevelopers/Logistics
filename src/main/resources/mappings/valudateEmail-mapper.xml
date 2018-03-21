@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.ValidateEmailMapper">
+	
+    
+    <sql id="column">
+        id,
+        userId,
+        userName,
+        code,
+        date,
+        status
+    </sql>
+    
+    <select id="getUnusedCodeByUserId" parameterType="int" resultType="int">
+        SELECT top 1
+           t.code
+        FROM validate_email t
+        WHERE t.`status` = 0
+        AND t.userId = #{userId}
+        LIMIT 1
+    </select>
+
+    <select id="validateCode" parameterType="com.numberONe.entity.ValidateEmailFormMap" resultType="int">
+        SELECT COUNT(*) FROM validate_email t
+        WHERE t.accountName = #{accountName}
+        AND t.`code` = #{code}
+        AND t.`status` = 0
+    </select>
+    
+	
+</mapper>

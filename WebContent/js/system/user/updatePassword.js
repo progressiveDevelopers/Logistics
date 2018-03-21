@@ -29,21 +29,24 @@ jQuery.validator.addMethod("same", function(value, element) {
     return this.optional(element) || same(value);  
 }, "新密码和确认密码不一致"); 
 
+// 获取URL
+function GetRequest() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+       var str = url.substr(1);
+       strs = str.split("&");
+       for(var i = 0; i < strs.length; i ++) {
+          theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+       }
+    }
+    return theRequest;
+ }
+
 //加入数据校验证
 $(function() {
     
-    function GetRequest() {
-        var url = location.search; //获取url中"?"符后的字串
-        var theRequest = new Object();
-        if (url.indexOf("?") != -1) {
-           var str = url.substr(1);
-           strs = str.split("&");
-           for(var i = 0; i < strs.length; i ++) {
-              theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-           }
-        }
-        return theRequest;
-     }
+  
     
 	$("#formUpdatePwd").validate({
 		submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
@@ -52,6 +55,7 @@ $(function() {
 				dataType : "json",//ajaxSubmi带有文件上传的。不需要设置json
 				success : function(data) {
 					if (data == "success") {
+					    console.log("success")
 					    layer.msg('修改密码成功', {
 					        time: 0 //不自动关闭
 					        ,btn: ['我知道了']
