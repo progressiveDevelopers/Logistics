@@ -104,6 +104,36 @@ public class EmailUtils {
      */
     public static void sendHtmlMail(String toEmail,String subject, String content)
             throws IOException, AddressException, MessagingException {
+        sendHtmlMailAndBc(toEmail,subject,content,false);
+    }
+    
+    @Test
+    public void address() {
+        try {
+            InternetAddress[] add =  new InternetAddress().parse(properties.getProperty("emailcc"));
+            
+            System.out.println(add[0].getAddress());
+            
+        } catch (AddressException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        
+    }
+    
+    /**
+     * 
+     * @param toEmail 发送给谁
+     * @param subject 邮件标题
+     * @param content 邮件内容
+     * @param bc 抄送 true 则添加抄送， false 则不抄送
+     * @throws IOException 
+     * @throws MessagingException 
+     * @throws AddressException 
+     */
+    public static void sendHtmlMailAndBc(String toEmail,String subject, String content,boolean bc)
+            throws IOException, AddressException, MessagingException {
         // 0.1 确定连接位置
         Properties props = new Properties();
         // 设置邮箱smtp服务器的地址，
@@ -130,6 +160,12 @@ public class EmailUtils {
         message.setFrom(new InternetAddress(properties.getProperty("fromEmail")));
         // 2.2 发送给谁
         message.setRecipient(RecipientType.TO, new InternetAddress(toEmail));
+        
+        // 设置抄送人
+        if(bc) {
+            message.setRecipients(RecipientType.CC, new InternetAddress().parse(properties.getProperty("emailcc")));
+        }
+        
         // 2.3 主题（标题）
         message.setSubject(properties.getProperty("emailTitleForUnRate"));
         // 2.4 正文
@@ -139,8 +175,6 @@ public class EmailUtils {
         Transport.send(message);
         log.error("邮件发送成功内容--》"+content);
     }
-    
-    
     
     /**
      * 发送邮件　(暂时只支持163邮箱发送)

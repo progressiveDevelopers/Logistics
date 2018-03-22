@@ -267,10 +267,13 @@ public class BackgroundController extends BaseController {
         String shiftContent = emailTemplate.replace("${LogisticsAddress}",
                 EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
 	    
+        // 当你看到这一行报错的时候，就说明你应该换上java8了
 	    listUserInfo.forEach((x) -> {
                         String targetContent = shiftContent.replace("${name}", (String)x.get("userName"));
                             try {
-                                EmailUtils.sendHtmlMail((String)x.get("email"), EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), targetContent);
+                                EmailUtils.sendHtmlMailAndBc((String)x.get("email"), 
+                                        EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), 
+                                        targetContent,true);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 result.put("msg", "请检查网络和发送方邮件密码是否正确");
