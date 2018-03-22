@@ -348,11 +348,14 @@ public class CheckController extends BaseController {
 	 */
 	@RequestMapping("rateProgress")
 	@ResponseBody
-	public Integer rateProgress (Integer operationPostId,Integer monthId) throws Exception {
+	public Map<String,Integer> rateProgress (Integer operationPostId,Integer monthId) throws Exception {
 	    Map<String,Object> param = new HashMap<String,Object>();
 	    param.put("operationPostId", operationPostId);
 	    param.put("monthId", monthId);
-	   return  checkTaskAssignmentMapper.countCompleteRate(param);
+	    Map<String,Integer> result = new HashMap<>();
+	    result.put("complet", checkTaskAssignmentMapper.countCompleteRate(param));
+	    result.put("sum", checkTaskAssignmentMapper.countSumRate(param));
+	   return  result;
 	}
 	
 	
@@ -373,7 +376,7 @@ public class CheckController extends BaseController {
     }
 	
     /**
-     * 查询还有哪些客户经理没有完成评分进度
+     * 查询还有哪些客户经理没有完成评分任务
      * @return
      * @throws Exception 
      */

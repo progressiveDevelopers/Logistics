@@ -368,8 +368,8 @@ public class UserInfoController extends BaseController {
         
         List<Map<String,Object>> listUserInfoView = null;
         
-        // 如果是管理层则可以查看两个团队的人员信息
-        // 下属的信息全量
+        // 如果是管理层则可以查看两个团队人员的全量信息
+        // 如果只是团队长则只能看到自己团队的人员信息
         if(userInfoView.getLevel() >  10) {
             listUserInfoView = userInfoMapper.findSubordinateRateForMge(monthId);
         } else {

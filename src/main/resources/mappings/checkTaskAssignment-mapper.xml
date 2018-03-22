@@ -79,7 +79,7 @@
             task.monthId = #{monthId}
         AND task.operationPostId = #{operationPostId}
         AND task.`status` = 1
-        
+        AND task.deletestatus = 0
     </select>
 	
     <select id="notCompletedRate" resultType="string">
@@ -91,7 +91,20 @@
             task.monthId = #{monthId}
         AND task.operationPostId = #{operationPostId}
         AND task.`status` = 0
+        AND task.deletestatus = 0
     </select>
+    
+    <select id="countSumRate" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            check_task_assignment task
+        WHERE
+            task.monthId = #{monthId}
+        AND task.operationPostId = #{operationPostId}
+        AND task.deletestatus = 0
+    </select>
+    
     
     <select id="notCompletedRateForAll" resultType="map">
         SELECT

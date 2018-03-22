@@ -18,17 +18,20 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
                 if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
                     
                     var complet; // 已经完成的人数
+                    var sum; // 应该对其评分的人数
                     $.ajax({
                         type: "POST",
                         url: '/Logistics/check/rateProgress.shtml?operationPostId='+d.userId+'&monthId='+$('#monthId').val(),
                         async: false,// 让ajax进行同步请求
                         success: function(data){
-                            complet = data;
+                            data = JSON.parse(data)
+                            complet = data.complet;
+                            sum = data.sum;
                         }
                      })
                     
                     return "<div class='progressHover'><span class='operationPostId' style='display:none;'>"+d.userId+"</span><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
-                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complet+"/10'></div>"+
+                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complet+"/"+sum+"'></div>"+
                     "</div></div>"
                 } else {
                     return '<span style="font-weight:bold;" >'+d.allscore+'</span>'

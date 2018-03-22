@@ -87,7 +87,7 @@
     <select id="findTargetUser" resultMap="userRelativeTree">
         SELECT t.userId,t.userName FROM user_info
         t
-        WHERE t.groupId = #{0} AND t.roleId = #{1}
+        WHERE t.groupId = #{0} AND t.roleId = #{1} AND t.deletestatus = 0
     </select>
 
     <select id="findById" resultMap="userInfoView">
@@ -136,7 +136,7 @@
             FROM
                 user_info u
             WHERE
-                u.groupId = #{0.groupId}  AND u.`level` = 5
+                u.groupId = #{0.groupId}  AND u.`level` = 5 AND u.deletestatus = 0
         ) t
         LEFT JOIN (
             SELECT
@@ -178,7 +178,7 @@
     		FROM
     			user_info u
     		WHERE
-    			u.`level` = 5
+    			u.`level` = 5 AND u.deletestatus = 0
         ) t
         LEFT JOIN (
         	SELECT
@@ -197,7 +197,7 @@
         result.`month`,result.evaluatorId,result.evaluator,result.score,task.ifLike FROM (
         SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS
         'score' FROM check_result t
-        WHERE t.`operationPostId` = #{0} AND t.monthId = #{1}
+        WHERE t.`operationPostId` = #{0} AND t.monthId = #{1} AND t.deletestatus = 0
         GROUP BY t.evaluatorId,t.`monthId`
         ) result
         INNER JOIN
@@ -257,7 +257,7 @@
             FROM
                 user_info u
             WHERE
-                u.groupId = #{userInfoView.groupId}  AND u.`level` = 5
+                u.groupId = #{userInfoView.groupId}  AND u.`level` = 5 AND u.deletestatus = 0
         ) t
         LEFT JOIN (
             SELECT
@@ -294,13 +294,13 @@
             FROM
                 user_info u
             WHERE
-                u.`level` = 5
+                u.`level` = 5 AND u.deletestatus = 0
         ) t
         LEFT JOIN (
             SELECT
                 result.nameid,
                 result.allscore,
-							  result.`month`
+				result.`month`
             FROM
                 check_avg_result result
             WHERE
