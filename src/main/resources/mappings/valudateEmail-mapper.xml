@@ -14,7 +14,7 @@
     </sql>
     
     <select id="getUnusedCodeByUserId" parameterType="int" resultType="int">
-        SELECT top 1
+        SELECT
            t.code
         FROM validate_email t
         WHERE t.`status` = 0

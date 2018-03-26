@@ -23,9 +23,11 @@ $('#sendEmail').click(function(){
         type:'POST',
         url:rootPath+'/user/forgetPassword.shtml',
         data:{"email":email,"accountName":accountName},
-        success:function(msg){
+        dataType : "json",
+        success:function(data){
+            var msg = data.msg;
             if(msg == 'success'){
-                layer.msg('验证码已经发送到邮箱请注意查收', {icon: 1});
+                layer.msg('验证码已经发送到邮箱请注意查收', {icon: 6});
             } else {
                 layer.msg(msg, {icon: 5,time:5000});
             }
@@ -42,8 +44,8 @@ $("#formForgetPwd").validate({
             type : "post",
             dataType : "json",//ajaxSubmi带有文件上传的。不需要设置json
             success : function(data) {
-                console.log(data);
-                if (data == "success") {
+                var msg = data.msg;
+                if (msg == "success") {
                     window.location.href = rootPath+'/user/updatePassword.shtml'
                 } else {
                     layer.msg('验证失败，请检查验证码是否正确', {icon: 5,time:5000});

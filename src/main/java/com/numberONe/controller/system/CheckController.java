@@ -270,7 +270,7 @@ public class CheckController extends BaseController {
 		CheckOptionFormMap checkOptionFormMap = getFormMap(CheckOptionFormMap.class);
 		List  res  = checkMapper.findByWhere(checkOptionFormMap);
 		int num = res.size();
-		Map<String, String> map = new  HashMap();
+		Map<String, String> map = new  HashMap<>();
 		String[] option = null;
 		
 		List<Map> list = new ArrayList<Map>();  
@@ -340,7 +340,7 @@ public class CheckController extends BaseController {
 	
 	
 	/**
-	 * 查询评分进度
+	 * 查询某个中后台人员的评分进度
 	 * @param operationPostId 被评价人id
 	 * @param monthId
 	 * @return
@@ -380,7 +380,7 @@ public class CheckController extends BaseController {
      * @return
      * @throws Exception 
      */
-    @RequestMapping("rateProgressData")
+    @RequestMapping("rateProgressForAllData")
     @ResponseBody
     public LayTableUtils<Map<String,Object>> rateProgress () throws Exception {
         Map<String,Object> param = new HashMap<String,Object>();
@@ -396,10 +396,10 @@ public class CheckController extends BaseController {
     }
     
     /** 
-     * 评分进度页面
+     * 评分总进度页面，包含哪些客户经理还未完成评分
      */
-    @RequestMapping("rateProgressView")
-    public String notRatePeopleForAll () throws Exception {
+    @RequestMapping("rateProgressForAllView")
+    public String notRatePeopleForAllView () throws Exception {
         return Common.BACKGROUND_PATH + "/function/check/rateProgress";
     }
     

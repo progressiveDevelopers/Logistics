@@ -10,10 +10,12 @@ layui.use([ 'laypage', 'layer', 'table'], function(){
   var tableOpt = {
           id: 'tbl'
           ,elem: '#ratePropressTbl'
-          ,url: '/Logistics/check/rateProgressData.shtml' //数据接口
+          ,url: '/Logistics/check/rateProgressForAllData.shtml' //数据接口
           ,cols: [[ //表头
              {checkbox:true,style:'margin-top:50px'}
-            ,{field: 'evaluator', title: '姓名',  sort: true,style:'color:red;'}
+            ,{type: 'numbers',  title: '序号' }
+            ,{field: 'evaluator', title: '姓名',  sort: true}
+            ,{field: 'email', title: '邮件',  sort: true}
           ]],
           done:function(){ // 纠正复选框偏移问题
               var checkbox = $(".layui-form-checkbox")

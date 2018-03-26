@@ -2,6 +2,7 @@ package com.numberONe.controller.system;
 
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -237,14 +238,17 @@ public class UserController extends BaseController {
 	@RequestMapping("forgetPasswordValidate")
 	@ResponseBody
     @SystemLog(module="系统管理",methods="用户管理-忘记密码验证")//凡需要处理业务逻辑的.都需要记录操作日志
-    public String forgetPasswordValidate(HttpServletRequest req,HttpServletResponse resp){
+    public Map<String,String> forgetPasswordValidate(HttpServletRequest req,HttpServletResponse resp){
 	    
 	    ValidateEmailFormMap validateEmailFormMap = getFormMap(ValidateEmailFormMap.class);
 	    
         Integer flag = validateEmailMapper.validateCode(validateEmailFormMap);
         
+        Map<String,String> result = new HashMap<>();
+        
         if(flag == null || flag == 0) {
-            return "faild";
+            result.put("msg", "faild");
+            return result;
         } else {
             validateEmailFormMap.set("status", 1);
             try {
@@ -260,7 +264,8 @@ public class UserController extends BaseController {
                 .findByAttribute("accountName",validateEmailFormMap.getStr("accountName") , UserFormMap.class);
         
         if(listMap == null || listMap.size() == 0) {
-            return "找不到账户信息，请检查账户是否正确";
+            result.put("msg", "找不到账户信息，请检查账户是否正确");
+            return result;
         }
         
         // 免密登陆
@@ -270,26 +275,32 @@ public class UserController extends BaseController {
         Session session = subject.getSession();
         session.setAttribute("userSession", listMap.get(0));
         
-	    return "success";
+        result.put("msg", "success");
+        
+	    return result;
 	}
 	
 	
 	
     @RequestMapping("forgetPassword")
     @ResponseBody
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @SystemLog(module="系统管理",methods="用户管理-忘记密码")//凡需要处理业务逻辑的.都需要记录操作日志
-    public String forgetPassword(String accountName,String email){
+    public Map<String,String> forgetPassword(String accountName,String email){
         List<UserFormMap> listUser =   userMapper.findByAttribute("accountName", accountName, UserFormMap.class);
         
+        Map<String,String> result = new HashMap<>();
+        
+        
         if(listUser == null || listUser.size() == 0) {
-            return "用户不存在";
+            result.put("msg", "用户不存在");
+            return result;
         }
         
         UserFormMap user = listUser.get(0);
         
         if(!user.getStr("email").equals(email)) {
-           return "邮箱和账户不匹配";
+            result.put("msg", "邮箱和账户不匹配");
+           return result;
         }
         
         //查看之前有没有获取过验证码，而且没有使用过
@@ -305,7 +316,8 @@ public class UserController extends BaseController {
             try {
                 validateEmailMapper.addEntity(validateEmailFormMap);
             } catch (Exception e) {
-                return "生成验证码失败---"+e.toString();
+                result.put("msg","生成验证码失败---"+e.toString());
+                return result;
             }
         }
         
@@ -314,7 +326,8 @@ public class UserController extends BaseController {
         try {
             template = EmailUtils.getEmailTemplate(EmailConstant.TEMP_FORGET_PWD);
         } catch (Exception e) {
-            return "邮件发送失败---->"+e.toString();
+            result.put("msg", "邮件发送失败,未得到邮件模板内容---->"+e.toString());
+            return result;
         }
         
         // 获得替换过的html内容
@@ -325,10 +338,13 @@ public class UserController extends BaseController {
         try {
             EmailUtils.sendHtmlMail(email, EmailConstant.EMAIL_TITLE_FORGET_PWD, content);
         } catch (Exception e) {
-            return "邮件发送失败----》"+e.toString();
+            result.put("msg", "邮件发送失败，请检查用户名，密码等信息是否正确----》"+e.toString());
+            return result;
         } 
         
-        return "success";
+        result.put("msg", "success");
+        
+        return result;
     }
 	
     
