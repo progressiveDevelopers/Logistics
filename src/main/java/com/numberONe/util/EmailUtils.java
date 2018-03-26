@@ -2,7 +2,6 @@ package com.numberONe.util;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,7 +82,7 @@ public class EmailUtils {
         String str = null;
         try (FileInputStream in = new FileInputStream(EmailUtils.class
                 .getResource(properties.getProperty(tempName)).getFile());
-                InputStreamReader reader = new InputStreamReader(in);
+                InputStreamReader reader = new InputStreamReader(in,"UTF-8");
                 BufferedReader br = new BufferedReader(reader)){
             str = br.readLine();
         } catch (Exception e) {
@@ -139,8 +138,13 @@ public class EmailUtils {
         // 设置邮箱smtp服务器的地址，
         props.setProperty("mail.host", properties.getProperty("mail.smtp.host"));
         // 是否进行权限验证。
+        
+        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.smtp.socketFactory.fallback", "false");
+        props.setProperty("mail.smtp.port", "465");
+        props.setProperty("mail.smtp.socketFactory.port", "465");
         props.setProperty("mail.smtp.auth", properties.getProperty("mail.smtp.auth"));
-
+        
         final String eamilName = properties.getProperty("emailName");
         final String emailPassword = properties.getProperty("emailPassword");
 

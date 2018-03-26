@@ -252,7 +252,7 @@ public class UserController extends BaseController {
         } else {
             validateEmailFormMap.set("status", 1);
             try {
-                //validateEmailMapper.editEntity(validateEmailFormMap);
+                validateEmailMapper.editEntity(validateEmailFormMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -312,10 +312,12 @@ public class UserController extends BaseController {
             ValidateEmailFormMap validateEmailFormMap = new ValidateEmailFormMap();
             validateEmailFormMap.put("userId",(int)user.get("id"));
             validateEmailFormMap.put("userName",user.getStr("userName"));
+            validateEmailFormMap.put("accountName",user.getStr("accountName"));
             validateEmailFormMap.put("code",code);
             try {
                 validateEmailMapper.addEntity(validateEmailFormMap);
             } catch (Exception e) {
+                e.printStackTrace();
                 result.put("msg","生成验证码失败---"+e.toString());
                 return result;
             }
@@ -326,6 +328,7 @@ public class UserController extends BaseController {
         try {
             template = EmailUtils.getEmailTemplate(EmailConstant.TEMP_FORGET_PWD);
         } catch (Exception e) {
+            e.printStackTrace();
             result.put("msg", "邮件发送失败,未得到邮件模板内容---->"+e.toString());
             return result;
         }
@@ -338,6 +341,7 @@ public class UserController extends BaseController {
         try {
             EmailUtils.sendHtmlMail(email, EmailConstant.EMAIL_TITLE_FORGET_PWD, content);
         } catch (Exception e) {
+            e.printStackTrace();
             result.put("msg", "邮件发送失败，请检查用户名，密码等信息是否正确----》"+e.toString());
             return result;
         } 
