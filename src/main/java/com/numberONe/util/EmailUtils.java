@@ -109,7 +109,7 @@ public class EmailUtils {
     @Test
     public void address() {
         try {
-            InternetAddress[] add =  new InternetAddress().parse(properties.getProperty("emailcc"));
+            InternetAddress[] add =  InternetAddress.parse(properties.getProperty("emailcc"));
             
             System.out.println(add[0].getAddress());
             
@@ -167,7 +167,7 @@ public class EmailUtils {
         
         // 设置抄送人
         if(bc) {
-            message.setRecipients(RecipientType.CC, new InternetAddress().parse(properties.getProperty("emailcc")));
+            message.setRecipients(RecipientType.CC, InternetAddress.parse(properties.getProperty("emailcc")));
         }
         
         // 2.3 主题（标题）

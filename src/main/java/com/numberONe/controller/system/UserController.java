@@ -252,7 +252,7 @@ public class UserController extends BaseController {
         } else {
             validateEmailFormMap.set("status", 1);
             try {
-                validateEmailMapper.editEntity(validateEmailFormMap);
+                validateEmailMapper.updateCodeStatus(validateEmailFormMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }

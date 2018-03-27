@@ -12,12 +12,27 @@ function forgetPasswordLayer(){
 	//关闭加载效果
 	layer.close(index);
 }
+var t = 60
+function showTime(){
+    t -= 1
+    $('#sendEmail').attr('disabled',true)
+    $('#sendEmail').text("重新发送("+t+")")  
+    if(t==0){ 
+        $('#sendEmail').attr('disabled',false)
+        $('#sendEmail').text('重新发送')
+        t = 60;
+        return;
+    }  
+    //每秒执行一次,showTime()  
+    setTimeout("showTime()",1000);  
+}
 
 
 $('#sendEmail').click(function(){
     
     var accountName = $('#accountName').val()
     var email = $('#email').val()
+    console.log('点击')
     
     $.ajax({
         type:'POST',
@@ -28,6 +43,7 @@ $('#sendEmail').click(function(){
             var msg = data.msg;
             if(msg == 'success'){
                 layer.msg('验证码已经发送到邮箱请注意查收', {icon: 6});
+                showTime()
             } else {
                 layer.msg(msg, {icon: 5,time:5000});
             }

@@ -29,5 +29,11 @@
         AND t.`status` = 0
     </select>
     
+    <update id="updateCodeStatus"  parameterType="com.numberONe.entity.ValidateEmailFormMap" >
+        UPDATE validate_email  
+        SET  status = 1 
+        WHERE accountName=#{accountName} AND code = #{code} 
+    </update>
+    
 	
 </mapper>

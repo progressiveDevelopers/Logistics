@@ -33,4 +33,11 @@ public interface ValidateEmailMapper extends BaseMapper {
 	 */
 	Integer validateCode(ValidateEmailFormMap validateEmailFormMap);
 	
+	/**
+	 * 更新验证码状态
+	 * 
+	 * @param validateEmailFormMap
+	 */
+	void updateCodeStatus(ValidateEmailFormMap validateEmailFormMap);
+	
 }
