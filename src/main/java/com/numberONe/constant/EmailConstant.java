@@ -19,6 +19,12 @@ public class EmailConstant {
      * 
      *  */
     public static final String TEMP_UPWD = "emailTempPathForUpwd";
+
+    /**
+     * 邮件模板（HTML)路径（开始评分）<br>
+     * 需要替换${name},${LogisticsAddress}
+     */
+    public static final String TEMP_START_RATE = "emailTempPathForStartRate";
     
     
     /**
@@ -39,4 +45,7 @@ public class EmailConstant {
 
     /** 邮件标题（忘记密码验证） */
     public static final String EMAIL_TITLE_FORGET_PWD = "emailTitleForForgetPwd";
+    
+    /** 邮件标题（开始评分） */
+    public static final String EMAIL_TITLE_START_RATE = "emailTitleForStartRate";
 }

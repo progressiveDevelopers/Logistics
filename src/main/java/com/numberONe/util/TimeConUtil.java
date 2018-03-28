@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.numberONe.annotation.SystemLog;
+import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.CheckMonthFormMap;
 import com.numberONe.entity.CheckOptionFormMap;
 import com.numberONe.entity.CheckRelationFormMap;
@@ -213,6 +216,81 @@ public class TimeConUtil {
           //  return "任务分配失败！";
         }
        // return "任务分配成功！";
+        
     }
+    
+    
+    @SystemLog(module="邮件发送",methods="评分数据已生成")
+    @Scheduled(cron = "0 0 9 1 * ?")    //每个月1号早晨9点执行
+    public void sendEmailForStartRate() throws Exception {
+        UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
+        userInfoFormMap.put("where", "where `level` = 8 AND deletestatus = 0");
+        // 得到所有客户经理信息
+        List<UserInfoFormMap> users = userInfoMapper.findByWhere(userInfoFormMap);
+        // 得到邮件模板
+        String template = EmailUtils.getEmailTemplate(EmailConstant.TEMP_START_RATE);
+        // 替换访问地址
+        template = template.replace("${LogisticsAddress}", 
+                EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
+        // 隐式final
+        String s = template;
+        
+        users.forEach((x) -> {
+            
+            String content = s.replace("${name}", x.getStr("userName"));
+            
+            try {
+                // 发送邮件
+                EmailUtils.sendHtmlMail(x.getStr("email"), 
+                        EmailConstant.EMAIL_TITLE_START_RATE,
+                        content);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+            
+        });
+        
+    }
+    
+    
+    
+    @SystemLog(module="邮件发送",methods="评分催促")
+    @Scheduled(cron = "0 0 9 5 * ?")    //每个月5号早晨9点执行
+    public void sendEmailForUnRate() throws Exception {
+        Map<String,Object> param = new HashMap<String,Object>();
+        param.put("monthId", checkMonthMapper.getCurrentMonth().get("id"));
+        
+        // 得到未完成评分的客户经理名称和email
+        List<Map<String, Object>> users  = 
+                checkTaskAssignmentMapper.notCompletedRateForAll(param);
+        
+        
+        // 邮件模板
+        String template = EmailUtils.getEmailTemplate(EmailConstant.TEMP_UNRATE);
+        
+        // 因为都要替换访问地址，所以先提前替换
+        template = template.replace("${LogisticsAddress}", 
+                EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
+        
+        
+        //在lambda 中必须为final类型，所以就重新赋予一个新的变量隐式转换为final类型
+        String s = template;
+        
+        users.forEach((x) -> {
+            
+            String content = s.replace("${name}", (String)x.get("evaluator"));
+            
+            try {
+                EmailUtils.sendHtmlMail((String)x.get("email"),
+                        EmailConstant.EMAIL_TITLE_UNRATE,
+                        content);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+            
+        });
+        
+    }
+    
     
 }

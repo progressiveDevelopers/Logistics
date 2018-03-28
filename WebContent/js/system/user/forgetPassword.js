@@ -32,8 +32,8 @@ $('#sendEmail').click(function(){
     
     var accountName = $('#accountName').val()
     var email = $('#email').val()
-    console.log('点击')
-    
+    // 开始倒计时
+    showTime()
     $.ajax({
         type:'POST',
         url:rootPath+'/user/forgetPassword.shtml',
@@ -43,7 +43,6 @@ $('#sendEmail').click(function(){
             var msg = data.msg;
             if(msg == 'success'){
                 layer.msg('验证码已经发送到邮箱请注意查收', {icon: 6});
-                showTime()
             } else {
                 layer.msg(msg, {icon: 5,time:5000});
             }
