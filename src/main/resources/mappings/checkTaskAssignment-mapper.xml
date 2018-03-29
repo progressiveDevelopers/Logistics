@@ -107,7 +107,7 @@
     
     
     <select id="notCompletedRateForAll" resultType="map">
-        SELECT t.*,u.email FROM (
+        SELECT t.*,u.email,u.groupId FROM (
             SELECT
             	task.evaluatorId,
             	task.evaluator,
@@ -119,8 +119,8 @@
             AND task.`status` = 0
             AND task.deletestatus = 0
             GROUP BY task.evaluator
-            ) t INNER JOIN  ly_user u
-        ON t.evaluatorId = u.id
+            ) t INNER JOIN  user_info u
+        ON t.evaluatorId = u.userId
     </select>
     
     

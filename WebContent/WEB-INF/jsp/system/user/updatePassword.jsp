@@ -26,7 +26,7 @@
 	</style>
 </head>
 <body>
-	<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
+	<div class="l_err" style="width: 100%; margin-top: 2px;color: red;"></div>
 	<form id="formUpdatePwd" name="form" class="form-horizontal" method="post" action="${ctx}/user/editPassword.shtml">
 		<input type="hidden" class="form-control checkacc" value="${userSession.id}" name="userFormMap.id" id="id">
 		<input type="hidden" class="form-control checkacc" value="${userSession.accountName}" name="userFormMap.accountName" id="accountName">
@@ -52,8 +52,5 @@
 			</footer> 
 		</section>
 	</form>
-	<script type="text/javascript">
-		onloadurl();
-	</script>
 </body>
 </html>

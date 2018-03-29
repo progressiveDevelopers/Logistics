@@ -14,7 +14,7 @@
 <link rel="stylesheet"	href="${ctx}/admin_files/login.css">
 <link	href="${ctx }/admin_files/css.css"	rel="stylesheet" type="text/css">
 
-<!-- ----------- start ---------- -->
+<!--  start  -->
 <!-- base start 重要部分不可删改-->
 <script type="text/javascript">
 var rootPath = "${ctx}";
@@ -25,7 +25,7 @@ var rootPath = "${ctx}";
 <script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> 
 <script type="text/javascript" src="${ctx}/js/system/user/forgetPassword.js"></script> 
 <!-- base end -->
-<!-- -----------end---------- -->
+<!-- end -->
 
 <!--[if lt IE 9]> 
 	<script src="${ctx}/js/jquery/ie/html5shiv.js"></script> 

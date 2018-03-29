@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
     <script type="text/javascript">var rootPath = "${ctx}";</script>
     <script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script>
-    <script type="text/javascript" src="${ctx}/js/jquery/jquery.form.js"></script>
-    <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/messages_cn.js"></script>
     <script type="text/javascript" src="${ctx}/common/common.js"></script>
     <script type="text/javascript" src="${ctx}/js/layer-v1.9.2/layer/layer.js"></script>
 	
@@ -31,7 +28,7 @@
 	</style>
 </head>
 <body>
-	<div class="l_err" style="width: 100%; margin-top: 2px;"></div>
+	<div class="l_err" style="width: 100%; margin-top: 2px;color: red;"></div>
 	<form id="formForgetPwd" name="form" class="form-horizontal" method="post" action="${ctx}/user/forgetPasswordValidate.shtml">
 		<section class="panel panel-default">
 			<div class="panel-body">
@@ -65,5 +62,8 @@
 		</section>
 	</form>
 </body>
+    <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="${ctx}/js/jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/messages_cn.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/user/forgetPassword.js"></script>
 </html>

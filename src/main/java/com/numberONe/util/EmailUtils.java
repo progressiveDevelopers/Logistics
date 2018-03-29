@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -19,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +105,7 @@ public class EmailUtils {
      */
     public static void sendHtmlMail(String toEmail,String subject, String content)
             throws IOException, AddressException, MessagingException {
-        sendHtmlMailAndBc(toEmail,subject,content,false);
+        sendHtmlMailAndBc(toEmail,subject,content,null);
     }
     
     @Test
@@ -126,12 +128,12 @@ public class EmailUtils {
      * @param toEmail 发送给谁
      * @param subject 邮件标题
      * @param content 邮件内容
-     * @param bc 抄送 true 则添加抄送， false 则不抄送
+     * @param cc 抄送  传入null 则不抄送 要以英文,(逗号拆分)
      * @throws IOException 
      * @throws MessagingException 
      * @throws AddressException 
      */
-    public static void sendHtmlMailAndBc(String toEmail,String subject, String content,boolean bc)
+    public static void sendHtmlMailAndBc(String toEmail,String subject, String content,String cc)
             throws IOException, AddressException, MessagingException {
         // 0.1 确定连接位置
         Properties props = new Properties();
@@ -160,18 +162,32 @@ public class EmailUtils {
         Session session = Session.getDefaultInstance(props, authenticator);
         // 2 创建消息html版
         MimeMessage message = new MimeMessage(session);
+        
         // 2.1 发件人 我们自己的邮箱地址，就是名称
-        message.setFrom(new InternetAddress(properties.getProperty("fromEmail")));
+        
+        String nick=""; 
+        try {  
+            nick=javax.mail.internet.MimeUtility.encodeText(properties.getProperty("email.nickName"));  
+        } catch (UnsupportedEncodingException e) {  
+            e.printStackTrace();  
+        }
+        
+        if(StringUtils.isEmpty(nick)) {
+            message.setFrom(new InternetAddress(properties.getProperty("fromEmail")));
+        } else {
+            message.setFrom(new InternetAddress(nick+"<"+properties.getProperty("fromEmail")+">"));
+        }
+        
         // 2.2 发送给谁
         message.setRecipient(RecipientType.TO, new InternetAddress(toEmail));
         
         // 设置抄送人
-        if(bc) {
-            message.setRecipients(RecipientType.CC, InternetAddress.parse(properties.getProperty("emailcc")));
+        if(StringUtils.isNotEmpty(cc)) {
+            message.setRecipients(RecipientType.CC, InternetAddress.parse(cc));
         }
         
         // 2.3 主题（标题）
-        message.setSubject(properties.getProperty("emailTitleForUnRate"));
+        message.setSubject(subject);
         // 2.4 正文
         // 设置编码，防止发送的内容中文乱码。
         message.setContent(content, "text/html;charset=UTF-8");

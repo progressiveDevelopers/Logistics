@@ -32,8 +32,7 @@ $('#sendEmail').click(function(){
     
     var accountName = $('#accountName').val()
     var email = $('#email').val()
-    // 开始倒计时
-    showTime()
+    
     $.ajax({
         type:'POST',
         url:rootPath+'/user/forgetPassword.shtml',
@@ -43,6 +42,8 @@ $('#sendEmail').click(function(){
             var msg = data.msg;
             if(msg == 'success'){
                 layer.msg('验证码已经发送到邮箱请注意查收', {icon: 6});
+             // 开始倒计时
+                showTime()
             } else {
                 layer.msg(msg, {icon: 5,time:5000});
             }
@@ -55,8 +56,10 @@ $('#sendEmail').click(function(){
 
 $("#formForgetPwd").validate({
     submitHandler : function(form) {// 必须写在验证前面，否则无法ajax提交
-        ly.ajaxSubmit(form, {// 验证新增是否成功
+        $.ajax( {
+            url:rootPath+'/user/forgetPasswordValidate.shtml',
             type : "post",
+            data:$("#formForgetPwd").serialize(),
             dataType : "json",//ajaxSubmi带有文件上传的。不需要设置json
             success : function(data) {
                 var msg = data.msg;

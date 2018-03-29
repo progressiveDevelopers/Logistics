@@ -63,7 +63,7 @@ public class TimeConUtil {
      */
     @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @SystemLog(module="任务分配",methods="分配评价人")//凡需要处理业务逻辑的.都需要记录操作日志
-    @Scheduled(cron = "0 0 2 1 * ?")   //每个月1号凌晨两点执行一次
+    @Scheduled(cron = "0 0 9 29 * ?")   //每个月29号早晨9点执行
     public void findUserInfoList() throws Exception {
         try {
             UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
@@ -79,7 +79,7 @@ public class TimeConUtil {
             Date date = new Date();
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
-            cal.add(Calendar.MONTH, -1);      //当前月的上个月  （-1改为1的话，为取当前月
+            cal.add(Calendar.MONTH, 0);      //0则取当前月
             String preMonth = sdf.format( cal.getTime());// 当前月的上个月
             String disPreMonth = df.format( cal.getTime());// 当前月的上个月 显示为:xxxx年x月
             checkMonthFormMap.set("month", preMonth);
@@ -219,9 +219,9 @@ public class TimeConUtil {
         
     }
     
-    
-    @SystemLog(module="邮件发送",methods="评分数据已生成")
-    @Scheduled(cron = "0 0 9 1 * ?")    //每个月1号早晨9点执行
+    @SystemLog(module="邮件发送",methods="评分数据已生成邮件提醒")
+    @Scheduled(cron = "0 30 9 29 * ?")    //每个月29号早晨9:30执行
+    //@Scheduled(cron = "30 * * * * ?")   
     public void sendEmailForStartRate() throws Exception {
         UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
         userInfoFormMap.put("where", "where `level` = 8 AND deletestatus = 0");
@@ -232,23 +232,20 @@ public class TimeConUtil {
         // 替换访问地址
         template = template.replace("${LogisticsAddress}", 
                 EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
-        // 隐式final
-        String s = template;
         
-        users.forEach((x) -> {
-            
-            String content = s.replace("${name}", x.getStr("userName"));
-            
-            try {
+        try {
+            for (UserInfoFormMap x : users) {
+                String content = template.replace("${name}", x.getStr("userName"));
+                
                 // 发送邮件
                 EmailUtils.sendHtmlMail(x.getStr("email"), 
-                        EmailConstant.EMAIL_TITLE_START_RATE,
+                        EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_START_RATE),
                         content);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
             
-        });
         
     }
     
@@ -256,6 +253,7 @@ public class TimeConUtil {
     
     @SystemLog(module="邮件发送",methods="评分催促")
     @Scheduled(cron = "0 0 9 5 * ?")    //每个月5号早晨9点执行
+    //@Scheduled(cron = "0 * * * * ?")   
     public void sendEmailForUnRate() throws Exception {
         Map<String,Object> param = new HashMap<String,Object>();
         param.put("monthId", checkMonthMapper.getCurrentMonth().get("id"));
@@ -273,22 +271,24 @@ public class TimeConUtil {
                 EmailUtils.getProperty(EmailConstant.LOGISTICS_ADDRESS));
         
         
-        //在lambda 中必须为final类型，所以就重新赋予一个新的变量隐式转换为final类型
-        String s = template;
+     // 得到抄送人邮箱
+        String cc = EmailUtils.getProperty(EmailConstant.EMAIL_CC);
         
-        users.forEach((x) -> {
-            
-            String content = s.replace("${name}", (String)x.get("evaluator"));
-            
-            try {
-                EmailUtils.sendHtmlMail((String)x.get("email"),
-                        EmailConstant.EMAIL_TITLE_UNRATE,
-                        content);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } 
-            
-        });
+        try {
+            for (Map<String, Object> x : users) {
+                String targetContent = template.replace("${name}", (String)x.get("evaluator"));
+                
+                Map<String,Object> master = userInfoMapper.findTeamMaster(x);
+                
+                String ccs = cc+","+master.get("email");
+                
+                EmailUtils.sendHtmlMailAndBc((String)x.get("email"), 
+                            EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), 
+                            targetContent,ccs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
     }
     

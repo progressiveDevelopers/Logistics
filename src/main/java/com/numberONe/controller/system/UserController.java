@@ -336,10 +336,11 @@ public class UserController extends BaseController {
         // 获得替换过的html内容
         String content = template.replace("${name}", user.getStr("userName"))
                                  .replace("${code}", code.toString());
-       
         
         try {
-            EmailUtils.sendHtmlMail(email, EmailConstant.EMAIL_TITLE_FORGET_PWD, content);
+            EmailUtils.sendHtmlMail(email,
+                    EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_FORGET_PWD),
+                    content);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("msg", "邮件发送失败，请检查用户名，密码等信息是否正确----》"+e.toString());

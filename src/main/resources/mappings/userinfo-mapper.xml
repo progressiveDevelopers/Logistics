@@ -49,7 +49,7 @@
     
     
     <select id="findByIds" parameterType="list" resultType="map"> 
-        SELECT userName,email FROM ly_user WHERE id in
+        SELECT userName,email,groupId FROM user_info WHERE userId in
         <foreach collection="list" item="id" separator="," open="(" close=")">
             ${id}
         </foreach>
@@ -309,5 +309,10 @@
         ORDER BY m.`month` DESC, m.nameid ASC 
     </select>
     
+    
+    <select id="findTeamMaster" parameterType="map" resultType="map">
+        SELECT userName,email FROM user_info
+        WHERE `level` = 10 AND groupId = #{groupId}
+    </select>
     
 </mapper>

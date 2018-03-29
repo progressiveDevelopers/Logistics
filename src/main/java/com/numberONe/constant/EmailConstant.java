@@ -48,4 +48,7 @@ public class EmailConstant {
     
     /** 邮件标题（开始评分） */
     public static final String EMAIL_TITLE_START_RATE = "emailTitleForStartRate";
+    
+    /** 抄送  */
+    public static final String EMAIL_CC = "emailcc";
 }
