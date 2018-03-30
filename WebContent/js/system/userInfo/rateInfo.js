@@ -46,28 +46,29 @@ function accDiv(arg1, arg2) {
 
 // 当月评分是否完成
 function isComplete(monthId){
-    var result;
-    $.ajax({
-        type: "POST",
-        url: '/Logistics/check/rateProgress.shtml?operationPostId='+$('#userId').val()+'&monthId='+monthId,
-        async: false,// 让ajax进行同步请求
-        success: function(data){
-            
-            if(+data < 10){
-                layer.alert('还有'+(10 - data)+'人未完成评分', {
-                    icon: 0,
-                    skin: 'layer-ext-moon'
-                  })
-                  $("#parentAvg").text("请稍后查看")
-                  $("#parentAvgPercent").text('')
-                  result = false
-            } else {
-                result = true
-            }
-        }
-     })
+//    var result;
+//    $.ajax({
+//        type: "POST",
+//        url: '/Logistics/check/rateProgress.shtml?operationPostId='+$('#userId').val()+'&monthId='+monthId,
+//        async: false,// 让ajax进行同步请求
+//        datatype:'json',
+//        success: function(data){
+//            
+//            if(+data.complete < 10){
+//                layer.alert('还有'+(10 - data)+'人未完成评分', {
+//                    icon: 0,
+//                    skin: 'layer-ext-moon'
+//                  })
+//                  $("#parentAvg").text("请稍后查看")
+//                  $("#parentAvgPercent").text('')
+//                  result = false
+//            } else {
+//                result = true
+//            }
+//        }
+//     })
     
-    return result;
+    return true;
 }
 
 
@@ -273,6 +274,7 @@ function targetMonthAvgScore(monthId){
 
 //开始渲染echarts
 function drawEcharts(monthId){
+    console.log('22222')
  // 重置echarts中的参数
     pieData = [],xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
     if(isComplete(monthId)){

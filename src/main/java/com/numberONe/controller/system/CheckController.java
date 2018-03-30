@@ -353,7 +353,7 @@ public class CheckController extends BaseController {
 	    param.put("operationPostId", operationPostId);
 	    param.put("monthId", monthId);
 	    Map<String,Integer> result = new HashMap<>();
-	    result.put("complet", checkTaskAssignmentMapper.countCompleteRate(param));
+	    result.put("complete", checkTaskAssignmentMapper.countCompleteRate(param));
 	    result.put("sum", checkTaskAssignmentMapper.countSumRate(param));
 	   return  result;
 	}

@@ -72,7 +72,7 @@ var rootPath = "${ctx}";
 				<span class="pull-left" style="width: 33%;" ><a href="javascript:void(0)" id="forget"
 					class="flip-link btn btn-info" id="to-recover">忘记密码？</a></span>
 					 <span class="pull-right"><a type="submit"
-					href="javascript:checkUserForm()" class="btn btn-success" >登&nbsp;&nbsp;录</a></span>
+					href="javascript:checkUserForm()" class="btn btn-success" id="loginbtn" >登&nbsp;&nbsp;录</a></span>
 			</div>
 		</form>
 	</div>
@@ -95,9 +95,13 @@ var rootPath = "${ctx}";
 		
 		$("#forget").click(function(){
 		    forgetPasswordLayer();
-		    
-		    
 		});
+		
+		  $(document).keydown(function(event){  
+		      if(event.keyCode==13){  
+		          checkUserForm();
+		      }
+		   });  
 		
 	</script>
 </body>
