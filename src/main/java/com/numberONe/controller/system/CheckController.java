@@ -301,6 +301,7 @@ public class CheckController extends BaseController {
 	    Map map2 = new HashMap();
 		map2.put("operationPostId", (String)param.get("operationPostId"));
 		map2.put("month", month);
+		map2.put("deletestatus", 0);
 		// 获取被评价人的所有评价人  并遍历判断当前用户是否是最后一位评价者
 		List<CheckTaskAssignmentFormMap> taskList = checkMapper.findTaskList(map2);
 	    for(CheckTaskAssignmentFormMap taskAssign : taskList){

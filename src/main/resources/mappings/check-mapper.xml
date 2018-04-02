@@ -95,6 +95,9 @@
 		*
 		from check_task_assignment
 		where operationPostId = #{operationPostId} and month = #{month}
+		<if test="deletestatus != null and deletestatus != ''">
+		and deletestatus like '%${deletestatus}%'
+		</if>
 	</select>
 	
 	<select id="getAllResult" parameterType="java.util.HashMap"
