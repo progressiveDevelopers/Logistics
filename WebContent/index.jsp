@@ -50,10 +50,7 @@
 				</a>
 			</div>
 			<ul class="nav navbar-nav hidden-xs">
-				<li class="dropdown"><a href="#"
-					class="dropdown-toggle dker" data-toggle="dropdown"> <i
-						class="fa fa-building-o"></i> <span class="font-bold">Activity</span>
-				</a>
+				<li class="dropdown">
 					<section
 						class="dropdown-menu aside-xl on animated fadeInLeft no-borders lt">
 						<div class="wrapper lter m-t-n-xs">
@@ -88,27 +85,15 @@
 							</div>
 						</div>
 					</section></li>
-				<li>
-					<div class="m-t m-l">
-						<a href="#"
-							class="dropdown-toggle btn btn-xs btn-primary" title="Upgrade"><i
-							class="fa fa-long-arrow-up"></i></a>
-					</div>
-				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
 				<li class="dropdown"><a href="#"
-					class="dropdown-toggle" data-toggle="dropdown"> <span
-						class="thumb-sm avatar pull-left"> <img
-							src="${ctx}/notebook/notebook_files/avatar.jpg">
-					</span> ${userFormMap.accountName} <b class="caret"></b>
+					class="dropdown-toggle" data-toggle="dropdown">
+                     ${userFormMap.userName}
+                      <b class="caret"></b>
 				</a>
 					<ul class="dropdown-menu animated fadeInRight">
-						<span class="arrow top"></span>
 						<li><a href="#" onclick="javascript:updatePasswordLayer();">密码修改</a></li>
-						<!-- <li><a href="#"> <span
-								class="badge bg-danger pull-right">3</span> Notifications
-						</a></li> -->
 						<li><a href="logout.shtml">注销</a></li>
 					</ul></li>
 			</ul>

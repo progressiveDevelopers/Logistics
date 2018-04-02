@@ -17,7 +17,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
             ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
                 if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
                     
-                    var complet; // 已经完成的人数
+                    var complete; // 已经完成的人数
                     var sum; // 应该对其评分的人数
                     $.ajax({
                         type: "POST",
@@ -25,13 +25,13 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
                         async: false,// 让ajax进行同步请求
                         success: function(data){
                             data = JSON.parse(data)
-                            complet = data.complet;
+                            complete = data.complete;
                             sum = data.sum;
                         }
                      })
                     
                     return "<div class='progressHover'><span class='operationPostId' style='display:none;'>"+d.userId+"</span><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
-                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complet+"/"+sum+"'></div>"+
+                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complete+"/"+sum+"'></div>"+
                     "</div></div>"
                 } else {
                     return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
