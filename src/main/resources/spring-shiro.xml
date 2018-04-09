@@ -82,6 +82,8 @@
 			/denied.jsp = anon
 			/install.shtml = anon
 			/numberONe.shtml = anon
+			/css/** = anon
+			/images/** = anon
 			</value>
 		</property>
 	</bean>
