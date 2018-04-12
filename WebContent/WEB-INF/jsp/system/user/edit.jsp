@@ -54,17 +54,20 @@
                     <div class="btn-group m-r">
                         <button data-toggle="dropdown"
                             class="btn btn-sm btn-default dropdown-toggle">
-                            <span class="dropdown-label">中后台</span> <span class="caret"></span>
+                             <c:forEach items="${groups}" var="group">
+                                <c:if test="${group.id eq userGroupId }">
+                                    <span class="dropdown-label">${group.groupName }</span> <span class="caret"></span>
+                                </c:if>
+                            </c:forEach>
+                            
                         </button>
                         <ul class="dropdown-menu dropdown-select">
+                        
+                        <c:forEach items="${groups}" var="group"> 
                             <li class="active"><a href="#"><input type="radio"
-                                    name="userGroupInfoFormMap.groupId" value="2" checked="checked">中后台</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="userGroupInfoFormMap.groupId" value="3">交运团队1</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="userGroupInfoFormMap.groupId" value="4">交运团队2</a></li>
-                            <li><a href="#"><input type="radio"
-                                    name="userGroupInfoFormMap.groupId" value="1">系统管理员</a></li>
+                                    name="userGroupInfoFormMap.groupId" value="${group.id }" <c:if test="${group.id eq userGroupId }">checked="checked"</c:if> >${group.groupName }</a></li>
+                        </c:forEach>
+                            
                         </ul>
                     </div>
                 </div>

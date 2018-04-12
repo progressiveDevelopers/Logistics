@@ -35,7 +35,7 @@ public interface UserInfoMapper extends BaseMapper {
      * @param id  用户id
      * @return
      */
-    UserInfoView findById(Integer id);
+    UserInfoView findById(Integer id)  throws Exception;
 
     /**
      * 根据月份和用的id查看评分

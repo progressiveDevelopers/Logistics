@@ -29,9 +29,11 @@ import com.numberONe.entity.ResUserFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
+import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.ValidateEmailFormMap;
 import com.numberONe.exception.SystemException;
 import com.numberONe.mapper.GroupMapper;
+import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.mapper.ValidateEmailMapper;
 import com.numberONe.plugin.PageView;
@@ -55,6 +57,9 @@ public class UserController extends BaseController {
 	
 	@Inject
 	private GroupMapper groupMapper;
+	
+	@Inject
+	private UserInfoMapper userInfoMapper;
 	
 	@Inject
 	private ValidateEmailMapper validateEmailMapper;
@@ -157,7 +162,10 @@ public class UserController extends BaseController {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
 			model.addAttribute("user", userMapper.findbyFrist("id", id, UserFormMap.class));
+			model.addAttribute("groups",groupMapper.finall());
+			model.addAttribute("userGroupId", userInfoMapper.findById(Integer.parseInt(id)).getGroupId());
 		}
+		
 		return Common.BACKGROUND_PATH + "/system/user/edit";
 	}
 

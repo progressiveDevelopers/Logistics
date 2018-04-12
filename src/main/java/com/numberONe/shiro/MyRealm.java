@@ -14,6 +14,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -100,7 +101,14 @@ public class MyRealm extends AuthorizingRealm {
 			session.setAttribute("userSession", userFormMaps.get(0));
 			session.setAttribute("userSessionId", userFormMaps.get(0).get("id"));
 			session.setAttribute("username", username);// 登陆帐号
-			session.setAttribute("userInfoSession", userInfoMapper.findById((Integer) userFormMaps.get(0).get("id")));
+			
+            try {
+                session.setAttribute("userInfoSession", userInfoMapper.findById((Integer) userFormMaps.get(0).get("id")));
+            }catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+           
 			return authenticationInfo;
 		} else {
 			throw new UnknownAccountException();// 没找到帐号
