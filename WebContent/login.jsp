@@ -1,7 +1,8 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html lang="en"	class="app js no-touch no-android chrome no-firefox no-iemobile no-ie no-ie10 no-ie11 no-ios no-ios7 ipad">
+<html lang="en">
 <head>
+ <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
@@ -10,20 +11,25 @@
 <meta name="renderer" content="webkit">
 <title>物流与商业金融部后台管理系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet"	href="${ctx}/admin_files/min.css">
-<link rel="stylesheet"	href="${ctx}/admin_files/login.css">
-<link	href="${ctx }/admin_files/css.css"	rel="stylesheet" type="text/css">
+
+ <link rel="shortcut icon" href="${ctx}/fonts/favicon.ico"> 
+ <link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+ <link href="${ctx}/css/font-awesome.min.css" rel="stylesheet">
+
+ <link href="${ctx}/css/animate.min.css" rel="stylesheet">
+ <link href="${ctx}/css/style.min.css" rel="stylesheet">
+
 
 <!--  start  -->
 <!-- base start 重要部分不可删改-->
 <script type="text/javascript">
 var rootPath = "${ctx}";
 </script>
-<script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script>
+<%-- <script type="text/javascript" src="${ctx}/js/jquery/jquery-1.8.3.js"></script>
 <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/layer-v1.9.2/layer/layer.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/user/updatePassword.js"></script> 
-<script type="text/javascript" src="${ctx}/js/system/user/forgetPassword.js"></script> 
+<script type="text/javascript" src="${ctx}/js/system/user/forgetPassword.js"></script>  --%>
 <!-- base end -->
 <!-- end -->
 
@@ -31,8 +37,10 @@ var rootPath = "${ctx}";
 	<script src="${ctx}/js/jquery/ie/html5shiv.js"></script> 
 	<script src="${ctx}/js/jquery/ie/respond.min.js"></script>
 <![endif]-->
+
+<script>if(window.top !== window.self){ window.top.location = window.location;}</script>
 </head>
-<body onload="javascript:to_top()" 
+<%-- <body onload="javascript:to_top()" 
 	style="background-image: url('${ctx }/admin_files/9.jpg');margin-top:0px;background-repeat:no-repeat;background-size: 100% auto;">
 	<div id="loginbox" style="padding-top: 10%;">
     <input type="hidden" id="change" value="${param.change}">
@@ -104,5 +112,96 @@ var rootPath = "${ctx}";
 		   });  
 		
 	</script>
+</body> --%>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen  animated fadeInDown container">
+        <div>
+        	<div class="logo">
+        		 <img src="./images/logo.png"> 
+        	</div>
+            
+            
+            
+            <h3>物流与商业金融部后台管理系统</h3>
+
+            <form class="m-t" role="form"  id="loginform" name="loginform" action="${ctx }/login.shtml" method="post">
+                <div class="form-group">
+                    <input  class="form-control" placeholder="用户名"   name="username" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="密码"  name="password"  required="">
+                </div>
+                <button type="submit" onclick="checkUserForm()" class="btn btn-success block full-width m-b">登 录</button>
+
+
+                <p class="text-muted text-center"> <a href="login.html#"><small>忘记密码了？</small></a> | <a href="register.html">注册一个新账号</a>
+                </p>
+                
+                
+                 
+                
+                
+
+            </form>
+        </div>
+    </div>
+    
+
+    <script src="${ctx}/js/jquery.min.js"></script>
+    <script src="${ctx}/js/bootstrap.min.js"></script>
+    <script src="${ctx}/js/app.js"></script>
+    <script src="${ctx}/js/login.js"></script>
+    <script src="${ctx}/js/jquery.backstretch.min.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+    
+        <script type="text/javascript">
+
+	    jQuery(document).ready(function() {     
+	      App.init();    // init metronic core components
+	   
+	           $.backstretch([
+	            "./images/bg/1.jpg",
+	            "./images/bg/3.jpg",
+	            "./images/bg/4.jpg"
+	           
+	            ], {
+	              fade: 1000,
+	              duration: 8000
+	        }
+	        );
+	    });
+
+    
+		if ("${error}" != "" || "${param.error}" != "") {
+			alert("${error}"+ "${param.error}");
+			if("${change}" == "1" || "${param.change}" == "1"){
+			    $("input[name='username']").val('${param.username}')
+			    updatePasswordLayer()
+			}
+		};
+		function checkUserForm() {
+			document.loginform.submit()
+		}
+		function to_top(){
+			if(window != top){
+		        top.location.href=location.href
+		    }
+		}
+		
+	/* 	$("#forget").click(function(){
+		    forgetPasswordLayer();
+		}); */
+		
+		/*   $(document).keydown(function(event){  
+		      if(event.keyCode==13){  
+		          checkUserForm();
+		      }
+		   });   */
+		
+	</script>
 </body>
+
+
 </html>

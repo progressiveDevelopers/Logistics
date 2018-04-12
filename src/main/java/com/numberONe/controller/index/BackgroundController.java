@@ -37,6 +37,8 @@ import com.mysql.jdbc.Connection;
 import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
+import com.numberONe.entity.UserInfoFormMap;
+import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.ResourcesMapper;
 import com.numberONe.mapper.UserInfoMapper;
@@ -57,7 +59,7 @@ import com.numberONe.util.TreeUtil;
 @Controller
 @RequestMapping("/")
 public class BackgroundController extends BaseController {
-
+ 
 	@Inject
 	private ResourcesMapper resourcesMapper;
 
@@ -122,7 +124,15 @@ public class BackgroundController extends BaseController {
 			request.setAttribute("error", "登录异常，请联系管理员！");
 			return "/login";
 		}
-		return "redirect:index.shtml";
+		
+		//判断客户是否为客户经理，如果为客户经理则重定向为固定页面
+		UserInfoView userInfoView =  userInfoMapper.findById((Integer)(session.getAttribute("userSessionId")));
+		if (null != userInfoView && userInfoView.getRoleId() == '6') {
+			return "redirect:indexForGrade.shtml";
+		} else {
+			return "redirect:indexForGrade.shtml";
+		}
+		
 	}
 
 	/**
@@ -152,6 +162,34 @@ public class BackgroundController extends BaseController {
 		return "/index";
 	}
 
+	/**
+	 * @mod Ekko 2015-09-07
+	 * @throws Exception
+	 */
+	@RequestMapping("indexForGrade")
+	public String indexForGrade(Model model) throws Exception {
+		// 获取登录的bean
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		UserFormMap userFormMap = (UserFormMap)Common.findUserSession(request);
+		ResFormMap resFormMap = new ResFormMap();
+		resFormMap.put("userId", userFormMap.get("id"));
+		List<ResFormMap> mps = resourcesMapper.findRes(resFormMap);
+		//List<ResFormMap> mps = resourcesMapper.findByWhere(new ResFormMap());
+		List<TreeObject> list = new ArrayList<TreeObject>();
+		for (ResFormMap map : mps) {
+			TreeObject ts = new TreeObject();
+			Common.flushObject(ts, map);
+			list.add(ts);
+		}
+		TreeUtil treeUtil = new TreeUtil();
+		List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
+		model.addAttribute("list", ns);
+		// 登陆的信息回传页面
+		model.addAttribute("userFormMap", userFormMap);
+		return "/indexForGrade";
+	}
+	
+	
 	@RequestMapping("menu")
 	public String menu(Model model) {
 		return "/framework/menu";
