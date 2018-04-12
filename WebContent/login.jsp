@@ -162,7 +162,10 @@ var rootPath = "${ctx}";
 	      App.init();    // init metronic core components
 	   
 	           $.backstretch([
+	            "./images/bg/1.jpg",
+	            "./images/bg/3.jpg",
 	            "./images/bg/4.jpg"
+	           
 	            ], {
 	              fade: 1000,
 	              duration: 8000
