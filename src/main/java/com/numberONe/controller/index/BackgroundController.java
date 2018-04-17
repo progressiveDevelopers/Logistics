@@ -23,6 +23,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +38,6 @@ import com.mysql.jdbc.Connection;
 import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
-import com.numberONe.entity.UserInfoFormMap;
 import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.ResourcesMapper;
@@ -79,7 +79,7 @@ public class BackgroundController extends BaseController {
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-	public String login(String username, String password, HttpServletRequest request) {
+	public String login(String username, String password, HttpServletRequest request) throws InvalidSessionException, Exception {
 		try {
 			if (!request.getMethod().equals("POST")) {
 				request.setAttribute("error", "支持POST方法提交！");
@@ -130,7 +130,7 @@ public class BackgroundController extends BaseController {
 		if (null != userInfoView && userInfoView.getRoleId() == '6') {
 			return "redirect:indexForGrade.shtml";
 		} else {
-			return "redirect:indexForGrade.shtml";
+			return "redirect:index.shtml";
 		}
 		
 	}

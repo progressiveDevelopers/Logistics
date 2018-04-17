@@ -1,236 +1,132 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<html lang="en"
-	class="app">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
 <head>
-    
-<%@include file="/common/common.jspf"%>
-<script type="text/javascript">
-	$(function() {
-    //修改时间2015年10月13日14:32:57
-    //修改在手机上点击菜单后菜单不关闭问题
-    //修改人NumberOne
-    var winwidth = $("body").width();
-    if(winwidth<770){
-      $("#nav ul.lt li").click(function(){
-        $("#nav").removeClass("nav-off-screen");
-     });
-    }
-    //---------修改人NumberOne完毕----------
-		var tb = $("#loadhtml");
-		tb.html(CommnUtil.loadingImg());
-		tb.load(rootPath+"/welcome.jsp");
-		$("[nav-n]").each(function () {
-				$(this).bind("click",function(){
-						var nav = $(this).attr("nav-n");
-						var sn = nav.split(",");
-						var html = '<li><i class="fa fa-home"></i>';
-						html+='<a href="index.shtml">Home</a></li>';
-						for(var i=0;i<2;i++){
-							html+='<li><a href="javascript:void(0)">'+sn[i]+'</a></li>';
-						}
-						$("#topli").html(html);
-						var tb = $("#loadhtml");
-						tb.html(CommnUtil.loadingImg());
-						tb.load(rootPath+sn[2]);
-				});
-			});
-		});
-</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>物流与商业金融部</title>
+    <c:set var="ctx" value="${pageContext.request.contextPath}" />
+    <link href="${ctx}/tongshang.png" type="image/x-icon" rel="shortcut icon">
+
+
+    <!--[if lt IE 8]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctx}/css/font-awesome.min.css" rel="stylesheet">
+    <link href="${ctx}/css/animate.min.css" rel="stylesheet">
+    <link href="${ctx}/css/style.min.css" rel="stylesheet">
 </head>
-<body class="" style="">
-	<section class="vbox">
-		<header class="bg-dark dk header navbar navbar-fixed-top-xs">
-			<div class="navbar-header aside-md" >
-				<a class="btn btn-link visible-xs"
-					data-toggle="class:nav-off-screen,open" data-target="#nav,html">
-					<i class="fa fa-bars"></i>
-				</a> <a href="#" class="navbar-brand" style="padding: 15px 30px">物流与商业金融部</a>
-				<a class="btn btn-link visible-xs" data-toggle="dropdown"
-					data-target=".nav-user"> <i class="fa fa-cog"></i>
-				</a>
-			</div>
-			<ul class="nav navbar-nav hidden-xs">
-				<li class="dropdown">
-					<section
-						class="dropdown-menu aside-xl on animated fadeInLeft no-borders lt">
-						<div class="wrapper lter m-t-n-xs">
-							<a href="#" class="thumb pull-left m-r"> <img
-								src="${ctx}/notebook/notebook_files/avatar.jpg"
-								class="img-circle">
-							</a>
-							<div class="clear">
-								<a href="#"><span class="text-white font-bold">@Mike
-										Mcalidek</span></a> <small class="block">Art Director</small> <a
-									href="#" class="btn btn-xs btn-success m-t-xs">Upgrade</a>
-							</div>
-						</div>
-						<div class="row m-l-none m-r-none m-b-n-xs text-center">
-							<div class="col-xs-4">
-								<div class="padder-v">
-									<span class="m-b-xs h4 block text-white">245</span> <small
-										class="text-muted">Followers</small>
-								</div>
-							</div>
-							<div class="col-xs-4 dk">
-								<div class="padder-v">
-									<span class="m-b-xs h4 block text-white">55</span> <small
-										class="text-muted">Likes</small>
-								</div>
-							</div>
-							<div class="col-xs-4">
-								<div class="padder-v">
-									<span class="m-b-xs h4 block text-white">2,035</span> <small
-										class="text-muted">Photos</small>
-								</div>
-							</div>
-						</div>
-					</section></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
-				<li class="dropdown"><a href="#"
-					class="dropdown-toggle" data-toggle="dropdown">
-                     ${userFormMap.userName}
-                      <b class="caret"></b>
-				</a>
-					<ul class="dropdown-menu animated fadeInRight">
-						<li><a href="#" onclick="javascript:updatePasswordLayer();">密码修改</a></li>
-						<li><a href="logout.shtml">注销</a></li>
-					</ul></li>
-			</ul>
-		</header>
-		<section>
-			<section class="hbox stretch">
-				<!-- .aside -->
-				<aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
-					<section class="vbox">
-						<!-- <header class="header bg-primary lter text-center clearfix">
-							<div class="btn-group">
-							系统菜单
-							</div>
-						</header> -->
-						<section class="w-f scrollable">
-							<div class="slim-scroll" data-height="auto"
-								data-disable-fade-out="true" data-distance="0" data-size="5px"
-								data-color="#333333">
-								<!-- nav -->
-								<nav class="nav-primary hidden-xs">
-									<ul class="nav">
-										<c:forEach var="key" items="${list}" varStatus="s">
-											<!-- <li class="active"> 某一项展开-->
-											<li <c:if test="${s.index==0}">class="active"</c:if>><a
-												href="javascript:void(0)"
-												<c:if test="${s.index==0}">class="active"</c:if>> <c:if
-														test="${s.index==0}">
-														<i class="fa fa-dashboard icon"> <b class="bg-danger"></b>
-														</i>
-													</c:if> <c:if test="${s.index==1}">
-														<i class="fa fa-pencil-square icon"> <b
-															class="bg-warning"></b>
-														</i>
-													</c:if> <c:if test="${s.index==2}">
-														<i class="fa fa-columns icon"> <b class="bg-primary"></b>
-														</i>
-													</c:if> <c:if test="${s.index==3}">
-														<i class="fa fa-book icon"> <b class="bg-info"></b>
-														</i>
-													</c:if> <c:if test="${s.index==4}">
-														<i class="fa fa-th-list icon"> <b class="bg-success"></b>
-														</i>
-													</c:if> <span class="pull-right"> <i
-														class="fa fa-angle-down text"></i> <i
-														class="fa fa-angle-up text-active"></i>
-												</span> <span>${key.name}</span>
-											</a>
 
-												<ul class="nav lt">
-													<c:forEach var="kc" items="${key.children}">
-														<li class="active"><a
-															href="javascript:void(0)"
-															class="active" nav-n="${key.name},${kc.name},${kc.resUrl}?id=${kc.id}"> <i class="fa fa-angle-right"></i> <span>${kc.name}</span>
-														</a></li>
-													</c:forEach>
-												</ul></li>
-										</c:forEach>
-									</ul>
-								</nav>
-								<!-- / nav -->
-							</div>
-						</section>
-						<footer class="footer lt hidden-xs b-t b-dark">
-							<div id="chat" class="dropup">
-								<section class="dropdown-menu on aside-md m-l-n">
-									<section class="panel bg-white">
-										<header class="panel-heading b-b b-light">Active
-											chats</header>
-										<div class="panel-body animated fadeInRight">
-											<p class="text-sm">No active chats.</p>
-											<p>
-												<a href="#" class="btn btn-sm btn-default">Start a chat</a>
-											</p>
-										</div>
-									</section>
-								</section>
-							</div>
-							<div id="invite" class="dropup">
-								<section class="dropdown-menu on aside-md m-l-n">
-									<section class="panel bg-white">
-										<header class="panel-heading b-b b-light">
-											John <i class="fa fa-circle text-success"></i>
-										</header>
-										<div class="panel-body animated fadeInRight">
-											<p class="text-sm">No contacts in your lists.</p>
-											<p>
-												<a href="#" class="btn btn-sm btn-facebook"><i
-													class="fa fa-fw fa-facebook"></i> Invite from Facebook</a>
-											</p>
-										</div>
-									</section>
-								</section>
-							</div>
-							<a href="#nav" data-toggle="class:nav-xs"
-								class="pull-right btn btn-sm btn-dark btn-icon"> <i
-								class="fa fa-angle-left text"></i> <i
-								class="fa fa-angle-right text-active"></i>
-							</a>
-							<div class="btn-group hidden-nav-xs">
-								<button type="button" title="Chats"
-									class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown"
-									data-target="#chat">
-									<i class="fa fa-comment-o"></i>
-								</button>
-								<button type="button" title="Contacts"
-									class="btn btn-icon btn-sm btn-dark" data-toggle="dropdown"
-									data-target="#invite">
-									<i class="fa fa-facebook"></i>
-								</button>
-							</div>
-						</footer>
-					</section>
-				</aside>
-				<!-- /.aside -->
-				<section id="content">
-					<section id="id_vbox" class="vbox">
-						<ul class="breadcrumb no-border no-radius b-b b-light" id="topli">
-						</ul>
-						<section class="scrollable" style="margin-top: 35px;">
-						<div id="loadhtml"></div>
-
-						
-						</section>
-					</section>
-				</section>
-
-			
-				
-				<aside class="bg-light lter b-l aside-md hide" id="notes">
-					<div class="wrapper">Notification</div>
-				</aside>
-			</section>
-		</section>
-	</section>
-	<!-- Bootstrap -->
-	<div id="flotTip" style="display: none; position: absolute;"></div>
-
-
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+    <div id="wrapper">
+        <!--左侧导航开始-->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="nav-close"><i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <span><img alt="image" class="img-circle" src="img/profile_small.jpg" /></span>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                               <span class="block m-t-xs"><strong class="font-bold">Beaut-zihan</strong></span>
+                                <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a class="J_menuItem" href="form_avatar.html">修改头像</a>
+                                </li>
+                                <li><a class="J_menuItem" href="profile.html">个人资料</a>
+                                </li>
+                                <li><a class="J_menuItem" href="contacts.html">联系我们</a>
+                                </li>
+                                <li><a class="J_menuItem" href="mailbox.html">信箱</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="login.html">安全退出</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="logo-element">H+
+                        </div>
+                    </li>
+                   <!--  菜单 开始 -->
+                    <c:forEach var="key" items="${list}" varStatus="s">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa fa-bar-chart-o"></i>
+                                <span class="nav-label">${key.name}</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <c:forEach var="kc" items="${key.children}">
+                                    <li >
+                                        <a class="J_menuItem" href="${ctx}${kc.resUrl}?id=${kc.id}">${kc.name}</a>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </li>
+                    </c:forEach>
+                   <!--  菜单 结束 -->
+                    
+                   
+                </ul>
+            </div>
+        </nav>
+        <!--左侧导航结束-->
+        <!--右侧部分开始-->
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                    </div>
+                </nav>
+            </div>
+            <div class="row content-tabs">
+                <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
+                </button>
+                <nav class="page-tabs J_menuTabs">
+                    <div class="page-tabs-content">
+                        <a href="javascript:;" class="active J_menuTab" data-id="index_v1.html">首页</a>
+                    </div>
+                </nav>
+                <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
+                </button>
+                <div class="btn-group roll-nav roll-right">
+                    <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li class="J_tabShowActive"><a>定位当前选项卡</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
+                        </li>
+                        <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="login.html" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            </div>
+            <div class="row J_mainContent" id="content-main">
+                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="index_v1.html?v=4.0" frameborder="0" data-id="index_v1.html" seamless></iframe>
+            </div>
+        </div>
+        <!--右侧部分结束-->
+    </div>
+    <script src="${ctx}/js/jquery.min.js?v=2.1.4"></script>
+    <script src="${ctx}/js/bootstrap.min.js?v=3.3.5"></script>
+    <script src="${ctx}/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="${ctx}/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="${ctx}/js/plugins/layer/layer.min.js"></script>
+    <script src="${ctx}/js/hplus.min.js?v=4.0.0"></script>
+    <script src="${ctx}/js/contabs.min.js" type="text/javascript"></script>
+    <script src="${ctx}/js/plugins/pace/pace.min.js"></script>
 </body>
+
 </html>

@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<script type="text/javascript">
+	var rootPath = '${ctx}';
+</script>
+<link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
 <input type="hidden" value="${ month.id }" id="monthId">
 <!--  aaaaaaaaaaaaaaa  -->
 <h2 style='padding:0.2em 1em;'><span id="monthDescription">${ month.description }</span> — 考评列表</h2>
@@ -47,8 +52,10 @@
 </form>
 
 </div>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/system/userInfo/SubordinateView.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/layui/layui.js"></script> 
+<script type="text/javascript" src="${ctx}/js/system/userInfo/SubordinateView.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <script type="text/html" id="barDemo">
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">评分详情</a>
 </script>
