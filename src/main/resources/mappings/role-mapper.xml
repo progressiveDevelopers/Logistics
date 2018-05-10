@@ -15,11 +15,23 @@
 		description
 	</sql>
 	<select id="seletUserRole" resultType="com.numberONe.entity.RoleFormMap">
-	select 
+	SELECT 
 	<include refid="selectId"/>
-	 from ly_role
+	 FROM ly_role
 		where ly_role.id
 		in (SELECT roleId FROM ly_user_role WHERE
 		userId=#{userId})
 	</select>
+    
+    <select id="findAll" resultType="com.numberONe.entity.RoleFormMap">
+    
+    SELECT 
+    <include refid="selectId"/>
+    FROM ly_role
+   
+    
+    </select>
+    
+    
+    
 </mapper>

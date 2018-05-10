@@ -8,7 +8,7 @@
         groupName
     </sql>
 
-    <select id="finall" resultType="com.numberONe.entity.CheckMonthFormMap">
+    <select id="findAll" resultType="com.numberONe.entity.CheckMonthFormMap">
         select
         <include refid="selectId" />
         from ly_group
