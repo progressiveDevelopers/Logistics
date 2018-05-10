@@ -61,7 +61,7 @@ var rootPath = "${ctx}";
 					<div class="main_input_box">
 						<span class="add-on bg_ly" style="background: #28b779"><img
 							src="${ctx }/admin_files/account_1.png"
-							alt="请输入账号.."></span><input type="text" placeholder="username" name="username" value=""
+							alt="请输入账号.."></span><input type="text" placeholder="" name="" value=""
 							style="height: 32px; margin-bottom: 0px;"/>
 					</div>
 				</div>
@@ -88,7 +88,7 @@ var rootPath = "${ctx}";
 		if ("${error}" != "" || "${param.error}" != "") {
 			alert("${error}"+ "${param.error}");
 			if("${change}" == "1" || "${param.change}" == "1"){
-			    $("input[name='username']").val('${param.username}')
+			    $("input[name='']").val('${param.}')
 			    updatePasswordLayer()
 			}
 		};
@@ -128,7 +128,7 @@ var rootPath = "${ctx}";
 
             <form class="m-t" role="form"  id="loginform" name="loginform" action="${ctx }/login.shtml" method="post">
                 <div class="form-group">
-                    <input  class="form-control" placeholder="用户名"   name="username" required="">
+                    <input  class="form-control" placeholder="用户名"   name="accountName" required="">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" placeholder="密码"  name="password"  required="">
@@ -177,7 +177,7 @@ var rootPath = "${ctx}";
 		if ("${error}" != "" || "${param.error}" != "") {
 			alert("${error}"+ "${param.error}");
 			if("${change}" == "1" || "${param.change}" == "1"){
-			    $("input[name='username']").val('${param.username}')
+			    $("input[name='accountName']").val('${param.accountName}')
 			    updatePasswordLayer()
 			}
 		};

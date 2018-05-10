@@ -26,13 +26,14 @@ import com.numberONe.constant.EmailConstant;
 import com.numberONe.controller.index.BaseController;
 import com.numberONe.entity.GroupFormMap;
 import com.numberONe.entity.ResUserFormMap;
+import com.numberONe.entity.RoleFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
-import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.ValidateEmailFormMap;
 import com.numberONe.exception.SystemException;
 import com.numberONe.mapper.GroupMapper;
+import com.numberONe.mapper.RoleMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.mapper.ValidateEmailMapper;
@@ -57,6 +58,9 @@ public class UserController extends BaseController {
 	
 	@Inject
 	private GroupMapper groupMapper;
+
+	@Inject
+	private RoleMapper roleMapper;
 	
 	@Inject
 	private UserInfoMapper userInfoMapper;
@@ -105,8 +109,11 @@ public class UserController extends BaseController {
 	public ModelAndView addUI(ModelAndView mv) throws Exception {
 	    
 	    mv.setViewName(Common.BACKGROUND_PATH + "/system/user/add");
-	    List<GroupFormMap> listGroup = groupMapper.finall();
+	    List<GroupFormMap> listGroup = groupMapper.findAll();
+	    List<RoleFormMap>  listRole = roleMapper.findAll();
+	    
 	    mv.addObject("listGroup", listGroup);
+	    mv.addObject("listRole", listRole);
 		return mv;
 	}
 
@@ -161,9 +168,13 @@ public class UserController extends BaseController {
 	public String editUI(Model model) throws Exception {
 		String id = getPara("id");
 		if(Common.isNotEmpty(id)){
+		    try {
 			model.addAttribute("user", userMapper.findbyFrist("id", id, UserFormMap.class));
-			model.addAttribute("groups",groupMapper.finall());
-			model.addAttribute("userGroupId", userInfoMapper.findById(Integer.parseInt(id)).getGroupId());
+			model.addAttribute("groups",groupMapper.findAll());
+			    model.addAttribute("userGroupId", userInfoMapper.findById(Integer.parseInt(id)).getGroupId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
 		
 		return Common.BACKGROUND_PATH + "/system/user/edit";
@@ -177,9 +188,9 @@ public class UserController extends BaseController {
 		UserFormMap userFormMap = getFormMap(UserFormMap.class);
 		UserGroupInfoFormMap userGroupInfoFormMap = getFormMap(UserGroupInfoFormMap.class);
 		userFormMap.put("txtGroupsSelect", txtGroupsSelect);
-//		userMapper.editEntity(userFormMap);
-		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
-		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupInfoFormMap.class);
+		userMapper.editEntity(userFormMap);
+//		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupsFormMap.class);
+//		userMapper.deleteByAttribute("userId", userFormMap.get("id")+"", UserGroupInfoFormMap.class);
 		if(!Common.isEmpty(txtGroupsSelect)){
 			String[] txt = txtGroupsSelect.split(",");
             userMapper.addEntity(userGroupInfoFormMap);

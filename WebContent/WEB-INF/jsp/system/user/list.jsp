@@ -1,7 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/system/user/list.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/css/numberONe.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
+<script type="text/javascript">
+var rootPath = "${ctx}";
+</script>
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/system/user/list.js"></script>
+<script type="text/javascript" src="${ctx}/common/common.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
 	<div class="m-b-md">
 		<form class="form-inline" role="form" id="searchForm"
 			name="searchForm">

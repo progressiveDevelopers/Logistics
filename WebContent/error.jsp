@@ -8,7 +8,7 @@
 <title>错误页面</title>
 </head>
 <body>
-<h1>出错了</h1>
-${exception.message}
+<h1>出错了111111</h1>
+${ex.toString}
 </body>
 </html>
