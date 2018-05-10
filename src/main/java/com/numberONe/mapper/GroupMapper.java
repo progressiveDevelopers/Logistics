@@ -11,6 +11,6 @@ public interface GroupMapper extends BaseMapper{
      * 查询所有组信息
      * @return
      */
-    List<GroupFormMap> finall();
+    List<GroupFormMap> findAll();
     
 }

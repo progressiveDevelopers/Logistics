@@ -8,7 +8,7 @@ import com.numberONe.mapper.base.BaseMapper;
 public interface ResourcesMapper extends BaseMapper {
 	public List<ResFormMap> findChildlists(ResFormMap map);
 
-	public List<ResFormMap> findRes(ResFormMap map);
+	public List<ResFormMap> findRes(ResFormMap map) throws Exception;
 
 	public void updateSortOrder(List<ResFormMap> map);
 	

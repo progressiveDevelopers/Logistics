@@ -79,9 +79,10 @@ public class ResourcesController extends BaseController {
 	 * @param model
 	 *            存放返回界面的model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("list")
-	public String list(Model model) {
+	public String list(Model model) throws Exception {
 		model.addAttribute("res", findByRes());
 		return Common.BACKGROUND_PATH + "/system/resources/list";
 	}
@@ -224,7 +225,7 @@ public class ResourcesController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("findRes")
-	public List<ResFormMap> findUserRes() {
+	public List<ResFormMap> findUserRes() throws Exception {
 		ResFormMap resFormMap = getFormMap(ResFormMap.class);
 		List<ResFormMap> rs = resourcesMapper.findRes(resFormMap);
 		return rs;

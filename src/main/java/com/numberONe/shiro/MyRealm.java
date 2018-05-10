@@ -21,6 +21,8 @@ import org.apache.shiro.util.ByteSource;
 
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.entity.UserFormMap;
+import com.numberONe.entity.UserInfoFormMap;
+import com.numberONe.entity.UserInfoView;
 import com.numberONe.mapper.ResourcesMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserMapper;
@@ -78,10 +80,10 @@ public class MyRealm extends AuthorizingRealm {
 	 * CredentialsMatcher使用盐加密传入的明文密码和此处的密文密码进行匹配。
 	 */
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		String username = (String) token.getPrincipal();
+		String accoutName = (String) token.getPrincipal();
 
 		UserFormMap userFormMap = new UserFormMap();
-		userFormMap.put("accountName", "" + username + "");
+		userFormMap.put("accountName", "" + accoutName + "");
 		List<UserFormMap> userFormMaps = userMapper.findByNames(userFormMap);
 		if (userFormMaps.size() != 0) {
 			if ("2".equals(userFormMaps.get(0).get("locked"))) {
@@ -91,19 +93,22 @@ public class MyRealm extends AuthorizingRealm {
 			// 当用户执行登录时,在方法处理上要实现user.login(token);
 			// 然后会自动进入这个类进行认证
 			// 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
-			SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username, // 用户名
+			SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(accoutName, // 用户名
 					userFormMaps.get(0).get("password"), // 密码
-					ByteSource.Util.bytes(username + "" + userFormMaps.get(0).get("credentialsSalt")),// salt=username+salt
+					ByteSource.Util.bytes(accoutName + "" + userFormMaps.get(0).get("credentialsSalt")),// salt=username+salt
 					getName() // realm name
 			);
 			// 当验证都通过后，把用户信息放在session里
 			Session session = SecurityUtils.getSubject().getSession();
 			session.setAttribute("userSession", userFormMaps.get(0));
 			session.setAttribute("userSessionId", userFormMaps.get(0).get("id"));
-			session.setAttribute("username", username);// 登陆帐号
+			session.setAttribute("userName", userFormMaps.get(0).get("userName"));
+			session.setAttribute("accoutName", accoutName);// 登陆帐号
 			
             try {
-                session.setAttribute("userInfoSession", userInfoMapper.findById((Integer) userFormMaps.get(0).get("id")));
+                UserInfoView userInfo = userInfoMapper.findById((Integer) userFormMaps.get(0).get("id"));
+                session.setAttribute("userInfoSession", userInfo);
+                session.setAttribute("role", userInfo.getRoleName() );
             }catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

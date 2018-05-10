@@ -43,6 +43,7 @@ import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.ResourcesMapper;
 import com.numberONe.mapper.UserInfoMapper;
 import com.numberONe.mapper.UserLoginMapper;
+import com.numberONe.mapper.UserMapper;
 import com.numberONe.util.Common;
 import com.numberONe.util.EmailUtils;
 import com.numberONe.util.TreeObject;
@@ -64,7 +65,7 @@ public class BackgroundController extends BaseController {
 	private ResourcesMapper resourcesMapper;
 
 	@Inject
-	private UserLoginMapper userLoginMapper;
+	private UserMapper userLoginMapper;
 	
 	@Inject
 	private UserInfoMapper userInfoMapper;
@@ -79,12 +80,12 @@ public class BackgroundController extends BaseController {
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-	public String login(String username, String password, HttpServletRequest request) throws InvalidSessionException, Exception {
+	public String login(String accountName, String password, HttpServletRequest request) throws InvalidSessionException, Exception {
 		try {
 			if (!request.getMethod().equals("POST")) {
 				request.setAttribute("error", "支持POST方法提交！");
 			}
-			if (Common.isEmpty(username) || Common.isEmpty(password)) {
+			if (Common.isEmpty(accountName) || Common.isEmpty(password)) {
 				request.setAttribute("error", "用户名或密码不能为空！");
 				return "/login";
 			}
@@ -93,7 +94,7 @@ public class BackgroundController extends BaseController {
 			// 用户输入的账号和密码,,存到UsernamePasswordToken对象中..然后由shiro内部认证对比,
 			// 认证执行者交由ShiroDbRealm中doGetAuthenticationInfo处理
 			// 当以上认证成功后会向下执行,认证失败会抛出异常
-			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+			UsernamePasswordToken token = new UsernamePasswordToken(accountName, password);
 			try {
 				user.login(token);
 			} catch (LockedAccountException lae) {
@@ -103,7 +104,7 @@ public class BackgroundController extends BaseController {
 			} catch (ExcessiveAttemptsException e) {
 			    e.printStackTrace();
 				token.clear();
-				request.setAttribute("error", "账号：" + username + " 登录失败次数过多,锁定10分钟!");
+				request.setAttribute("error", "账号：" + accountName + " 登录失败次数过多,锁定10分钟!");
 				return "/login";
 			} catch (AuthenticationException e) {
 			    e.printStackTrace();
@@ -115,7 +116,7 @@ public class BackgroundController extends BaseController {
 			session = SecurityUtils.getSubject().getSession();
 			session.setAttribute("password", password);
 			userLogin.put("userId", session.getAttribute("userSessionId"));
-			userLogin.put("accountName", username);
+			userLogin.put("accountName", accountName);
 			userLogin.put("loginIP", session.getHost());
 			userLoginMapper.addEntity(userLogin);
 			request.removeAttribute("error");

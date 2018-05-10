@@ -69,7 +69,7 @@ public class BaseController {
 	 * @return Class<T>
 	 * @throws Exception
 	 */
-	public List<ResFormMap> findByRes(){
+	public List<ResFormMap> findByRes() throws Exception{
 		// 资源ID
 		String id = getPara("id");
 		// 获取request
@@ -81,7 +81,8 @@ public class BaseController {
 		ResFormMap resQueryForm = new ResFormMap();
 		resQueryForm.put("parentId", id);
 		resQueryForm.put("userId", userId);
-		List<ResFormMap> rse = resourcesMapper.findRes(resQueryForm);
+		List<ResFormMap> rse = null;
+        rse = resourcesMapper.findRes(resQueryForm);
 		//List<ResFormMap> rse = resourcesMapper.findByAttribute("parentId", id, ResFormMap.class);
 		for (ResFormMap resFormMap : rse) {
 			Object o =resFormMap.get("description");
