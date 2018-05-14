@@ -323,7 +323,7 @@ public class BackgroundController extends BaseController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("msg", "请检查网络和发送方邮件密码是否正确");
+            result.put("msg", "请检查网络和发送方邮件密码是否正确"+e.getMessage());
         }
         
         

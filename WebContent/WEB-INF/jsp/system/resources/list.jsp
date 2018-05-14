@@ -1,7 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/system/resources/list.js"></script>
+<!DOCTYPE html>
+<head>
+<%@include file="/common/path.jspf"%>
+<link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/common/common.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/js/system/resources/list.js"></script>
+</head>
+<body>
 	<div class="m-b-md">
 		<form class="form-inline" role="form" id="searchForm"
 			name="searchForm">
@@ -24,3 +33,5 @@
 	<div class="table-responsive">
 		<div id="paging" class="pagclass"></div>
 	</div>
+</body>
+</html>

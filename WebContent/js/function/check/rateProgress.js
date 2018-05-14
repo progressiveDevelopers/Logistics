@@ -1,9 +1,9 @@
 /**
  * 
  */
-
+var table
 layui.use([ 'laypage', 'layer', 'table'], function(){
-  var table = layui.table //表格
+  table = layui.table //表格
 
   //执行一个 table 实例
   
@@ -62,8 +62,6 @@ $("#sendEmail").click(function(){
               });
               
               data.evaluatorId = evaluatorId;
-              
-              console.log("data----->>"+data.evaluatorId)
               
               $.ajax({
                   type: "POST",

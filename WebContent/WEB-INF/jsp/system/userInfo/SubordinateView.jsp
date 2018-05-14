@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<script type="text/javascript">
-	var rootPath = '${ctx}';
-</script>
-<link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
+<!DOCTYPE html>
+<head>
+<%@include file="/common/path.jspf"%>
+<link href="${ctx}/layui/css/layui.css" rel="stylesheet" >
+<link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <input type="hidden" value="${ month.id }" id="monthId">
-<!--  aaaaaaaaaaaaaaa  -->
 <h2 style='padding:0.2em 1em;'><span id="monthDescription">${ month.description }</span> — 考评列表</h2>
 <form class="layui-form">
   <div class="layui-form-item" >
@@ -20,7 +20,7 @@
       </select>
     </div>
     <div>
-    <a class="btn btn-info" id="exportExcel"  style="margin-left: 30px;">导出excel</a>
+    <a class="btn btn-primary" id="exportExcel"  style="margin-left: 30px;">导出excel</a>
     </div>
   </div>
 </form>
@@ -84,3 +84,4 @@ $(function() {
 	
 });
 </script>
+</html>

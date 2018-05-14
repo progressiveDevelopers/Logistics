@@ -77,7 +77,7 @@ function drawBar(monthId) {
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        url : rootPath+"/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             
             data = JSON.parse(data)
@@ -145,7 +145,7 @@ function drawBar(monthId) {
 function drawLine() {
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
+        url : rootPath+"/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
         success : function(data) {
             data = JSON.parse(data)
             for(i in data) {//i 就是键，data[i]就是值
@@ -198,7 +198,7 @@ function drawPie(monthId){
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        url : rootPath+"/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             data = JSON.parse(data)
             for (var key in data) { // 遍历Array  
@@ -263,7 +263,7 @@ function targetMonthAvgScore(monthId){
     
     $.ajax({
         type : "GET",
-        url : "/Logistics/userInfo/targetMonthAvgScore.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        url : rootPath+"/userInfo/targetMonthAvgScore.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
         success : function(data) {
             $('#avg').text(data)
             $('#avgPercent').text(accDiv(data,0.6).toFixed(1))

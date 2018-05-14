@@ -53,21 +53,12 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label">角色状态</label>
 					<div class="col-sm-9">
-						<div class="btn-group m-r">
-							<button data-toggle="dropdown"
-								class="btn btn-sm btn-default dropdown-toggle">
-								<span class="dropdown-label"><c:if test="${role.state eq 0}">是</c:if><c:if test="${role.state eq 1}">否</c:if></span> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu dropdown-select">
-								<li class=""><a href="#"><input type="radio"
-										name="roleFormMap.state" value="0"<c:if test="${role.state eq 0}"> checked="checked"</c:if>>是</a></li>
-								<li class="active"><a href="#"><input type="radio"
-										name="roleFormMap.state" value="1" <c:if test="${role.state eq 1}"> checked="checked"</c:if>>否</a></li>
-							</ul>
-						</div>
+						<select data-placeholder="角色状态" class="form-control m-b" name="roleFormMap.state">
+                             <option value="0" hassubinfo="true" <c:if test="${role.state eq 0}"> selected="selected"</c:if>>是</option>
+                             <option value="1" hassubinfo="true" <c:if test="${role.state eq 1}"> selected="selected"</c:if>>否</option>
+                    </select>
 					</div>
 				</div>
-				<div class="line line-dashed line-lg pull-in"></div>
 			</div>
 			<footer class="panel-footer text-right bg-light lter">
 			<button type="submit" class="btn btn-success btn-s-xs">提交</button>

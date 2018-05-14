@@ -312,7 +312,7 @@
     
     <select id="findTeamMaster" parameterType="map" resultType="map">
         SELECT userName,email FROM user_info
-        WHERE `level` = 10 AND groupId = #{groupId}
+        WHERE `level` = 10 AND groupId = #{groupId} limit 1
     </select>
     
 </mapper>

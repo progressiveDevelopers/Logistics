@@ -45,7 +45,6 @@ $(function() {
 		},
 		errorPlacement : function(error, element) {// 自定义提示错误位置
 			$(".l_err").css('display', 'block');
-			// element.css('border','3px solid #FFCCCC');
 			$(".l_err").html(error.html());
 		},
 		success : function(label) {// 验证通过后

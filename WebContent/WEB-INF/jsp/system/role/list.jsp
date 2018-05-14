@@ -1,7 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>	
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/system/role/list.js"></script>
+<%@include file="/common/path.jspf"%>
+<link href="${ctx}/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/system/role/list.js"></script>
+<script type="text/javascript" src="${ctx}/common/common.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
 	<div class="m-b-md">
 		<form class="form-inline" role="form" id="searchForm"
 			name="searchForm">
