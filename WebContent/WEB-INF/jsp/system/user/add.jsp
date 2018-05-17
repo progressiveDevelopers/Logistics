@@ -5,11 +5,11 @@
 <html>
 <head>
 <%@include file="/common/path.jspf"%>
-<link href="${ctx}/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
-<link href="${ctx}/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+<link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${ctx}/css/font-awesome.min.css" rel="stylesheet">
 <link href="${ctx}/css/plugins/iCheck/custom.css" rel="stylesheet">
 <link href="${ctx}/css/animate.min.css" rel="stylesheet">
-<link href="${ctx}/css/style.min.css?v=4.0.0" rel="stylesheet"><base target="_blank">
+<link href="${ctx}/css/style.min.css" rel="stylesheet"><base target="_blank">
 <link href="${ctx}/css/plugins/chosen/chosen.css" rel="stylesheet">
 
 </head>
@@ -79,9 +79,9 @@
 		<button type="submit" class="btn btn-success btn-s-xs">提交</button>
 		</footer> </section>
 	</form>
-    <script type="text/javascript" src="${ctx}/js/jquery.min.js?v=2.1.4"></script>
-    <script type="text/javascript" src="${ctx}/js/bootstrap.min.js?v=3.3.5"></script>
-    <script type="text/javascript" src="${ctx}/js/content.min.js?v=1.0.0"></script>
+    <script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${ctx}/js/content.min.js"></script>
     <script type="text/javascript" src="${ctx}/common/common.js"></script>
     <script type="text/javascript" src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
     <script type="text/javascript" src="${ctx}/js/jquery/jquery.form.js"></script>

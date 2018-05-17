@@ -8,13 +8,12 @@ $(function() {
  				type : "post",
  				dataType:"json",
  				success : function(data) {
+ 				    console.log(data);
  					if (data=="success") {
  						layer.confirm('考评已提交!谢谢亲！', function(index) {
  							
- 							var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
- 							
  							 //第一个实例
- 							parent.parent.table.render({
+ 							table.render({
 							     elem: '#test'
 							    ,skin: 'line' //行边框风格
 							    ,even: true //开启隔行背景
@@ -27,9 +26,8 @@ $(function() {
 						             ,{fixed: 'right', width: "30%", align:'center', toolbar: '#barDemo'}
 							    ]]
 							  });
- 							
- 							parent.layer.close(index); //再执行关闭 
- 							
+ 							layer.close(index)
+ 							$('#myModal').modal('hide')
 				        	return false;
  						});
  						 
@@ -42,7 +40,6 @@ $(function() {
  		
  		errorPlacement : function(error, element) {//自定义提示错误位置
  			$(".l_err").css('display','block');
- 			//element.css('border','3px solid #FFCCCC');
  			$(".l_err").html(error.html());
  		},
  		success: function(label) {//验证通过后

@@ -33,15 +33,7 @@ $(function() {
 		  table.on('tool(check)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
 		    var data = obj.data //获得当前行数据
 		    ,layEvent = obj.event; //获得 lay-event 对应的值
-		    /*if(layEvent === 'detail'){
-		      layer.msg('查看操作');
-		    } else if(layEvent === 'del'){
-		      layer.confirm('真的删除行么', function(index){
-		        obj.del(); //删除对应行（tr）的DOM结构
-		        layer.close(index);
-		        //向服务端发送删除指令
-		      });
-		    } else */
+		   
 		    var id = data.id;
 		    var operationPost = data.operationPost;
 		    var operationPostId = data.operationPostId;
@@ -51,7 +43,7 @@ $(function() {
 		    	layer.open({
 		    		title : false,
 		    		type : 2,
-		    		area : [ "950px", "80%" ],
+		    		//area : [ "950px", "80%" ],
 		    		isOutAnim: 6,
 		    		content : rootPath + '/check/checkUI.shtml?id='+ id + '&operationPost=' +  operationPost + '&operationPostId=' +   operationPostId               
 		    	});
