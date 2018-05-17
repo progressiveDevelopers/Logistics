@@ -29,7 +29,6 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("ex", ex);
 		//是否异步请求
 		 if (!(request.getHeader("accept").indexOf("application/json") > -1 || (request  
                  .getHeader("X-Requested-With")!= null && request  
