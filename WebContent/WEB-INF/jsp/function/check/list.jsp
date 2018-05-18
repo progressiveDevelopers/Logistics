@@ -16,7 +16,7 @@
 </head>
 <body>
 <h2 style='padding:0.2em 1em;'>${month} — 考评列表</h2>
-<table class="layui-hide" id="test" lay-filter="check"></table>
+<table id="test" lay-filter="check"></table>
 <!-- modal start  -->
 <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <!-- 模态窗口  内容-->

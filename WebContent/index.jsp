@@ -36,7 +36,7 @@
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li>
-                                    <a class="J_menuItem" href="javascript:void(0)"
+                                    <a href="javascript:void(0)"
                                         onclick="updatePassword()">修改密码</a>
                                 </li>
                                 <li>

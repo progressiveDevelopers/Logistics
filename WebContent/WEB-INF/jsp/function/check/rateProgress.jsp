@@ -12,7 +12,9 @@
 <div>
     <a class="btn btn-info" id="sendEmail" style="margin-left: 30px;">发送提醒邮件</a>
 </div>
-<table class="layui-hide" id="ratePropressTbl" lay-filter="layuiTable"></table>
+
+<table  id="ratePropressTbl" lay-filter="layuiTable"></table>
+
 <script type="text/javascript" src="${ctx}/js/jquery.min.js?v=2.1.4"></script>
 <script type="text/javascript" src="${ctx}/layui/layui.js"></script>
 <script type="text/javascript" src="${ctx}/js/function/check/rateProgress.js"></script>

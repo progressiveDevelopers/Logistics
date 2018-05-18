@@ -26,7 +26,7 @@
     </div>
   </div>
 </form>
-<table class="layui-hide" id="test" lay-filter="check"></table>
+<table id="test" lay-filter="check"></table>
 </body>
 </html>
 <script type="text/html" id="barDemo">

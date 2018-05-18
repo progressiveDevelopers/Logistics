@@ -24,7 +24,7 @@
     </div>
   </div>
 </form>
-<table class="layui-hide" id="subordinateTbl" lay-filter="layuiTable"></table>
+<table id="subordinateTbl" lay-filter="layuiTable"></table>
 
 <div id="exportArea" style="display:none;">
 <form class="layui-form">
