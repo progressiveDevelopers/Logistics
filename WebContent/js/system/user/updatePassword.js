@@ -1,4 +1,3 @@
-
 //校验密码是否相同
 function same(pwd) {  
     var oldPwd = $("#newpassword").val();  
@@ -43,11 +42,12 @@ $(function() {
 					    layer.msg('修改密码成功,请重新登陆', {
 					        time: 0 //不自动关闭
 					        ,btn: ['我知道了']
+					        ,skin: 'layui-layer-lan'
 					        ,offset:['100px']
 					        ,yes: function(index){
 					            var param = GetRequest()['change']
 					            if(param != '1'){
-					                window.location.reload();
+					                window.location = rootPath + '/login.shtml'
 					            }
 					            layer.close(parindex); //再执行关闭 
 					            $('#modalUpdatePassword').modal('hidden')

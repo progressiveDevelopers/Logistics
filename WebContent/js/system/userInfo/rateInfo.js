@@ -78,10 +78,8 @@ function drawBar(monthId) {
     $.ajax({
         type : "GET",
         url : rootPath+"/userInfo/rateInfoDataTargetMonth.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        dataType:'json',
         success : function(data) {
-            
-            data = JSON.parse(data)
-            
             $.each(data, function(i, value) {
                 var name =  String.fromCharCode(65+i)
                 var score
@@ -146,8 +144,8 @@ function drawLine() {
     $.ajax({
         type : "GET",
         url : rootPath+"/userInfo/rateInfoForLine.shtml?userId="+$('#userId').val(),
+        dataType:'json',
         success : function(data) {
-            data = JSON.parse(data)
             for(i in data) {//i 就是键，data[i]就是值
                 xdataLine.push(data[i].month)
                 ydataLine.push(data[i].allscore)
@@ -199,8 +197,8 @@ function drawPie(monthId){
     $.ajax({
         type : "GET",
         url : rootPath+"/userInfo/getUserRate.shtml?userId="+$('#userId').val()+"&monthId="+monthId,
+        dataType:'json',
         success : function(data) {
-            data = JSON.parse(data)
             for (var key in data) { // 遍历Array  
                 pieObj = new Object()
                 pieObj.name = key
@@ -274,7 +272,6 @@ function targetMonthAvgScore(monthId){
 
 //开始渲染echarts
 function drawEcharts(monthId){
-    console.log('22222')
  // 重置echarts中的参数
     pieData = [],xdataBar = [], ydataBar = [],legendData = [],xdataLine = [], ydataLine = [],barColorList = []
     if(isComplete(monthId)){

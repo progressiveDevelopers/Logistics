@@ -2,28 +2,17 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="/common/path.jspf"%>
-<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
+<link href="${ctx}/layui/css/layui.css" rel="stylesheet">
+<link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${ctx}/css/style.min.css" rel="stylesheet">
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/layui/layui.js"></script>
+<script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/echarts/echarts.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/userInfo/rateInfo.js"></script>
 <style type="text/css">
 .content{
     overflow: hidden;
-}
-.top{
-    height:300px;
-}
-.bottomLeft{
-    height:400px;
-    width: 50%;
-    float: left;
-}
-.bottomright{
-    height:400px;
-    width: 50%;
-    float: left;
-}
-.clear{
-    float: clear;
 }
 </style>
 <input type="hidden" value="${sessionScope.userSessionId}"id="userId"/>
@@ -44,9 +33,34 @@
     </div>
   </div>
 </form>
-<div class="content">
-    <div id="barMain"  class="top"></div>
-    <div id="pieMain"  class="bottomLeft"></div>
-    <div id="lineMain"  class="bottomright"></div>
-    <div class="clear"></div>
+ <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div id="barMain"  class="top" style="height: 300px; cursor: default;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="ibox float-e-margins">
+                        <div id="pieMain"  class="echarts"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="ibox float-e-margins">
+                        <div id="lineMain"  class="echarts"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
