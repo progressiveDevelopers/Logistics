@@ -12,7 +12,7 @@ $(function() {
                    {type: 'numbers',  title: '序号' ,  sort: true}
                   ,{field: 'operationPost', title: '姓名',   sort: true}
                   ,{field: 'description', title: '团队/岗位',   sort: true}
-                  ,{  align:'center', toolbar: '#barDemo'}
+                  ,{align:'center', toolbar: '#barDemo',fixed: 'right'}
                 ]]
               };
     

@@ -37,7 +37,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
                     return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
                 }
             }}
-            ,{width: 165, align:'center', toolbar: '#barDemo'}
+            ,{width: 165, align:'center', toolbar: '#barDemo',fixed: 'right'}
             ,
           ]],
           done: function(res, curr, count){ // table渲染结束回调

@@ -24,8 +24,11 @@
     </div>
   </div>
 </form>
-<table id="subordinateTbl" lay-filter="layuiTable"></table>
-
+<div class="row">
+	<div class="col-sm-12">
+        <table id="subordinateTbl" lay-filter="layuiTable"></table>
+    </div>
+</div>
 <div id="exportArea" style="display:none;">
 <form class="layui-form">
   <div class="layui-form-item" >
@@ -53,9 +56,9 @@
 
 </div>
 <script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
-<script type="text/javascript" src="${ctx}/layui/layui.js"></script> 
+<script type="text/javascript" src="${ctx}/layui/layui.js"></script>
+<script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/userInfo/SubordinateView.js"></script>
-<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <script type="text/html" id="barDemo">
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">评分详情</a>
 </script>
