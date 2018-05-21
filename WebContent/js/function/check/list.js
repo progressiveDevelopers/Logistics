@@ -2,8 +2,24 @@ var dialog;
 var grid;
 $(function() {
 	
-    var tableOption = {
-            elem: '#test'
+    var tableOption = null;
+    
+    if(mobile){
+        tableOption = {
+                elem: '#test'
+                    ,skin: 'line' //行边框风格
+                    ,even: true //开启隔行背景
+                    ,url: rootPath + '/check/findByPage.shtml' //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                       {type: 'numbers',  title: '序号' ,  sort: true}
+                      ,{field: 'operationPost', title: '姓名',   sort: true}
+                      ,{align:'center', toolbar: '#barDemo'}
+                    ]]
+                  };
+    } else {
+        tableOption = {
+                elem: '#test'
                 ,skin: 'line' //行边框风格
                 ,even: true //开启隔行背景
                 ,url: rootPath + '/check/findByPage.shtml' //数据接口
@@ -15,6 +31,11 @@ $(function() {
                   ,{align:'center', toolbar: '#barDemo',fixed: 'right'}
                 ]]
               };
+    }
+    
+
+    
+   
     
 	layui.use(['laypage', 'layer', 'table'], function(){
 		  

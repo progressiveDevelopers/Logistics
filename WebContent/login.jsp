@@ -27,13 +27,14 @@
             <h3>物流与商业金融部后台管理系统</h3>
 
             <form class="m-t" role="form"  id="loginform" name="loginform" action="${ctx }/login.shtml" method="post">
+                <div id="errorMsg" style="width: 100%; margin-top: 2px;color: red;"></div>
                 <div class="form-group">
-                    <input  class="form-control" placeholder="用户名"   name="accountName" required="">
+                    <input  class="form-control" placeholder="用户名"   name="accountName" required="" id="accountName1">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="密码" name="password" required="">
+                    <input type="password" class="form-control" placeholder="密码" name="password" required="" id="password">
                 </div>
-                <button type="submit" onclick="checkUserForm()" class="btn btn-success block full-width m-b">登 录</button>
+                <button type="button" onclick="checkUserForm()" class="btn btn-success block full-width m-b">登 录</button>
                 <p class="text-muted text-center"> 
                     <a href="javascript:void(0)" id="forget"><small    style="color:#ecedf0;">忘记密码了？</small></a>
                 </p>
@@ -90,7 +91,6 @@
     <script src="${ctx}/js/jquery.min.js"></script>
     <script src="${ctx}/js/bootstrap.min.js"></script>
     <script src="${ctx}/js/app.js"></script>
-    <script src="${ctx}/js/login.js"></script>
     <script src="${ctx}/js/jquery.backstretch.min.js"></script>
     <script src="${ctx}/js/jquery/jquery.form.js"></script>
     <script src="${ctx}/js/jquery/jquery-validation/jquery.validate.min.js"></script>
@@ -117,11 +117,17 @@
 		if ("${error}" != "" || "${param.error}" != "") {
 			alert("${error}"+ "${param.error}");
 			if("${change}" == "1" || "${param.change}" == "1"){
-			    $("input[name='accountName']").val('${param.accountName}')
-			    updatePasswordLayer()
+			    $('#accountName1').val('${param.accountName}')
 			}
 		};
+		
 		function checkUserForm() {
+		    var accountName1 = $('#accountName1').val();
+		    var password = $('#password').val();
+		    if(accountName1 == "" || password == "" ){
+		        $('#errorMsg').html('请输入完整用户名密码');
+		        return;
+		    }
 			document.loginform.submit()
 		}
 		function to_top(){

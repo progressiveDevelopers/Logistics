@@ -5,46 +5,85 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   form = layui.form
   var element = layui.element;
   
-  //执行一个 table 实例
+  var tableOpt = null;
   
-  var tableOpt = {
-          elem: '#subordinateTbl'
-          ,url: '/Logistics/userInfo/subordinateRate.shtml?monthId='+$('#monthId').val() //数据接口
-          ,cols: [[ //表头
-             {type: 'numbers',  title: '序号' , width: "10%", fixed: 'left'}
-            ,{field: 'userName', title: '姓名',  sort: true}
-            ,{field: 'userDescription', title: '团队/岗位',sort: true}
-            ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
-                if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
-                    
-                    var complete; // 已经完成的人数
-                    var sum; // 应该对其评分的人数
-                    $.ajax({
-                        type: "POST",
-                        url: '/Logistics/check/rateProgress.shtml?operationPostId='+d.userId+'&monthId='+$('#monthId').val(),
-                        async: false,// 让ajax进行同步请求
-                        success: function(data){
-                            data = JSON.parse(data)
-                            complete = data.complete;
-                            sum = data.sum;
-                        }
-                     })
-                    
-                    return "<div class='progressHover'><span class='operationPostId' style='display:none;'>"+d.userId+"</span><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
-                    "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complete+"/"+sum+"'></div>"+
-                    "</div></div>"
-                } else {
-                    return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
-                }
-            }}
-            ,{width: 165, align:'center', toolbar: '#barDemo',fixed: 'right'}
-            ,
-          ]],
-          done: function(res, curr, count){ // table渲染结束回调
-                  element.render(); // 渲染进度条
-                  progressHover();
-               }
-        };
+  if(mobile){
+      tableOpt = {
+              elem: '#subordinateTbl'
+              ,url: '/Logistics/userInfo/subordinateRate.shtml?monthId='+$('#monthId').val() //数据接口
+              ,cols: [[ //表头
+                 {type: 'numbers',  title: '序号' , fixed: 'left'}
+                ,{field: 'userName', title: '姓名',  sort: true}
+                ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
+                    if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
+                        
+                        var complete; // 已经完成的人数
+                        var sum; // 应该对其评分的人数
+                        $.ajax({
+                            type: "POST",
+                            url: '/Logistics/check/rateProgress.shtml?operationPostId='+d.userId+'&monthId='+$('#monthId').val(),
+                            async: false,// 让ajax进行同步请求
+                            success: function(data){
+                                data = JSON.parse(data)
+                                complete = data.complete;
+                                sum = data.sum;
+                            }
+                         })
+                        
+                        return "<div class='progressHover'><span class='operationPostId' style='display:none;'>"+d.userId+"</span><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
+                        "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complete+"/"+sum+"'></div>"+
+                        "</div></div>"
+                    } else {
+                        return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
+                    }
+                }}
+                ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ,
+              ]],
+              done: function(res, curr, count){ // table渲染结束回调
+                      element.render(); // 渲染进度条
+                      progressHover();
+                   }
+            };
+  } else {
+      tableOpt = {
+              elem: '#subordinateTbl'
+              ,url: '/Logistics/userInfo/subordinateRate.shtml?monthId='+$('#monthId').val() //数据接口
+              ,cols: [[ //表头
+                 {type: 'numbers',  title: '序号' , fixed: 'left'}
+                ,{field: 'userName', title: '姓名',  sort: true}
+                ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
+                    if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
+                        
+                        var complete; // 已经完成的人数
+                        var sum; // 应该对其评分的人数
+                        $.ajax({
+                            type: "POST",
+                            url: '/Logistics/check/rateProgress.shtml?operationPostId='+d.userId+'&monthId='+$('#monthId').val(),
+                            async: false,// 让ajax进行同步请求
+                            success: function(data){
+                                data = JSON.parse(data)
+                                complete = data.complete;
+                                sum = data.sum;
+                            }
+                         })
+                        
+                        return "<div class='progressHover'><span class='operationPostId' style='display:none;'>"+d.userId+"</span><div class='layui-progress layui-progress-big' lay-showPercent='true'>"+
+                        "<div class='layui-progress-bar layui-bg-blue' lay-percent='"+complete+"/"+sum+"'></div>"+
+                        "</div></div>"
+                    } else {
+                        return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
+                    }
+                }}
+                ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ,
+              ]],
+              done: function(res, curr, count){ // table渲染结束回调
+                      element.render(); // 渲染进度条
+                      progressHover();
+                   }
+            };
+  }
   
   //给进度条所在的单元格添加悬浮事件
   function progressHover(){
