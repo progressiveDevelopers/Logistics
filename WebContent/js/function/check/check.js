@@ -42,7 +42,6 @@ var tableOption = null;
  				type : "post",
  				dataType:"json",
  				success : function(data) {
- 				    console.log(data);
  					if (data=="success") {
  						layer.confirm('考评已提交!谢谢亲！', function(index) {
  							

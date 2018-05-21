@@ -2,7 +2,6 @@ var dialog;
 var grid;
 $(function() {
 	
-	console.log(1);
 	layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element','form'], function(){
 		  
 		  var laydate = layui.laydate //日期

@@ -7,9 +7,7 @@ var rootPath = "${ctx}";
 var mobile = false // 默认pc端
 var pc = true // 默认pc端
 // 宽度小雨600为移动端
-console.log('window.innerWidth----------->'+window.innerWidth);
 if(window.innerWidth < 600){
-    console.log('您访问的是移动设备')
     mobile = true;
     pc = false;
 }

@@ -36,9 +36,7 @@ $(function() {
 				type : "post",
 				dataType : "json",//ajaxSubmi带有文件上传的。不需要设置json
 				success : function(data) {
-				    console.log(data)
 					if (data == "success") {
-					    console.log("success")
 					    layer.msg('修改密码成功,请重新登陆', {
 					        time: 0 //不自动关闭
 					        ,btn: ['我知道了']
