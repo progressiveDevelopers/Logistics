@@ -59,6 +59,7 @@
 <script type="text/javascript" src="${ctx}/layui/layui.js"></script>
 <script type="text/javascript" src="${ctx}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/userInfo/SubordinateView.js"></script>
+<script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <script type="text/html" id="barDemo">
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">评分详情</a>
 </script>

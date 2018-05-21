@@ -85,7 +85,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
       )
      // 悬浮事件 end
      // 详情按钮禁用
-     // 根绝进度条找到当前行的查看详情按钮
+     // 根据进度条找到当前行的查看详情按钮
      var aobj = $('.progressHover').parent().parent().next().find('a')
      // 添加禁用样式
      aobj.addClass("layui-btn-disabled")
