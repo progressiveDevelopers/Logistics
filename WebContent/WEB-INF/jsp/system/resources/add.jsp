@@ -3,7 +3,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<%@include file="/common/common.jspf"%>
+<%@include file="/common/path.jspf"%>
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/font.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/notebook/notebook_files/app.v1.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/css/numberONe.css" type="text/css">
+<link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
+<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/resources/add.js"></script>
 <style type="text/css">
 #but button {

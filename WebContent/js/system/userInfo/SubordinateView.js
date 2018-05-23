@@ -7,13 +7,13 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
   
   var tableOpt = null;
   
+            
   if(mobile){
       tableOpt = {
               elem: '#subordinateTbl'
               ,url: '/Logistics/userInfo/subordinateRate.shtml?monthId='+$('#monthId').val() //数据接口
               ,cols: [[ //表头
-                 {type: 'numbers',  title: '序号' , fixed: 'left'}
-                ,{field: 'userName', title: '姓名',  sort: true}
+                 {field: 'userName', title: '姓名',  sort: true}
                 ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
                     if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
                         
@@ -37,7 +37,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
                         return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
                     }
                 }}
-                ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ,{align:'center', toolbar: '#barDemo'}
                 ,
               ]],
               done: function(res, curr, count){ // table渲染结束回调
@@ -52,6 +52,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
               ,cols: [[ //表头
                  {type: 'numbers',  title: '序号' , fixed: 'left'}
                 ,{field: 'userName', title: '姓名',  sort: true}
+                ,{field: 'userDescription', title: '团队/岗位',sort: true}
                 ,{field: 'allscore',title: '平均分/进度' , align:'center', event: 'setSign' ,sort: true,templet: function(d){
                     if(d.allscore == undefined || d.allscore == null || d.allscore == ''){
                         
@@ -75,7 +76,7 @@ layui.use([ 'laypage', 'layer', 'table','form','element'], function(){
                         return '<span style="font-weight:bold;" >'+d.allscore+'</span>'
                     }
                 }}
-                ,{width: 165, align:'center', toolbar: '#barDemo'}
+                ,{align:'center', toolbar: '#barDemo'}
                 ,
               ]],
               done: function(res, curr, count){ // table渲染结束回调

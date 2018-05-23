@@ -121,6 +121,14 @@
 			}
 		};
 		
+		
+		$(document).keydown(function(event){ 
+		    if(event.keyCode == 13){ //绑定回车 
+		        checkUserForm();
+		    } 
+	    }); 
+		
+		
 		function checkUserForm() {
 		    var accountName1 = $('#accountName1').val();
 		    var password = $('#password').val();

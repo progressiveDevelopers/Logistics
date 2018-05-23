@@ -5,9 +5,11 @@
 <head>
 <%@include file="/common/path.jspf"%>
 <link href="${ctx}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${ctx}/layui/css/layui.css"  rel="stylesheet">
 <script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
 <script type="text/javascript" src="${ctx}/common/common.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
+<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
 <script type="text/javascript" src="${ctx}/js/system/resources/list.js"></script>
 </head>
 <body>

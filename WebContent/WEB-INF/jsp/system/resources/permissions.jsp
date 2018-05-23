@@ -4,7 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<%@include file="/common/common.jspf"%>
+<%@include file="/common/path.jspf"%>
+<link rel="stylesheet" href="${ctx}/layui/css/layui.css" >
+<link rel="stylesheet" href="${ctx}/css/bootstrap.min.css">
+<script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
+<script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="${ctx}/common/common.js"></script>
 </head>
 <style type="text/css">
 

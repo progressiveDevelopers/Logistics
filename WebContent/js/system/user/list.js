@@ -56,7 +56,39 @@ $(function() {
 	$("#permissions").click("click", function() {
 		permissions();
 	});
+	// 离职设置
+	$("#dimission").click("click", function() {
+	    dimission();
+	});
 });
+function dimission() {
+    var cbox = grid.getSelectedCheckbox();
+    if (cbox.length > 1 || cbox == "") {
+        layer.msg("只能选中一个");
+        return;
+    }
+    
+    layer.confirm('是否设置为离职,设为离职将会为其还未评分的人员进行自动评分（全满分）', {
+        btn: ['确定','取消'] //按钮
+      }, function(){
+          console.log("人员离职"+cbox)
+          $.ajax({
+              url: rootPath + '/user/dimission.shtml',
+              type: "post",
+              data:{"userid":cbox[0]},
+              dataType:"json",
+              success: function(data){
+                  console.log(data)
+              }
+          });
+          
+          layer.close(index)
+          
+      });
+    
+    
+    
+}
 function editAccount() {
 	var cbox = grid.getSelectedCheckbox();
 	if (cbox.length > 1 || cbox == "") {
