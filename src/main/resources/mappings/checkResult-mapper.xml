@@ -77,5 +77,12 @@
         SELECT DISTINCT checkOptionId FROM check_result 
         WHERE  operationPostId =#{0} AND monthId = #{1}
     </select>
+    
+    <update id="autoRate" parameterType="com.numberONe.entity.CheckResultFormMap">
+    
+        UPDATE  `check_result` 
+        SET checkResult = '10' 
+        WHERE `monthId` = #{monthId} AND `evaluatorId` = #{evaluatorId}
+    </update>
 	
 </mapper>

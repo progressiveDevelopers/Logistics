@@ -123,5 +123,19 @@
         ON t.evaluatorId = u.userId
     </select>
     
+    <update id="updateRateStatus" parameterType="com.numberONe.entity.CheckTaskAssignmentFormMap">
+        UPDATE check_task_assignment
+        SET `status` = #{status} 
+        <where>
+            `deletestatus` = '0' 
+        <if test="evaluatorId and evaluatorId''">  
+           AND `evaluatorId` = #{evaluatorId} 
+        </if>  
+        <if test="operationPostId and operationPostId''">  
+            AND `monthId` = #{monthId} 
+        </if>  
+        </where>
+
+    </update>
     
 </mapper>

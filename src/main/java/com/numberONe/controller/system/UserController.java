@@ -2,6 +2,8 @@ package com.numberONe.controller.system;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.numberONe.annotation.SystemLog;
 import com.numberONe.constant.EmailConstant;
 import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.CheckAvgResultFormMap;
+import com.numberONe.entity.CheckMonthFormMap;
+import com.numberONe.entity.CheckResultFormMap;
+import com.numberONe.entity.CheckTaskAssignmentFormMap;
 import com.numberONe.entity.GroupFormMap;
 import com.numberONe.entity.ResUserFormMap;
 import com.numberONe.entity.RoleFormMap;
@@ -32,6 +38,10 @@ import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
 import com.numberONe.entity.ValidateEmailFormMap;
 import com.numberONe.exception.SystemException;
+import com.numberONe.mapper.CheckMapper;
+import com.numberONe.mapper.CheckMonthMapper;
+import com.numberONe.mapper.CheckResultMapper;
+import com.numberONe.mapper.CheckTaskAssignmentMapper;
 import com.numberONe.mapper.GroupMapper;
 import com.numberONe.mapper.RoleMapper;
 import com.numberONe.mapper.UserInfoMapper;
@@ -66,7 +76,19 @@ public class UserController extends BaseController {
 	private UserInfoMapper userInfoMapper;
 	
 	@Inject
+	private CheckResultMapper checkResultMapper;
+	
+	@Inject
+	private CheckMonthMapper checkMonthMapper;
+
+	@Inject
+	private CheckTaskAssignmentMapper checkTaskAssignmentMapper;
+	
+	@Inject
 	private ValidateEmailMapper validateEmailMapper;
+	
+	@Inject
+    private CheckMapper checkMapper;
 	
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -378,5 +400,118 @@ public class UserController extends BaseController {
         request.removeAttribute("error");
         return Common.BACKGROUND_PATH + "/system/user/forgetPassword";
     }
+    
+    @RequestMapping("dimission")
+    @ResponseBody
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @SystemLog(module="人员管理",methods="人员离职自动评分")//凡需要处理业务逻辑的.都需要记录操作日志
+    public Map<String,Object> userDimission(Integer userid) throws Exception{
+        Map<String,Object> map = new HashMap<>();
+        
+        map.put("code", 200);
+        map.put("code", "修改成功");
+        
+        UserFormMap user = userMapper.findbyFrist("id", userid.toString(), UserFormMap.class);
+        
+        Integer deleteStatus = (Integer) user.get("deletestatus") ;
+        
+        // 如果已经是离职状态
+        if(1 == deleteStatus) {
+            map.put("msg", "此人员已经是离职状态");
+            return map;
+        }
+        
+        try {
+            //将离职状态改为已离职
+            user.put("deletestatus", 1);
+            userMapper.editEntity(user);
+        } catch (Exception e) {
+            user.put("msg", "设置离职状态失败");
+            e.printStackTrace();
+            throw new Exception();
+        }
+        
+        CheckMonthFormMap month =  checkMonthMapper.getCurrentMonth();
+        String monthId = String.valueOf(month.get("id"));
+        
+        CheckResultFormMap result = new CheckResultFormMap();
+        result.put("monthId", monthId);
+        result.put("evaluatorId", userid);
+        
+        //将此客户经理的所有人员评分改为10分
+        checkResultMapper.autoRate(result);
+
+        
+        CheckTaskAssignmentFormMap map1 = new CheckTaskAssignmentFormMap();
+        // 查看客户经理还有剩哪些中后台人员未评分
+        // 筛选条件: month 当前月, status 未评分, deletestatus 未删除,evaluatorId 离职客户经理
+        map1.put("where","WHERE `evaluatorId` = '"+userid+"' AND `monthId` = '"+monthId
+                +"' AND `status` = '0' AND `deletestatus` = '0'");
+        List<CheckTaskAssignmentFormMap> listOperationPosts = 
+                checkTaskAssignmentMapper.findByWhere(map1);
+        
+        
+        CheckAvgResultFormMap avgResult =  new CheckAvgResultFormMap();
+        CheckTaskAssignmentFormMap map2 = null;
+        // 将评分状态改为已评分
+        map2 = new CheckTaskAssignmentFormMap();
+        map2.put("evaluatorId", userid);
+        map2.put("monthId", monthId);
+        map2.put("status", 1);
+        map2.put("deletestatus", 0);
+        checkTaskAssignmentMapper.updateRateStatus(map2);
+        
+        // 遍历还未评分的中后台人员
+        for (CheckTaskAssignmentFormMap checkTaskAssignmentFormMap : listOperationPosts) {
+            // 被评价人id
+            String operationPostId = checkTaskAssignmentFormMap.getStr("operationPostId");
+            // 被评价人姓名
+            String operationPost = checkTaskAssignmentFormMap.getStr("operationPost");
+            
+            // 获取该中后台人员还有哪些客户经理未评分
+            map2 = new CheckTaskAssignmentFormMap();
+            map2.put("operationPostId", operationPostId);
+            map2.put("monthId", monthId);
+            map2.put("status", 0);
+            map2.put("deletestatus", 1);
+            List<CheckTaskAssignmentFormMap> listEvaluaors = 
+                    checkTaskAssignmentMapper.findByNames(map2);
+            
+            // 只有查出来结果为0时才开始计算平均分
+            if(listEvaluaors == null || listEvaluaors.size() > 0) {
+                continue;
+            }
+            
+            map2.put("operationPostId", operationPostId);
+            map2.put("month", month.getStr("month"));
+            map2.put("deletestatus", 0);
+            List resultList = checkMapper.getAllResult(map2);
+            try {
+                Collections.sort(resultList); // 对获取的List进行排序
+                resultList.remove(0); // 去掉最小的数
+                resultList.remove(resultList.size()-1); // 去掉最大的数
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            int sum = 0;
+            for(int i = 0; i<resultList.size() ; i++){
+                sum += Integer.parseInt((String) resultList.get(i));
+            }
+            BigDecimal b = new BigDecimal((double)sum/resultList.size());
+            double avg = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue(); // 四舍五入取一个小数点
+            avgResult.set("monthid", monthId);//月份
+            avgResult.set("month", month.getStr("month"));//月
+            avgResult.set("nameid", operationPostId);//被评价人id
+            avgResult.set("name",  operationPost);//被评价人姓名
+            avgResult.set("allscore", avg);// 平均数
+            checkMapper.addEntity(avgResult);
+            
+            
+        }
+        
+        return map;
+    }
+    
+    
 	
 }

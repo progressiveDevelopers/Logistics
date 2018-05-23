@@ -9,7 +9,7 @@ import com.numberONe.mapper.base.BaseMapper;
 
 public interface CheckTaskAssignmentMapper extends BaseMapper{
 
-	public void addTaskAssignList(List<CheckTaskAssignmentFormMap> checkTaskAssignmentList) throws Exception;
+	void addTaskAssignList(List<CheckTaskAssignmentFormMap> checkTaskAssignmentList) throws Exception;
 	
 	
 	/**
@@ -18,7 +18,7 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 * @return
 	 * @throws Exception
 	 */
-	public Integer countCompleteRate(Map<String,Object> param) throws Exception;
+	Integer countCompleteRate(Map<String,Object> param) throws Exception;
 	
 	/**
      * 查询此中后台人员当月一共应该有几个人对其评分
@@ -30,7 +30,7 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
      * @return
      * @throws Exception
      */
-    public Integer countSumRate(Map<String,Object> param) throws Exception;
+    Integer countSumRate(Map<String,Object> param) throws Exception;
     
 	/**
 	 * 查询此中后台人员还有哪些客户经理没有对其评价
@@ -38,7 +38,7 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> notCompletedRate(Map<String,Object> param) throws Exception;
+	List<String> notCompletedRate(Map<String,Object> param) throws Exception;
 
 	/**
 	 * 查询最近月份还未完成评分工作的客户经理名称
@@ -46,6 +46,18 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Map<String,Object>> notCompletedRateForAll(Map<String,Object> param) throws Exception;
+	List<Map<String,Object>> notCompletedRateForAll(Map<String,Object> param) throws Exception;
+	
+	
+	
+	/**
+	 * 更改评分状态
+	 * @param checkTaskAssignmentFormMap
+	 * @throws Exception
+	 */
+	void updateRateStatus(CheckTaskAssignmentFormMap checkTaskAssignmentFormMap)throws Exception;
+	
+	
+	
 	
 }

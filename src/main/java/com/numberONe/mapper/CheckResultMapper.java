@@ -28,5 +28,12 @@ public interface CheckResultMapper extends BaseMapper{
      * @return
      */
     List<Integer> findUserRateOption(Integer userId,Integer monthId);
+    
+    /**
+     * 离职人员自动评分
+     * @param checkResultFormMap
+     */
+    void autoRate(CheckResultFormMap checkResultFormMap);
+    
 }
 

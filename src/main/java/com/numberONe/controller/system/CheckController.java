@@ -260,7 +260,7 @@ public class CheckController extends BaseController {
         userFormMap = (UserFormMap)Common.findUserSession(req);
         int evaluatorId = (Integer) userFormMap.get("id");
         //建立  平均分
-        CheckAvgResultFormMap avgResult =  new CheckAvgResultFormMap();;
+        CheckAvgResultFormMap avgResult =  new CheckAvgResultFormMap();
         //获取当前月份
         CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
         String month = (String) checkMonthFormMap.get("month");

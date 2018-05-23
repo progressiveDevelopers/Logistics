@@ -26,7 +26,15 @@ public class SpringTest {
     }
     
     
-    
+    @Test
+    public void TimeTaskRateInfo() {
+        System.out.println(timeConUtil);
+        try {
+            timeConUtil.findUserInfoList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     
     
