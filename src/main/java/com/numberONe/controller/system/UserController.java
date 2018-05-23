@@ -36,6 +36,7 @@ import com.numberONe.entity.RoleFormMap;
 import com.numberONe.entity.UserFormMap;
 import com.numberONe.entity.UserGroupInfoFormMap;
 import com.numberONe.entity.UserGroupsFormMap;
+import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.ValidateEmailFormMap;
 import com.numberONe.exception.SystemException;
 import com.numberONe.mapper.CheckMapper;
@@ -403,15 +404,17 @@ public class UserController extends BaseController {
     
     @RequestMapping("dimission")
     @ResponseBody
-    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @Transactional//需要事务操作必须加入此注解
     @SystemLog(module="人员管理",methods="人员离职自动评分")//凡需要处理业务逻辑的.都需要记录操作日志
     public Map<String,Object> userDimission(Integer userid) throws Exception{
         Map<String,Object> map = new HashMap<>();
         
         map.put("code", 200);
-        map.put("code", "修改成功");
+        map.put("msg", "修改成功");
         
         UserFormMap user = userMapper.findbyFrist("id", userid.toString(), UserFormMap.class);
+        
+        UserInfoView userInfo = userInfoMapper.findById(userid);
         
         Integer deleteStatus = (Integer) user.get("deletestatus") ;
         
@@ -425,6 +428,10 @@ public class UserController extends BaseController {
             //将离职状态改为已离职
             user.put("deletestatus", 1);
             userMapper.editEntity(user);
+            // 如果不是客户经理则直接返回结果信息
+            if(userInfo.getLevel() != 5) {
+                return map;
+            }
         } catch (Exception e) {
             user.put("msg", "设置离职状态失败");
             e.printStackTrace();
@@ -451,7 +458,7 @@ public class UserController extends BaseController {
                 checkTaskAssignmentMapper.findByWhere(map1);
         
         
-        CheckAvgResultFormMap avgResult =  new CheckAvgResultFormMap();
+        CheckAvgResultFormMap avgResult =  null;
         CheckTaskAssignmentFormMap map2 = null;
         // 将评分状态改为已评分
         map2 = new CheckTaskAssignmentFormMap();
@@ -473,9 +480,9 @@ public class UserController extends BaseController {
             map2.put("operationPostId", operationPostId);
             map2.put("monthId", monthId);
             map2.put("status", 0);
-            map2.put("deletestatus", 1);
+            map2.put("deletestatus", 0);
             List<CheckTaskAssignmentFormMap> listEvaluaors = 
-                    checkTaskAssignmentMapper.findByNames(map2);
+                    checkTaskAssignmentMapper.findUnRateMgr(map2);
             
             // 只有查出来结果为0时才开始计算平均分
             if(listEvaluaors == null || listEvaluaors.size() > 0) {
@@ -499,14 +506,13 @@ public class UserController extends BaseController {
             }
             BigDecimal b = new BigDecimal((double)sum/resultList.size());
             double avg = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue(); // 四舍五入取一个小数点
+            avgResult = new CheckAvgResultFormMap();
             avgResult.set("monthid", monthId);//月份
             avgResult.set("month", month.getStr("month"));//月
             avgResult.set("nameid", operationPostId);//被评价人id
             avgResult.set("name",  operationPost);//被评价人姓名
             avgResult.set("allscore", avg);// 平均数
             checkMapper.addEntity(avgResult);
-            
-            
         }
         
         return map;

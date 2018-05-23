@@ -57,7 +57,12 @@ public interface CheckTaskAssignmentMapper extends BaseMapper{
 	 */
 	void updateRateStatus(CheckTaskAssignmentFormMap checkTaskAssignmentFormMap)throws Exception;
 	
-	
+	/**
+	 * 查询某个中后台人员还有哪个客户经理没评分
+	 * @param checkTaskAssignmentFormMap
+	 * @return
+	 */
+	List<CheckTaskAssignmentFormMap> findUnRateMgr(CheckTaskAssignmentFormMap checkTaskAssignmentFormMap);
 	
 	
 }

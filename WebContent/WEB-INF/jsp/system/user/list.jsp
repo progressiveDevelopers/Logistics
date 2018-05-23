@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="${ctx}/css/numberONe.css" type="text/css">
 <link rel="stylesheet" href="${ctx}/layui/css/layui.css" type="text/css">
 <script type="text/javascript" src="${ctx}/js/jquery.min.js"></script>
-<script type="text/javascript" src="${ctx}/js/system/user/list.js"></script>
 <script type="text/javascript" src="${ctx}/common/common.js"></script>
 <script type="text/javascript" src="${ctx}/common/lyGrid.js"></script>
 <script type="text/javascript" src="${ctx}/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="${ctx}/js/system/user/list.js"></script>
 </head>
 <body>
     <div class="m-b-md">

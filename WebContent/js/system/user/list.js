@@ -71,18 +71,18 @@ function dimission() {
     layer.confirm('是否设置为离职,设为离职将会为其还未评分的人员进行自动评分（全满分）', {
         btn: ['确定','取消'] //按钮
       }, function(){
-          console.log("人员离职"+cbox)
           $.ajax({
               url: rootPath + '/user/dimission.shtml',
               type: "post",
               data:{"userid":cbox[0]},
               dataType:"json",
               success: function(data){
-                  console.log(data)
+                  layer.msg(data.msg, {icon: 1});
+                  
               }
           });
           
-          layer.close(index)
+         
           
       });
     

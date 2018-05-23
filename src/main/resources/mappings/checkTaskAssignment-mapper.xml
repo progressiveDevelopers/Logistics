@@ -128,14 +128,24 @@
         SET `status` = #{status} 
         <where>
             `deletestatus` = '0' 
-        <if test="evaluatorId and evaluatorId''">  
+        <if test="evaluatorId!=null and evaluatorId!=''">  
            AND `evaluatorId` = #{evaluatorId} 
         </if>  
-        <if test="operationPostId and operationPostId''">  
+        <if test="monthId!=null and monthId!=''">  
             AND `monthId` = #{monthId} 
         </if>  
         </where>
 
     </update>
+    
+    <select id="findUnRateMgr" parameterType="com.numberONe.entity.CheckTaskAssignmentFormMap"  resultType="com.numberONe.entity.CheckTaskAssignmentFormMap"> 
+        
+        SELECT * FROM check_task_assignment 
+        WHERE operationPostId = #{operationPostId}
+        AND monthId =#{monthId}
+        AND `status` = 0
+        AND `deletestatus` = 0
+            
+    </select>
     
 </mapper>

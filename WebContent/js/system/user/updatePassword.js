@@ -47,7 +47,7 @@ $(function() {
 					            if(param != '1'){
 					                window.location = rootPath + '/login.shtml'
 					            }
-					            layer.close(parindex); //再执行关闭 
+					            layer.close(index); //再执行关闭 
 					            $('#modalUpdatePassword').modal('hidden')
 					        }
 					      });
