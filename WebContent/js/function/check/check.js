@@ -14,9 +14,9 @@ $(function() {
                     ,url: rootPath + '/check/findByPage.shtml' //数据接口
                     ,page: true //开启分页
                     ,cols: [[ //表头
-                       {type: 'numbers',  title: '序号' ,  sort: true}
-                      ,{field: 'operationPost', title: '姓名',   sort: true}
-                      ,{align:'center', toolbar: '#barDemo',fixed:"right"}
+                       {type: 'numbers',  title: '序号' , width:"10%" , sort: true}
+                      ,{field: 'operationPost', title: '姓名',  width:"30%",  sort: true}
+                      ,{align:'center', toolbar: '#barDemo',  width:"60%"}
                     ]]
                   };
     } else {
@@ -30,7 +30,7 @@ $(function() {
                    {type: 'numbers',  title: '序号' ,  sort: true}
                   ,{field: 'operationPost', title: '姓名',   sort: true}
                   ,{field: 'description', title: '团队/岗位',   sort: true}
-                  ,{align:'center', toolbar: '#barDemo',fixed: 'right'}
+                  ,{align:'center', toolbar: '#barDemo'}
                 ]]
               };
     }
