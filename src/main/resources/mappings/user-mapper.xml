@@ -27,7 +27,7 @@
 		select
 		<include refid="selectId" />
 		from ly_user
-		where 1 = 1
+		where 1 = 1 and deletestatus = 0
 		<if test="accountName != null and accountName != ''">
 		and accountName like '%${accountName}%'
 		</if>

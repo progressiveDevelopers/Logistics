@@ -101,7 +101,7 @@ public class CheckController extends BaseController {
 		
 		layTableUtils.setCode(0);
 		layTableUtils.setCount(i);
-		List list = null;
+		List<CheckTaskAssignmentFormMap> list = null;
 		
 		
 		try {
@@ -111,7 +111,7 @@ public class CheckController extends BaseController {
 		}
 		
 		//layTableUtils.setData(checkMapper.findByPage(checkTaskAssignmentFormMap));
-		layTableUtils.setData(checkMapper.findAssignTask(map));
+		layTableUtils.setData(list);
 		System.out.println(layTableUtils.toString());
 		return layTableUtils;
 	}

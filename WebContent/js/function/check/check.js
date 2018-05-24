@@ -4,7 +4,7 @@ $(function() {
 	
     
     
-var tableOption = null;
+    var tableOption = null;
     
     if(mobile){
         tableOption = {
@@ -16,7 +16,7 @@ var tableOption = null;
                     ,cols: [[ //表头
                        {type: 'numbers',  title: '序号' ,  sort: true}
                       ,{field: 'operationPost', title: '姓名',   sort: true}
-                      ,{align:'center', toolbar: '#barDemo'}
+                      ,{align:'center', toolbar: '#barDemo',fixed:"right"}
                     ]]
                   };
     } else {
@@ -43,15 +43,10 @@ var tableOption = null;
  				dataType:"json",
  				success : function(data) {
  					if (data=="success") {
- 						layer.confirm('考评已提交!谢谢亲！', function(index) {
- 							
  							 //第一个实例
  							table.render(tableOption);
- 							layer.close(index)
  							$('#myModal').modal('hide')
-				        	return false;
- 						});
- 						 
+ 							alert("考评已提交!谢谢亲！")
  					} else {
  						layer.msg('添加失败！');
  					}

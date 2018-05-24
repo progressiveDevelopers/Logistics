@@ -16,13 +16,8 @@
 <body>
     <div class="m-b-md">
         <form class="form-inline" role="form" id="searchForm" name="searchForm">
-            <div class="form-group">
-                <label class="control-label"> <span class="h4 font-thin v-middle">账号:</span></label>
-                <input class="input-medium ui-autocomplete-input" id="accountName"
-                    name="userFormMap.accountName">
-            </div>
-            <a href="javascript:void(0)" class="btn btn-default" id="search">查询</a> <a
-                href="javascript:grid.exportData('/user/export.shtml')" class="btn btn-info"
+
+            <a href="javascript:grid.exportData('/user/export.shtml')" class="btn btn-info"
                 id="search">导出excel</a>
         </form>
     </div>

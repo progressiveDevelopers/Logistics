@@ -429,7 +429,7 @@ public class UserController extends BaseController {
             user.put("deletestatus", 1);
             userMapper.editEntity(user);
             // 如果不是客户经理则直接返回结果信息
-            if(userInfo.getLevel() != 5) {
+            if(userInfo.getLevel() != 8) {
                 return map;
             }
         } catch (Exception e) {

@@ -14,7 +14,7 @@ $(function() {
                     ,cols: [[ //表头
                        {type: 'numbers',  title: '序号' ,  sort: true}
                       ,{field: 'operationPost', title: '姓名',   sort: true}
-                      ,{align:'center', toolbar: '#barDemo'}
+                      ,{align:'center', toolbar: '#barDemo',fixed:"right"}
                     ]]
                   };
     } else {
@@ -32,10 +32,6 @@ $(function() {
                 ]]
               };
     }
-    
-
-    
-   
     
 	layui.use(['laypage', 'layer', 'table'], function(){
 		  
