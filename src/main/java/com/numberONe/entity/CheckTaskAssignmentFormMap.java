@@ -7,7 +7,7 @@ import com.numberONe.util.FormMap;
 /** 
  * @ClassName: CheckTaskAssignmentFormMap 
  * @Description: 考核任务分配表结构 
- * @author: gaoguofeng 
+ * @author: 
  * @email: 18516523981@163.com
  * @date: 2018年1月22日 下午5:37:38 
  */

@@ -1,7 +1,7 @@
 /** 
  * @ClassName: Test 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author  
  * @date 2018年1月17日 下午3:39:36  
  */
 package com.numberONe.entity;
@@ -9,7 +9,7 @@ package com.numberONe.entity;
 /**
  * @ClassName: Test
  * @Description: 测试的实体类
- * @author gaoguofeng
+ * @author 
  * @date 2018年1月17日 下午3:39:36
  */
 public class Test {

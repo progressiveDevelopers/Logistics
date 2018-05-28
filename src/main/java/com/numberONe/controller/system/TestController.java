@@ -1,7 +1,7 @@
 /** 
  * @ClassName: HelloController 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author  
  * @date 2018年1月17日 下午3:13:52  
  */
 package com.numberONe.controller.system;
@@ -19,7 +19,7 @@ import com.numberONe.entity.Test;
 /**
  * @ClassName: HelloController
  * @Description: 测试类1
- * @author gaoguofeng
+ * @author 
  * @date 2018年1月17日 下午3:13:52
  */
 @Controller

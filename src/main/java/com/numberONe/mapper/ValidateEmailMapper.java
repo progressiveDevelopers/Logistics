@@ -1,7 +1,7 @@
 /** 
  * @ClassName: CheckMapper 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author 
  * @date 2018年1月22日 下午5:43:57  
  */
 package com.numberONe.mapper;
@@ -13,7 +13,7 @@ import com.numberONe.mapper.base.BaseMapper;
 /** 
  * @ClassName: CheckMapper 
  * @Description: 考核系统 
- * @author: gaoguofeng 
+ * @author: 
  * @email: 18516523981@163.com
  * @date: 2018年1月22日 下午5:43:57 
  */

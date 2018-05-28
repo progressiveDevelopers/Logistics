@@ -1,7 +1,7 @@
 /** 
  * @ClassName: CheckController 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author  
  * @date 2018年1月18日 下午3:16:12  
  */
 package com.numberONe.controller.system;
@@ -43,7 +43,7 @@ import com.numberONe.util.LayTableUtils;
 /**
  * @ClassName: CheckController
  * @Description: 部门考核模块控制器
- * @author: gaoguofeng
+ * @author: 
  * @email: 18516523981@163.com
  * @date: 2018年1月18日 下午3:24:02
  */
@@ -139,7 +139,7 @@ public class CheckController extends BaseController {
 	/** 
 	 * @Title: checkHistoryList 
 	 * @Description: 客户经理查看自己的评分历史
-	 * @author: gaoguofeng 
+	 * @author:  
 	 * @email: 18516523981@163.com
 	 * @date: 2018年2月4日 下午12:04:21 
 	 */

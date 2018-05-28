@@ -1,7 +1,7 @@
 /** 
  * @ClassName: LayTableUtils 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author 
  * @date 2018年1月23日 下午6:37:42  
  */
 package com.numberONe.util;
@@ -13,7 +13,7 @@ import com.numberONe.entity.CheckTaskAssignmentFormMap;
 /**
  * @ClassName: LayTableUtils
  * @Description: TODO(这里用一句话描述这个类的作用)
- * @author: gaoguofeng
+ * @author: 
  * @email: 18516523981@163.com
  * @date: 2018年1月23日 下午6:37:42
  */

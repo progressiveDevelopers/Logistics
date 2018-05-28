@@ -2,7 +2,7 @@
 /** 
  * @ClassName: CheckOption 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author  
  * @date 2018年1月24日 下午2:46:26  
  */
 

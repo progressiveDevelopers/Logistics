@@ -22,7 +22,7 @@ import com.numberONe.util.FormMap;
 /** 
  * @ClassName: BaseController 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng
+ * @author 
  * @date 2018年1月14日 上午2:46:18 
  */
 public class BaseController {

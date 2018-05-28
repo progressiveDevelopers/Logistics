@@ -22,7 +22,7 @@ import com.numberONe.util.Common;
 /** 
  * @ClassName: RoleController 
  * @Description: TODO(这里用一句话描述这个类的作用) 
- * @author gaoguofeng 
+ * @author  
  * @date 2018年1月17日 下午2:59:48 
  */
 
@@ -47,7 +47,7 @@ public class RoleController extends BaseController {
 	/** 
 	 * @Title: findByPage 
 	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @author gaoguofeng 
+	 * @author  
 	 * @date 2018年1月17日 下午3:01:27 
 	 */
 	@ResponseBody
