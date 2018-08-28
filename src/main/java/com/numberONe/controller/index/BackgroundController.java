@@ -290,7 +290,8 @@ public class BackgroundController extends BaseController {
 	        return result;
 	    }
 	    
-	    List<Map<String, Object>> listUserInfo = userInfoMapper.findByIds(ids);
+//	    List<Map<String, Object>> listUserInfo = userInfoMapper.findByIds(ids);
+ 	    List<Object> listUserInfo = userInfoMapper.findUserInfoByIds(ids);
 	    
 	    // 得到邮件模板
 	    String emailTemplate = null;
@@ -309,7 +310,7 @@ public class BackgroundController extends BaseController {
         // 得到抄送人邮箱
         String cc = EmailUtils.getProperty(EmailConstant.EMAIL_CC);
         
-        try {
+ /*       try {
             for (Map<String, Object> x : listUserInfo) {
                 String targetContent = shiftContent.replace("${name}", (String)x.get("userName"));
                 
@@ -324,7 +325,25 @@ public class BackgroundController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("msg", "请检查网络和发送方邮件密码是否正确"+e.getMessage());
+        }*/
+        
+        try {
+            for (  Object x : listUserInfo) {
+                String targetContent = shiftContent.replace("${name}", ((UserInfoView) x).getUserName());
+                
+                Map<String,Object> master = userInfoMapper.findTeamMasterByObject(x);
+                
+                String ccs = cc+","+master.get("email"); 
+                
+                EmailUtils.sendHtmlMailAndBc( ((UserInfoView) x).getEmail(), 
+                            EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), 
+                            targetContent,ccs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("msg", "请检查网络和发送方邮件密码是否正确"+e.getMessage());
         }
+
         
         
 	    return result;

@@ -55,6 +55,13 @@
         </foreach>
     </select>
     
+    <select id="findUserInfoByIds" parameterType="list" resultType="userInfoView"> 
+        SELECT userName,email,groupId FROM user_info WHERE userId in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            ${id}
+        </foreach>
+    </select>
+    
     <select id="findByPage" resultType="com.numberONe.entity.UserInfoFormMap">
         select
         <include refid="selectId" />
@@ -311,6 +318,11 @@
     
     
     <select id="findTeamMaster" parameterType="map" resultType="map">
+        SELECT userName,email FROM user_info
+        WHERE `level` = 10 AND groupId = #{groupId} limit 1
+    </select>
+    
+        <select id="findTeamMasterByObject" parameterType="userInfoView" resultType="map">
         SELECT userName,email FROM user_info
         WHERE `level` = 10 AND groupId = #{groupId} limit 1
     </select>

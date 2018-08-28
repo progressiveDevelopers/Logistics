@@ -100,11 +100,26 @@ public interface UserInfoMapper extends BaseMapper {
      */
     List<Map<String, Object>> findByIds(List<Integer> ids);
     
+    
+    /**
+     * 通过Integer数组查询用户信息 包含姓名和邮箱
+     * @param ids id
+     * @return
+     */
+    List<Object> findUserInfoByIds(List<Integer> ids);
+    
     /**
      * 得到此人员的团队长信息
      * @param param 人员信息
      * @return
      */
     Map<String, Object> findTeamMaster(Map<String, Object> param);
+    
+    /**
+     * 得到此人员的团队长信息
+     * @param param 人员信息
+     * @return
+     */
+    Map<String, Object> findTeamMasterByObject(Object o);
     
 }
