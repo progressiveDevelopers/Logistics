@@ -34,6 +34,11 @@ public interface CheckResultMapper extends BaseMapper{
      * @param checkResultFormMap
      */
     void autoRate(CheckResultFormMap checkResultFormMap);
+
+    /**
+     * 根据条件查视图
+     */
+    List<CheckResultFormMap> findCheckResultAllField(CheckResultFormMap checkResultFormMap);
     
 }
 

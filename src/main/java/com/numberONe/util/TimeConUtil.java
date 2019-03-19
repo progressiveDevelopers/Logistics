@@ -1,38 +1,17 @@
 package com.numberONe.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
+import com.numberONe.annotation.SystemLog;
+import com.numberONe.constant.EmailConstant;
+import com.numberONe.entity.*;
+import com.numberONe.mapper.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.numberONe.annotation.SystemLog;
-import com.numberONe.constant.EmailConstant;
-import com.numberONe.entity.CheckMonthFormMap;
-import com.numberONe.entity.CheckOptionFormMap;
-import com.numberONe.entity.CheckRelationFormMap;
-import com.numberONe.entity.CheckResultFormMap;
-import com.numberONe.entity.CheckTaskAssignmentFormMap;
-import com.numberONe.entity.ParameterFormMap;
-import com.numberONe.entity.UserInfoFormMap;
-import com.numberONe.mapper.CheckMonthMapper;
-import com.numberONe.mapper.CheckOptionMapper;
-import com.numberONe.mapper.CheckRelationMapper;
-import com.numberONe.mapper.CheckResultMapper;
-import com.numberONe.mapper.CheckTaskAssignmentMapper;
-import com.numberONe.mapper.ParameterMapper;
-import com.numberONe.mapper.UserInfoMapper;
+import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Component
@@ -51,6 +30,8 @@ public class TimeConUtil {
     private CheckResultMapper checkResultMapper;
     @Inject
     private ParameterMapper parameterMapper;
+    @Inject
+    private CheckFinalScoreResultMapper checkFinalScoreResultMapper;
     /**
      * 
      * @param count
@@ -63,7 +44,7 @@ public class TimeConUtil {
      */
     @Transactional(readOnly=false)//需要事务操作必须加入此注解
     @SystemLog(module="任务分配",methods="分配评价人")//凡需要处理业务逻辑的.都需要记录操作日志
-    @Scheduled(cron = "0 0 9 29 * ?")   //每个月29号早晨9点执行
+    @Scheduled(cron = "0 49 10 ? * *")   //每个月29号早晨9点执行
     public void findUserInfoList() throws Exception {
         try {
             UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
@@ -84,6 +65,12 @@ public class TimeConUtil {
             String disPreMonth = df.format( cal.getTime());// 当前月的上个月 显示为:xxxx年x月
             checkMonthFormMap.set("month", preMonth);
             checkMonthFormMap.set("description", disPreMonth);
+
+            //判断上月的month表数据是否已生成，避免重复数据初始化
+            CheckMonthFormMap  checkMonthFormTempMap = checkMonthMapper.getCurrentMonth();
+            if(checkMonthFormTempMap.get("month").equals(checkMonthFormMap.get("month"))){
+                return;
+            }
             checkMonthMapper.addEntity(checkMonthFormMap);// 新增月份
             parameterFormMap.set("key", "count");
             parameterFormMap.set("deletestatus", 0);
@@ -98,6 +85,8 @@ public class TimeConUtil {
             List<CheckOptionFormMap> checkOptionFromMapList = new ArrayList<>();
             // 一个中后台对应的多个评价人集合
             List<CheckTaskAssignmentFormMap> checkTaskAssignmentList = null;
+            //最终结果表数据
+            List<CheckTaskAssignmentFormMap> checkFinalResultList = null;
             // 对应的result表的具体细节
             List<CheckResultFormMap> checkResultFormMapList = null;
             // 获取最新一个月的月份
@@ -107,6 +96,7 @@ public class TimeConUtil {
             checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
             checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份 
             checkTaskAssignmentList = new ArrayList<>();
+            checkFinalResultList= new ArrayList<>();
             checkTaskAssignmentList = checkTaskAssignmentMapper.findByPage(checkTaskAssignmentFormMap);
             if(checkTaskAssignmentList.isEmpty()){
             	 
@@ -114,7 +104,7 @@ public class TimeConUtil {
                 checkOptionFormMap.set("deletestatus", "0");
                 checkOptionFromMapList = checkOptionMapper.findByWhere(checkOptionFormMap);
                 // 查询所有中后台人员
-                userInfoFormMap.set("roleid", 7);
+               //userInfoFormMap.set("roleid", 7);   20190311注释掉  新增了角色 为了保证之前逻辑查出所有中后台人员的准确性
                 userInfoFormMap.set("level", 5);
                 userInfoFormMap.set("deletestatus", '0');
                 List<UserInfoFormMap> zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
@@ -190,7 +180,7 @@ public class TimeConUtil {
                         for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
                             checkResultFormMap = new CheckResultFormMap();
                             checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
-                            checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份 
+                            checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份
                             checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
                             checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
                             checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
@@ -200,17 +190,18 @@ public class TimeConUtil {
                             checkResultFormMapList.add(checkResultFormMap);
                         }
                     }
-                    
+
                     // 批量增加评分人员
                     checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
                     // 批量增加评分人员对应的评分选项result表
                     checkResultMapper.addCheckResultList(checkResultFormMapList);
+
                 }
             }
             /*else{
             	return "该月份已经分配任务！！";
             }*/
-           
+            findUserInfoListForNew();
         } catch (Exception e) {
             e.printStackTrace();
           //  return "任务分配失败！";
@@ -218,6 +209,212 @@ public class TimeConUtil {
        // return "任务分配成功！";
         
     }
+
+
+
+
+
+
+  /*  @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @SystemLog(module="任务分配2",methods="分配评价人-作用于组长和团队长")//凡需要处理业务逻辑的.都需要记录操作日志
+    @Scheduled(cron = "0 53 16 ? * *")   //每个月29号早晨9点执行*/
+    public void findUserInfoListForNew() throws Exception {
+        try {
+            UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
+            CheckMonthFormMap checkMonthFormMap = new CheckMonthFormMap();
+
+            CheckOptionFormMap checkOptionFormMap = new CheckOptionFormMap();
+            CheckRelationFormMap checkRelationFormMap = new CheckRelationFormMap();
+            ParameterFormMap parameterFormMap = new ParameterFormMap();
+            CheckResultFormMap checkResultFormMap = null;
+            CheckFinalScoreResultMap  checkFinalresultMap = null;
+            CheckTaskAssignmentFormMap checkTaskAssignmentFormMap = null;
+
+
+            parameterFormMap.set("key", "count");
+            parameterFormMap.set("deletestatus", 0);
+            parameterFormMap = (ParameterFormMap) parameterMapper.getByKey(parameterFormMap);
+            int count = Integer.parseInt((String) parameterFormMap.get("value"));
+            parameterFormMap = new ParameterFormMap();
+            parameterFormMap.set("key", "priorityCount");
+            parameterFormMap.set("deletestatus", "0");
+            parameterFormMap = (ParameterFormMap) parameterMapper.getByKey(parameterFormMap);
+            int priorityCount = 0 ;
+            // 待评价的选项集合
+            List<CheckOptionFormMap> checkOptionFromMapList = new ArrayList<>();
+            // 一个中后台对应的多个评价人集合
+            List<CheckTaskAssignmentFormMap> checkTaskAssignmentList = null;
+            //最终结果表数据
+            List<CheckTaskAssignmentFormMap> checkFinalResultList = null;
+            // 对应的result表的具体细节
+            List<CheckResultFormMap> checkResultFormMapList = null;
+            // 获取最新一个月的月份
+            checkMonthFormMap = checkMonthMapper.getCurrentMonth();
+            // 判断当前月份是否已经分配任务
+            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+            checkTaskAssignmentList = new ArrayList<>();
+            checkFinalResultList= new ArrayList<>();
+            checkTaskAssignmentList = checkTaskAssignmentMapper.findByPage(checkTaskAssignmentFormMap);
+            //if(checkTaskAssignmentList.isEmpty()){
+
+                // 获取所有的评分选项
+                checkOptionFormMap.set("deletestatus", "0");
+                checkOptionFromMapList = checkOptionMapper.findByWhere(checkOptionFormMap);
+
+
+                // 查询所有中后台人员
+                //userInfoFormMap.set("roleid", 7);   20190311注释掉  新增了角色 为了保证之前逻辑查出所有中后台人员的准确性
+                userInfoFormMap.set("level", 5);
+                userInfoFormMap.set("deletestatus", '0');
+                List<UserInfoFormMap> zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+                // 查询所有组长
+                userInfoFormMap.set("roleid", 8);
+                userInfoFormMap.set("level", 9);
+                userInfoFormMap.set("deletestatus", '0');
+                List<UserInfoFormMap> mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+                // 查询所有团队长 --为需要打分的团队长新增了两个角色，需要分别查出
+                userInfoFormMap.set("roleid", 17);
+                userInfoFormMap.set("level", 10);
+                userInfoFormMap.set("deletestatus", '0');
+                List<UserInfoFormMap> leaderUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+                userInfoFormMap.set("roleid", 18);
+                leaderUserInfoList.add(userInfoMapper.findByPage(userInfoFormMap).get(0));
+
+                //业务支持团队逻辑
+                for(UserInfoFormMap uifMap: mgeUserInfoList){
+
+                    for(int i = 0 ; zhtUserInfoList.size() > i ; i++){
+                        checkTaskAssignmentList = new ArrayList<>();
+                        checkResultFormMapList = new ArrayList<>();
+
+                        if((uifMap.get("subGroupId")!=null&&uifMap.get("subGroupId").equals(zhtUserInfoList.get(i).get("subGroupId")))){
+                            //插入组长的待数据
+                            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+                            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+                            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+                            checkTaskAssignmentFormMap.set("evaluatorId", uifMap.get("userId"));// 评价人id
+                            checkTaskAssignmentFormMap.set("evaluator", uifMap.get("userName"));// 评价人名字
+                            checkTaskAssignmentFormMap.set("operationPostId", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                            checkTaskAssignmentFormMap.set("operationPost", zhtUserInfoList.get(i).get("userName"));// 被评价人名字
+                            checkTaskAssignmentFormMap.set("ifLike",0);// 不是中后台自己推荐的五个人中的某一个
+                            checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
+
+                            //循环两个团队长，插入团队长的待评数据
+                            for(UserInfoFormMap leaderMap:leaderUserInfoList){
+                                checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+                                checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+                                checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+                                checkTaskAssignmentFormMap.set("evaluatorId", leaderMap.get("userId"));// 评价人id
+                                checkTaskAssignmentFormMap.set("evaluator", leaderMap.get("userName"));// 评价人名字
+                                checkTaskAssignmentFormMap.set("operationPostId", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                                checkTaskAssignmentFormMap.set("operationPost", zhtUserInfoList.get(i).get("userName"));// 被评价人名字
+                                checkTaskAssignmentFormMap.set("ifLike",0);// 不是中后台自己推荐的五个人中的某一个
+                                checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
+
+
+                            }
+
+
+                            // 获取所有待评价的选项（包括组长和团队长，将对应的数据x所有评分项存储结果表）
+                            for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
+                                for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
+                                    checkResultFormMap = new CheckResultFormMap();
+                                    checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
+                                    checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份
+                                    checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
+                                    checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
+                                    checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
+                                    checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
+                                    checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
+                                    checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
+                                    checkResultFormMapList.add(checkResultFormMap);
+                                }
+                            }
+
+                           //初始化最终结果表，插入一条待更新数据
+                            checkFinalresultMap = new CheckFinalScoreResultMap();
+                            checkFinalresultMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+                            checkFinalresultMap.set("accountNumber", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                            checkFinalresultMap.set("postCoefficient", zhtUserInfoList.get(i).get("postCoefficient"));
+                            checkFinalresultMap.set("roleId", zhtUserInfoList.get(i).get("roleId")); //评价人id
+                            checkFinalresultMap.set("isGroupLeaderFlag", 0);
+
+                            // 批量增加评分人员
+                            checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
+                            // 批量增加评分人员对应的评分选项result表
+                            checkResultMapper.addCheckResultList(checkResultFormMapList);
+                            //增加最终结果表数据
+                            checkFinalScoreResultMapper.addEntity(checkFinalresultMap);
+                        }
+                    }
+                }
+
+                //信贷团队逻辑
+                for(int i = 0 ; zhtUserInfoList.size() > i ; i++){
+                    checkTaskAssignmentList = new ArrayList<>();
+                    checkResultFormMapList = new ArrayList<>();
+                    if(zhtUserInfoList.get(i).get("groupId").equals(2)){
+                        //插入团队长的待数据（信贷团队不需要组长评分）
+                        for(UserInfoFormMap leaderMap:leaderUserInfoList){
+                            checkTaskAssignmentFormMap = new CheckTaskAssignmentFormMap();
+                            checkTaskAssignmentFormMap.set("monthId", checkMonthFormMap.get("id"));// 最新月份的id
+                            checkTaskAssignmentFormMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+                            checkTaskAssignmentFormMap.set("evaluatorId", leaderMap.get("userId"));// 评价人id
+                            checkTaskAssignmentFormMap.set("evaluator", leaderMap.get("userName"));// 评价人名字
+                            checkTaskAssignmentFormMap.set("operationPostId", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                            checkTaskAssignmentFormMap.set("operationPost", zhtUserInfoList.get(i).get("userName"));// 被评价人名字
+                            checkTaskAssignmentFormMap.set("ifLike",0);// 不是中后台自己推荐的五个人中的某一个
+                            checkTaskAssignmentList.add(checkTaskAssignmentFormMap);
+                        }
+
+                        // 获取所有待评价的选项（包括组长和团队长，将对应的数据x所有评分项存储结果表）
+                        for (CheckTaskAssignmentFormMap checkTaskAssignment : checkTaskAssignmentList) {
+                            for (CheckOptionFormMap checkOptionForm : checkOptionFromMapList) {
+                                checkResultFormMap = new CheckResultFormMap();
+                                checkResultFormMap.set("monthId", checkTaskAssignment.get("monthId"));// 最新月份的id
+                                checkResultFormMap.set("month", checkTaskAssignment.get("month"));// 最新月份
+                                checkResultFormMap.set("evaluatorId", checkTaskAssignment.get("evaluatorId"));// 评价人id
+                                checkResultFormMap.set("evaluator", checkTaskAssignment.get("evaluator"));// 评价人名字
+                                checkResultFormMap.set("operationPostId", checkTaskAssignment.get("operationPostId"));// 被评价人id
+                                checkResultFormMap.set("operationPost", checkTaskAssignment.get("operationPost"));// 被评价人名字
+                                checkResultFormMap.set("checkOptionId", checkOptionForm.get("id")); // 评价选项id
+                                checkResultFormMap.set("checkOption", checkOptionForm.get("checkOption")); // 评价选项描述
+                                checkResultFormMapList.add(checkResultFormMap);
+                            }
+                        }
+
+                        //初始化最终结果表，插入一条待更新数据
+                        checkFinalresultMap = new CheckFinalScoreResultMap();
+                        checkFinalresultMap.set("month", checkMonthFormMap.get("month"));// 最新月份
+                        checkFinalresultMap.set("accountNumber", zhtUserInfoList.get(i).get("userId"));// 被评价人id
+                        checkFinalresultMap.set("postCoefficient", zhtUserInfoList.get(i).get("postCoefficient"));
+                        checkFinalresultMap.set("roleId", zhtUserInfoList.get(i).get("roleId")); //评价人id
+                        checkFinalresultMap.set("isGroupLeaderFlag", 0);
+
+                        // 批量增加评分人员
+                        checkTaskAssignmentMapper.addTaskAssignList(checkTaskAssignmentList);
+                        // 批量增加评分人员对应的评分选项result表
+                        checkResultMapper.addCheckResultList(checkResultFormMapList);
+                        //增加最终结果表数据
+                        checkFinalScoreResultMapper.addEntity(checkFinalresultMap);
+                    }
+                }
+            //}
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //  return "任务分配失败！";
+        }
+        // return "任务分配成功！";
+
+    }
+
+
+
     
     @SystemLog(module="邮件发送",methods="评分数据已生成邮件提醒")
     @Scheduled(cron = "0 30 9 29 * ?")    //每个月29号早晨9:30执行

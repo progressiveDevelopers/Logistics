@@ -56,6 +56,29 @@
 		and operationPostId like '%${operationPostId}%'
 		</if>
 	</select>
+
+	<select id="findCheckResultAllField" resultType="com.numberONe.entity.CheckResultFormMap" parameterType="com.numberONe.entity.CheckResultFormMap">
+		select
+		*
+		from view_check_result
+		where 1 = 1
+		<if test="evaluatorRoleId != null and evaluatorRoleId != ''">
+			and evaluatorRoleId =#{evaluatorRoleId}
+		</if>
+		<if test="month != null and month != ''">
+			and month =#{month}
+		</if>
+		<if test="evaluatorId != null and evaluatorId != ''">
+			and evaluatorId =#{evaluatorId}
+		</if>
+		<if test="operationPostId != null and operationPostId != ''">
+			and operationPostId =#{operationPostId}
+		</if>
+
+
+	</select>
+
+
 	
 	<select id="findUserRate" resultType="map">
 		SELECT checkOption,AVG(checkResult) AS 'avg' FROM check_result 

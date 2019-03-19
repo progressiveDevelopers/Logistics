@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.numberONe.entity.CheckTaskAssignmentFormMap;
+import com.numberONe.entity.CheckWeightFormMap;
 import com.numberONe.entity.ResFormMap;
 import com.numberONe.mapper.base.BaseMapper;
 
@@ -47,5 +48,8 @@ public interface CheckMapper extends BaseMapper {
 	
 	//客户经理可以看到自己评论的结果的数量
 	public Integer getCheckHistoryListCount(Map  map);
+
+	//
+	public CheckWeightFormMap getCheckWeight(Map  map);
 	
 }

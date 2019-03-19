@@ -19,7 +19,9 @@
         state,
         groupid,
         groupname,
-        userDescription
+        userDescription,
+        subGroupId,
+        postCoefficient
     </sql>
     
     <resultMap type="com.numberONe.util.UserRelativeTreeUtil" id="userRelativeTree">
@@ -71,6 +73,12 @@
         </if>
         <if test="deletestatus != null and deletestatus != ''">
             and deletestatus like '%${deletestatus}%'
+        </if>
+        <if test="userId != null and userId != ''">
+            and userId like '%${userId}%'
+        </if>
+        <if test="subGroupId != null and subGroupId != ''">
+            and subGroupId =${subGroupId}
         </if>
     </select>
 

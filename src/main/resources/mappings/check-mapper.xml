@@ -38,6 +38,8 @@
 
 	</update>
 
+
+
 	<update id="updateCheckTaskAssignment" parameterType="java.util.HashMap">
 
 		update check_task_assignment
@@ -93,10 +95,19 @@
 		resultType="com.numberONe.entity.CheckTaskAssignmentFormMap">
 		select
 		*
-		from check_task_assignment
-		where operationPostId = #{operationPostId} and month = #{month}
+		from view_check_task_assignment
+		where 1=1
+		<if test="operationPostId != null and operationPostId != ''">
+			and operationPostId=#{operationPostId}
+		</if>
+		<if test="month != null and month != ''">
+			and month=#{month}
+		</if>
 		<if test="deletestatus != null and deletestatus != ''">
 		and deletestatus like '%${deletestatus}%'
+		</if>
+		<if test="evaluatorRoleId != null and evaluatorRoleId != ''">
+			and evaluatorRoleId=#{evaluatorRoleId}
 		</if>
 	</select>
 	
@@ -127,6 +138,14 @@
 		count(*)
 		from check_task_assignment
 		where evaluatorId = #{evaluatorId} and status = '1' and monthId = #{monthId}
+	</select>
+
+	<select id="getCheckWeight" parameterType="java.util.HashMap"
+			resultType="com.numberONe.entity.CheckWeightFormMap">
+		select
+		*
+		from check_weight
+		where roleId = #{roleId}
 	</select>
 
 </mapper>

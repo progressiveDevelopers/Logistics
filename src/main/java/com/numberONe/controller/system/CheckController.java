@@ -6,16 +6,14 @@
  */
 package com.numberONe.controller.system;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-
+import com.numberONe.annotation.SystemLog;
+import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.*;
+import com.numberONe.mapper.*;
+import com.numberONe.plugin.PageView;
+import com.numberONe.util.CalculationUtil;
+import com.numberONe.util.Common;
+import com.numberONe.util.LayTableUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -24,21 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.numberONe.annotation.SystemLog;
-import com.numberONe.controller.index.BaseController;
-import com.numberONe.entity.CheckAvgResultFormMap;
-import com.numberONe.entity.CheckMonthFormMap;
-import com.numberONe.entity.CheckOptionFormMap;
-import com.numberONe.entity.CheckResultFormMap;
-import com.numberONe.entity.CheckTaskAssignmentFormMap;
-import com.numberONe.entity.UserFormMap;
-import com.numberONe.mapper.CheckMapper;
-import com.numberONe.mapper.CheckMonthMapper;
-import com.numberONe.mapper.CheckTaskAssignmentMapper;
-import com.numberONe.mapper.UserMapper;
-import com.numberONe.plugin.PageView;
-import com.numberONe.util.Common;
-import com.numberONe.util.LayTableUtils;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @ClassName: CheckController
@@ -59,7 +46,15 @@ public class CheckController extends BaseController {
 	@Inject
 	private CheckMonthMapper checkMonthMapper;
 	@Inject
-	private CheckTaskAssignmentMapper  checkTaskAssignmentMapper;
+	private CheckResultMapper checkResultMapper;
+	@Inject
+	private UserInfoMapper userInfoMapper;
+	@Inject
+	private CheckTaskAssignmentMapper checkTaskAssignmentMapper;
+	@Inject
+	private CheckFinalScoreResultMapper checkFinalScoreResultMapper;
+	@Inject
+	private CheckAvgResultMapper  checkAvgResultMapper;
 
 	@RequestMapping("list")
 	public String listUI(Model model) throws Exception {
@@ -301,6 +296,7 @@ public class CheckController extends BaseController {
 	    Map map2 = new HashMap();
 		map2.put("operationPostId", (String)param.get("operationPostId"));
 		map2.put("month", month);
+		map2.put("evaluatorRoleId",6);
 		map2.put("deletestatus", 0);
 		// 获取被评价人的所有评价人  并遍历判断当前用户是否是最后一位评价者
 		List<CheckTaskAssignmentFormMap> taskList = checkMapper.findTaskList(map2);
@@ -310,8 +306,11 @@ public class CheckController extends BaseController {
 	    		break;//代表当前的登录员不是最后一个评价
 	    	}
 	    }
-	    
-	    if(j == 0){//代表当前是最后一个评价,求该被评价人的平均分  保存到avg表
+	    //判断如果avg表已经有当月平均分数据，则不再重复插入
+		avgResult.set("nameid",param.get("operationPostId"));
+		avgResult.set("month",month);
+	    List<CheckAvgResultFormMap> tempAvgList=checkAvgResultMapper.findCheckAvgResultList(avgResult);
+	    if(j == 0&&tempAvgList.isEmpty()){//代表当前是最后一个评价,求该被评价人的平均分  保存到avg表
 	    	map2 = new HashMap();
 	    	map2.put("operationPostId", (String)param.get("operationPostId"));
 			map2.put("month", month);
@@ -336,6 +335,47 @@ public class CheckController extends BaseController {
 			avgResult.set("allscore", avg);// 平均数
 			checkMapper.addEntity(avgResult);
 	    }
+
+		//判断单个人的评价是否全部评完、
+        map2=new HashMap();
+		map2.put("operationPostId", (String)param.get("operationPostId"));
+		map2.put("month", month);
+		map2.put("deletestatus", 0);
+		int pd1=0;
+		// 获取被评价人的所有评价人  并遍历判断当前用户是否是最后一位评价者
+		taskList = checkMapper.findTaskList(map2);
+		for(CheckTaskAssignmentFormMap taskAssign : taskList){
+			if(taskAssign.getInt("status") == 0){
+				pd1++;
+				break;//代表当前的登录员不是最后一个评价
+			}
+		}
+
+
+		if(pd1==0){
+			Map tempMap=new HashMap();
+			tempMap.put("operationPostId",param.get("operationPostId"));
+			updateFinalResult2(tempMap);
+		}
+
+	    //判断一个月份的批次是不是全都评价完毕,全部评价完毕再更新最终结果表名词
+        map2=new HashMap();
+		map2.put("month", month);
+		map2.put("deletestatus", 0);
+		int pd=0;
+		// 获取被评价人的所有评价人  并遍历判断当前用户是否是最后一位评价者
+		taskList = checkMapper.findTaskList(map2);
+		for(CheckTaskAssignmentFormMap taskAssign : taskList){
+			if(taskAssign.getInt("status") == 0){
+				pd++;
+				break;//代表当前的登录员不是最后一个评价
+			}
+		}
+		if(pd==0){
+			Map tempMap=new HashMap();
+			tempMap.put("month",month);
+			updateRank(tempMap);
+		}
 		return "success";
 	}
 	
@@ -403,5 +443,568 @@ public class CheckController extends BaseController {
     public String notRatePeopleForAllView () throws Exception {
         return Common.BACKGROUND_PATH + "/function/check/rateProgress";
     }
+
+	/**
+	 * 更新最终评分表
+	 * @return 执行结果
+	 * @author 栗
+	 */
+    public String updateFinalResult() {
+		UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
+		CheckAvgResultFormMap checkAvgResultFormMap=new CheckAvgResultFormMap();
+		List<CheckAvgResultFormMap> checkAvgResultFormMapList=null;
+		List<UserInfoFormMap> mgeUserInfoList=null;
+		List<UserInfoFormMap>  leaderUserInfoList=null;
+		List<UserInfoFormMap> zhtUserInfoList =null;
+		List<CheckResultFormMap> checkResultList=null;
+		List<CheckFinalScoreResultMap>  checkFinalScoreResultlist=null;
+		//1.获取外部评分，内部评分，团队长评分数据更新到最终结果表
+		try {
+
+			//获取当前月份
+			CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+			String month = (String) checkMonthFormMap.get("month");
+
+			//1.1去avg平均分表取出外部评分
+			//根据月份查出所有被评分人员的的外部评分平均分
+			checkAvgResultFormMap.put("month",month);
+			checkAvgResultFormMapList=checkMapper.findByWhere(checkAvgResultFormMap);
+
+
+			//1.2循环所有组员外部评分将结果更新到最终结果表
+			for (CheckAvgResultFormMap tempMap:
+					checkAvgResultFormMapList) {
+				//查询中后台人员各个岗位系数
+				userInfoFormMap.set("userId", tempMap.get("nameid"));
+				zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+				CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+				checkFinalScoreResultMap.put("month",month);
+				checkFinalScoreResultMap.put("accountNumber",tempMap.get("nameid"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				checkFinalScoreResultMap.put("externalScore",tempMap.get("allscore"));				//外部评分
+				//计算外部评分的百分制得分且存入实体
+				double externalPercentileScore =CalculationUtil.getCentesimalSystem(60,Double.valueOf(tempMap.get("allscore").toString())); // 四舍五入取一个小数点
+				checkFinalScoreResultMap.put("externalPercentileScore",externalPercentileScore);
+				checkFinalScoreResultMap.put("postCoefficient",zhtUserInfoList.get(0).get("postCoefficient"));//user视图的岗位系数
+				//更入最终结果表
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+
+			//2.循环插入上级评分(组长评分)
+			//2.1 查询所有组长
+			userInfoFormMap.set("roleid", 8);
+			userInfoFormMap.set("level", 9);
+			userInfoFormMap.set("deletestatus", '0');
+			mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+			//2.2查询所有中后台人员
+			//userInfoFormMap.set("roleid", 7);   20190311注释掉  新增了角色 为了保证之前逻辑查出所有中后台人员的准确性
+			userInfoFormMap.set("level", 5);
+			userInfoFormMap.set("deletestatus", '0');
+			zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+			//2.3遍历组长和组员，将组长对应组员的评分更新到最终结果表
+			for (UserInfoFormMap uiMap: mgeUserInfoList) {
+				//循环所有组员
+				for (UserInfoFormMap personMap:zhtUserInfoList) {
+					if(uiMap.get("subGroupId").equals(personMap.get("subGroupId"))){
+						//查询所有评分集合,
+						CheckResultFormMap crm=new CheckResultFormMap();
+						crm.put("evaluatorId",uiMap.get("userId"));
+						crm.put("month",month);
+						crm.put("operationPostId",personMap.get("userId"));
+						//根据评价人id和被评价人id得到每个属于当前组长的6项评分
+						checkResultList=checkResultMapper.findCheckResultAllField(crm);
+						//循环6项评分相加更新到最终结果表：上级评分和百分制上级评分
+						for (CheckResultFormMap cfm:checkResultList) {
+							int sum=0;
+							sum+=(int)cfm.get("checkResult");
+							CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+							checkFinalScoreResultMap.put("month",month);										//月份
+							checkFinalScoreResultMap.put("accountNumber",personMap.get("userId"));					//用户id
+							checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+							checkFinalScoreResultMap.put("superiorScore",sum);										//上级评分
+							double superiorPercentileScore =CalculationUtil.getCentesimalSystem(60,Double.valueOf(sum)); // 四舍五入取一个小数点
+							checkFinalScoreResultMap.put("superiorPercentileScore",superiorPercentileScore);		//百分制上级评分
+							//循环更新所有组员的上级评分(团队2不参与被上级评分
+							//更入最终结果表
+							checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+						}
+					}
+				}
+			}
+
+			//3.获取所有的团队长评分，将这些数据更新到最终结果表
+			// 3.1查询所有团队长 --为需要打分的团队长新增了两个角色，需要分别查出
+			userInfoFormMap.set("roleid", 17);
+			userInfoFormMap.set("level", 10);
+			userInfoFormMap.set("deletestatus", '0');
+			leaderUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+			userInfoFormMap.set("roleid", 18);
+			leaderUserInfoList.add(userInfoMapper.findByPage(userInfoFormMap).get(0));
+			//3.2遍历所有团队长更新数据
+			for (UserInfoFormMap personMap:zhtUserInfoList) {
+				int sum=0;
+				for (UserInfoFormMap uiMap: leaderUserInfoList) {
+					if(uiMap.get("roleId").equals(17)||uiMap.get("roleId").equals(18)){
+						CheckResultFormMap crm=new CheckResultFormMap();
+						crm.put("evaluatorId",uiMap.get("userId"));
+						crm.put("month",month);
+						crm.put("operationPostId",personMap.get("userId"));
+						//根据评价人id和被评价人id得到每个属于当前组长的6项评分
+						checkResultList=checkResultMapper.findCheckResultAllField(crm);
+						int sumForLeader=0;
+						for (CheckResultFormMap cfm:checkResultList) {
+							sumForLeader+=(int)cfm.get("checkResult");
+						}
+						sum+=sumForLeader;
+
+					}
+				}
+				CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+				checkFinalScoreResultMap.put("month",month);										//月份
+				checkFinalScoreResultMap.put("accountNumber",personMap.get("userId"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				checkFinalScoreResultMap.put("superiorScore",sum);										//上级评分
+				double superiorPercentileScore =CalculationUtil.getCentesimalSystem(60,Double.valueOf(sum)); // 四舍五入取一个小数点
+				checkFinalScoreResultMap.put("superiorPercentileScore",superiorPercentileScore);		//百分制上级评分
+				//循环更新所有组员的上级评分(团队2不参与被上级评分
+				//更入最终结果表
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+
+
+			/*for (UserInfoFormMap uiMap: leaderUserInfoList) {
+				//循环所有组员
+				for (UserInfoFormMap personMap:zhtUserInfoList) {
+					//查询团队长本月所有评分集合,
+					CheckResultFormMap crm=new CheckResultFormMap();
+					crm.put("evaluatorId",uiMap.get("userId"));
+					crm.put("month",month);
+					crm.put("operationPostId",personMap.get("userId"));
+					//根据评价人id和被评价人id得到每个属于当前团队长的6项评分
+					checkResultList=checkResultMapper.findCheckResultAllField(crm);
+					//循环6项评分相加更新到最终结果表：上级评分和百分制上级评分
+					for (CheckResultFormMap cfm:checkResultList) {
+						int sum=0;
+						sum+=(int)cfm.get("checkResult");
+						CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+						checkFinalScoreResultMap.put("month",month);										//月份
+						checkFinalScoreResultMap.put("accountNumber",personMap.get("userId"));					//用户id
+						checkFinalScoreResultMap.put("captainScore",sum);										//上级评分
+						double captainPercentileScore =CalculationUtil.getCentesimalSystem(60,(int)sum); // 四舍五入取一个小数点
+						checkFinalScoreResultMap.put("captainPercentileScore",captainPercentileScore);		//百分制上级评分
+						//循环更新所有组员的团队长评分
+						checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+					}
+				}
+			}*/
+
+			//4.遍历结果表计算每一个组员的百分制总分
+			//公式：外部评分 X 岗位系数 X 外部评分权重 + 上级评分 X 上级权重 + 团队长评分 X 团队长权重
+			List<CheckFinalScoreResultMap>  cfsrList=checkFinalScoreResultMapper.findByWhere(new CheckFinalScoreResultMap());
+
+			CheckWeightFormMap cwfMap=new CheckWeightFormMap();
+
+
+
+			cwfMap.put("role",6);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			int externalWeightCoefficient=(int)cwfMap.get("weightCoefficient");   //外部权重
+
+			cwfMap.put("role",8);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			int superiorWeightCoefficient=(int)cwfMap.get("weightCoefficient");	//上级权重
+
+			cwfMap.put("role",17);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			int leaderWeightCoefficient=(int)cwfMap.get("weightCoefficient"); 	 //团队长权重
+
+			int leaderWeightCoefficient2=leaderWeightCoefficient+superiorWeightCoefficient; //特殊的团队长权重：因为信贷管理团队没有组长评分项，所以将上级的权重加给团队长
+			//4.1取得三项权重数据
+			for (CheckFinalScoreResultMap cfsrMap: cfsrList) {
+				int externalPercentileScore=(int)cfsrMap.get("externalPercentileScore");	//外部评分
+				int superiorPercentileScore=(int)cfsrMap.get("superiorPercentileScore");	//上级评分
+				int captainPercentileScore=(int)cfsrMap.get("captainPercentileScore");		//团队长评分
+				int postCoefficient=(int)cfsrMap.get("postCoefficient");					//岗位系数
+				//判断是哪个团队，是否有组长评分
+				if(superiorPercentileScore==0){
+					//信贷管理团队
+					double totalScore=externalPercentileScore*postCoefficient*externalWeightCoefficient+captainPercentileScore*leaderWeightCoefficient2;
+				}else{
+					//业务支持团队
+					double totalScore=externalPercentileScore*postCoefficient*externalWeightCoefficient+superiorPercentileScore*superiorWeightCoefficient+captainPercentileScore*leaderWeightCoefficient;
+				}
+			}
+
+			//5.更新外部评分，上级评分，团队长评分名次
+			//5.1查询当前月份所有组员的最终结果表数据-根据外部评分数据排序
+			CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("judge","1");
+			checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+			//循环结果表数据-外部评分排名
+			for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+				//先根据月份和userid查到组员信息
+				checkFinalScoreResultMap.put("month",month);
+				checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				//更新组员信息：更新外部名次信息
+				checkFinalScoreResultMap.put("externalScoreGrading",i+1);
+				//更新到数据库
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+
+			//5.2查询当前月份所有组员的最终结果表数据-根据上级评分数据排序
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("judge","2");
+			checkFinalScoreResultMap.put("ignoreNull",1);//忽略组长评分为空的数据
+			checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+			//循环结果表数据-外部评分排名
+			for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+				//先根据月份和userid查到组员信息
+				checkFinalScoreResultMap.put("month",month);
+				checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				//更新组员信息：更新组名次信息
+				checkFinalScoreResultMap.put("groupGrading",i+1);
+				//更新到数据库
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+			//5.3查询当前月份所有组员的最终结果表数据-根据团队长评分数据排序
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("judge","3");
+			checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+			//循环结果表数据-外部评分排名
+			for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+				//先根据月份和userid查到组员信息
+				checkFinalScoreResultMap.put("month",month);
+				checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				//更新组员信息：更新团队长评分名次信息
+				checkFinalScoreResultMap.put("captainScoreGrading",i+1);
+				//更新到数据库
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+			//5.4查询当前月份所有组员的最终结果表数据-根据总分数据排序
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("judge","4");
+			checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+			//循环结果表数据-外部评分排名
+			for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+				//先根据月份和userid查到组员信息
+				checkFinalScoreResultMap.put("month",month);
+				checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+				checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				//更新组员信息：更新总分评分名次信息（最终名次）
+				checkFinalScoreResultMap.put("totalScoreGrading",i+1);
+				//更新到数据库
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+
+		}
+    	return null;
+
+
+
+	}
+
+
+
+	/**
+	 * 更新最终评分表
+	 * @return 执行结果
+	 * @author 栗
+	 */
+	public String updateFinalResult2(Map map){
+		UserInfoFormMap userInfoFormMap = new UserInfoFormMap();
+		CheckAvgResultFormMap checkAvgResultFormMap=new CheckAvgResultFormMap();
+		List<CheckAvgResultFormMap> checkAvgResultFormMapList=null;
+		List<UserInfoFormMap> mgeUserInfoList=null;
+		List<UserInfoFormMap>  leaderUserInfoList=null;
+		List<UserInfoFormMap> zhtUserInfoList =null;
+		List<CheckResultFormMap> checkResultList=null;
+		List<CheckFinalScoreResultMap>  checkFinalScoreResultlist=null;
+		//1.获取外部评分，内部评分，团队长评分数据更新到最终结果表
+		try {
+
+			//获取当前月份
+			CheckMonthFormMap checkMonthFormMap =  checkMonthMapper.getCurrentMonth();
+			String month = (String) checkMonthFormMap.get("month");
+
+			//1.1去avg平均分表取出外部评分
+			//根据月份查出所有被评分人员的的外部评分平均分
+			checkAvgResultFormMap.put("nameid",map.get("operationPostId"));
+			checkAvgResultFormMap.put("month",month);
+			checkAvgResultFormMapList=checkAvgResultMapper.findCheckAvgResultList(checkAvgResultFormMap);
+
+
+			//1.2循环所有组员外部评分将结果更新到最终结果表
+			userInfoFormMap.set("userId", checkAvgResultFormMapList.get(0).get("nameid"));
+			zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+			CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("accountNumber",checkAvgResultFormMapList.get(0).get("nameid"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			checkFinalScoreResultMap.put("externalScore",checkAvgResultFormMapList.get(0).get("allscore"));				//外部评分
+			//计算外部评分的百分制得分且存入实体
+			System.out.println(checkAvgResultFormMapList.get(0).get("allscore").toString());
+			Double tempNum=Double.valueOf(checkAvgResultFormMapList.get(0).get("allscore").toString());
+			double externalPercentileScore =CalculationUtil.getCentesimalSystem(60,tempNum); // 四舍五入取一个小数点
+			checkFinalScoreResultMap.put("externalPercentileScore",externalPercentileScore);
+			checkFinalScoreResultMap.put("postCoefficient",zhtUserInfoList.get(0).get("postCoefficient"));//user视图的岗位系数
+			//更入最终结果表
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+
+
+
+			//2.插入上级评分(组长评分)
+
+			//2.2查询组员
+			//userInfoFormMap.set("roleid", 7);   20190311注释掉  新增了角色 为了保证之前逻辑查出所有中后台人员的准确性
+			userInfoFormMap=new UserInfoFormMap();
+			userInfoFormMap.set("level", 5);
+			userInfoFormMap.set("userId", map.get("operationPostId"));
+			userInfoFormMap.set("deletestatus", '0');
+			zhtUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+			//2.1 查询对应组长
+			userInfoFormMap=new UserInfoFormMap();
+			userInfoFormMap.set("roleid", 8);
+			userInfoFormMap.set("level", 9);
+			userInfoFormMap.set("subGroupId", zhtUserInfoList.get(0).get("subGroupId"));
+			userInfoFormMap.set("deletestatus", '0');
+
+			mgeUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+
+
+
+			//2.3遍历组长和组员，将组长对应组员的评分更新到最终结果表
+
+			//信贷管理团队没有组长，不参与此项被评
+			if(zhtUserInfoList.get(0).get("groupId")!=null&&!zhtUserInfoList.get(0).get("groupId").equals(2)){
+				CheckResultFormMap crm = new CheckResultFormMap();
+				crm.put("evaluatorId", mgeUserInfoList.get(0).get("userId"));
+				crm.put("month", month);
+				crm.put("operationPostId", zhtUserInfoList.get(0).get("userId"));
+				//根据评价人id和被评价人id得到每个属于当前组长的6项评分
+				checkResultList = checkResultMapper.findCheckResultAllField(crm);
+				//循环6项评分相加更新到最终结果表：上级评分和百分制上级评分
+				int sum = 0;
+				for (CheckResultFormMap cfm : checkResultList) {
+					sum += (int) cfm.get("checkResult");
+				}
+				checkFinalScoreResultMap = new CheckFinalScoreResultMap();   //最终结果实体
+				checkFinalScoreResultMap.put("month", month);                                        //月份
+				checkFinalScoreResultMap.put("accountNumber", zhtUserInfoList.get(0).get("userId"));                    //用户id
+				checkFinalScoreResultMap = checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+				checkFinalScoreResultMap.put("captainScore", sum);                                        //上级评分
+				double superiorPercentileScore = CalculationUtil.getCentesimalSystem(60, Double.valueOf(sum)); // 四舍五入取一个小数点
+				checkFinalScoreResultMap.put("captainPercentileScore", superiorPercentileScore);        //百分制上级评分
+				//循环更新所有组员的上级评分(团队2不参与被上级评分
+				//更入最终结果表
+				checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+			}
+
+
+			//3.获取所有的团队长评分，将这些数据更新到最终结果表
+			// 3.1查询所有团队长 --为需要打分的团队长新增了两个角色，需要分别查出
+			userInfoFormMap=new UserInfoFormMap();
+			userInfoFormMap.set("roleid", 17);
+			userInfoFormMap.set("level", 10);
+			userInfoFormMap.set("deletestatus", '0');
+			leaderUserInfoList = userInfoMapper.findByPage(userInfoFormMap);
+			userInfoFormMap.set("roleid", 18);
+			leaderUserInfoList.add(userInfoMapper.findByPage(userInfoFormMap).get(0));
+			//3.2遍历所有团队长更新数据
+			int sum=0;
+			for (UserInfoFormMap uiMap: leaderUserInfoList) {
+				if(uiMap.get("roleId").equals(17)||uiMap.get("roleId").equals(18)){
+					CheckResultFormMap crm=new CheckResultFormMap();
+					crm.put("evaluatorId",uiMap.get("userId"));
+					crm.put("month",month);
+					crm.put("operationPostId",zhtUserInfoList.get(0).get("userId"));
+					//根据评价人id和被评价人id得到每个属于当前组长的6项评分
+					checkResultList=checkResultMapper.findCheckResultAllField(crm);
+					int sumForLeader=0;
+					for (CheckResultFormMap cfm:checkResultList) {
+						sumForLeader+=(int)cfm.get("checkResult");
+					}
+					sum+=sumForLeader;
+
+				}
+			}
+			checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+			checkFinalScoreResultMap.put("currentMonth",month);										//月份
+			checkFinalScoreResultMap.put("accountNumber",zhtUserInfoList.get(0).get("userId"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			checkFinalScoreResultMap.put("superiorScore",sum/2);										//上级评分
+			double superiorPercentileScore =CalculationUtil.getCentesimalSystem(60,Double.valueOf(sum/2)); // 四舍五入取一个小数点
+			checkFinalScoreResultMap.put("superiorPercentileScore",superiorPercentileScore);		//百分制上级评分
+			//循环更新所有组员的上级评分(团队2不参与被上级评分
+			//更入最终结果表
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+
+
+			/*for (UserInfoFormMap uiMap: leaderUserInfoList) {
+				//循环所有组员
+				for (UserInfoFormMap personMap:zhtUserInfoList) {
+					//查询团队长本月所有评分集合,
+					CheckResultFormMap crm=new CheckResultFormMap();
+					crm.put("evaluatorId",uiMap.get("userId"));
+					crm.put("month",month);
+					crm.put("operationPostId",personMap.get("userId"));
+					//根据评价人id和被评价人id得到每个属于当前团队长的6项评分
+					checkResultList=checkResultMapper.findCheckResultAllField(crm);
+					//循环6项评分相加更新到最终结果表：上级评分和百分制上级评分
+					for (CheckResultFormMap cfm:checkResultList) {
+						int sum=0;
+						sum+=(int)cfm.get("checkResult");
+						CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();   //最终结果实体
+						checkFinalScoreResultMap.put("month",month);										//月份
+						checkFinalScoreResultMap.put("accountNumber",personMap.get("userId"));					//用户id
+						checkFinalScoreResultMap.put("captainScore",sum);										//上级评分
+						double captainPercentileScore =CalculationUtil.getCentesimalSystem(60,(int)sum); // 四舍五入取一个小数点
+						checkFinalScoreResultMap.put("captainPercentileScore",captainPercentileScore);		//百分制上级评分
+						//循环更新所有组员的团队长评分
+						checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+					}
+				}
+			}*/
+
+			//4.遍历结果表计算每一个组员的百分制总分
+			//公式：外部评分 X 岗位系数 X 外部评分权重 + 上级评分 X 上级权重 + 团队长评分 X 团队长权重
+			CheckFinalScoreResultMap cfsParamMap=new CheckFinalScoreResultMap();
+			cfsParamMap.put("accountNumber",zhtUserInfoList.get(0).get("userId"));
+			List<CheckFinalScoreResultMap>  cfsrList=checkFinalScoreResultMapper.findCheckFinalResultList(cfsParamMap);
+
+			CheckWeightFormMap cwfMap=new CheckWeightFormMap();
+
+
+
+			cwfMap.put("roleId",6);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			double externalWeightCoefficient=Double.valueOf(cwfMap.get("weightCoefficient").toString());   //外部权重
+
+
+			cwfMap.put("roleId",8);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			double superiorWeightCoefficient=Double.valueOf(cwfMap.get("weightCoefficient").toString());	//上级权重
+
+			cwfMap.put("roleId",17);
+			cwfMap=checkMapper.getCheckWeight(cwfMap);
+			double leaderWeightCoefficient=Double.valueOf(cwfMap.get("weightCoefficient").toString()); 	 //团队长权重
+
+			double leaderWeightCoefficient2=leaderWeightCoefficient+superiorWeightCoefficient; //特殊的团队长权重：因为信贷管理团队没有组长评分项，所以将上级的权重加给团队长
+			//4.1取得三项权重数据
+			for (CheckFinalScoreResultMap cfsrMap: cfsrList) {
+				double tempExternalPercentileScore=Double.valueOf(cfsrMap.get("externalPercentileScore").toString());	//外部评分
+				double tempSuperiorPercentileScore=Double.valueOf(cfsrMap.get("superiorPercentileScore").toString());	//上级评分
+				double captainPercentileScore=Double.valueOf(cfsrMap.get("captainPercentileScore").toString());		//团队长评分
+				double postCoefficient=Double.valueOf(cfsrMap.get("postCoefficient").toString());					//岗位系数
+				//判断是哪个团队，是否有组长评分
+				if(superiorPercentileScore==0){
+					//信贷管理团队
+					double totalScore=tempExternalPercentileScore*postCoefficient*externalWeightCoefficient+captainPercentileScore*leaderWeightCoefficient2;
+					System.out.println(totalScore);
+					CheckFinalScoreResultMap tempCfsMap=new CheckFinalScoreResultMap();
+					tempCfsMap.put("finalScore",totalScore);
+				}else{
+					//业务支持团队
+					double totalScore=tempSuperiorPercentileScore*postCoefficient*externalWeightCoefficient+superiorPercentileScore*superiorWeightCoefficient+captainPercentileScore*leaderWeightCoefficient;
+					System.out.println(totalScore);
+					CheckFinalScoreResultMap tempCfsMap=new CheckFinalScoreResultMap();
+					tempCfsMap.put("finalPercentileScore",totalScore);
+					tempCfsMap.put("month",month);
+					tempCfsMap.put("accountNumber",cfsrMap.get("accountNumber"));
+					checkFinalScoreResultMapper.updateCheckFinalResult(tempCfsMap);
+				}
+			}
+
+
+
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+
+		}
+		return null;
+
+
+
+	}
+	public void updateRank(Map map){
+		String month=map.get("month").toString();
+		List<CheckFinalScoreResultMap> checkFinalScoreResultlist=null;
+		//5.更新外部评分，上级评分，团队长评分名次
+		//5.1查询当前月份所有组员的最终结果表数据-根据外部评分数据排序
+		CheckFinalScoreResultMap checkFinalScoreResultMap=new CheckFinalScoreResultMap();
+		checkFinalScoreResultMap.put("month",month);
+		checkFinalScoreResultMap.put("judge","1");
+		checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+		//循环结果表数据-外部评分排名
+		for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+			//先根据月份和userid查到组员信息
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			//更新组员信息：更新外部名次信息
+			checkFinalScoreResultMap.put("externalScoreGrading",i+1);
+			//更新到数据库
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+		}
+
+		//5.2查询当前月份所有组员的最终结果表数据-根据上级评分数据排序
+		checkFinalScoreResultMap.put("month",month);
+		checkFinalScoreResultMap.put("judge","2");
+		checkFinalScoreResultMap.put("ignoreNull",1);//忽略组长评分为空的数据
+		checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+		//循环结果表数据-外部评分排名
+		for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+			//先根据月份和userid查到组员信息
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			//更新组员信息：更新组名次信息
+			checkFinalScoreResultMap.put("groupGrading",i+1);
+			//更新到数据库
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+		}
+		//5.3查询当前月份所有组员的最终结果表数据-根据团队长评分数据排序
+		checkFinalScoreResultMap.put("month",month);
+		checkFinalScoreResultMap.put("judge","3");
+		checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+		//循环结果表数据-外部评分排名
+		for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+			//先根据月份和userid查到组员信息
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			//更新组员信息：更新团队长评分名次信息
+			checkFinalScoreResultMap.put("captainScoreGrading",i+1);
+			//更新到数据库
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+		}
+		//5.4查询当前月份所有组员的最终结果表数据-根据总分数据排序
+		checkFinalScoreResultMap.put("month",month);
+		checkFinalScoreResultMap.put("judge","4");
+		checkFinalScoreResultlist=checkFinalScoreResultMapper.findByWhere(checkFinalScoreResultMap);
+		//循环结果表数据-外部评分排名
+		for (int i = 0 ; checkFinalScoreResultlist.size() > i ; i++){
+			//先根据月份和userid查到组员信息
+			checkFinalScoreResultMap.put("month",month);
+			checkFinalScoreResultMap.put("accountNumber",checkFinalScoreResultlist.get(i).get("accountNumber"));					//用户id
+			checkFinalScoreResultMap=checkFinalScoreResultMapper.findCheckFinalResult(checkFinalScoreResultMap);
+			//更新组员信息：更新总分评分名次信息（最终名次）
+			checkFinalScoreResultMap.put("totalScoreGrading",i+1);
+			//更新到数据库
+			checkFinalScoreResultMapper.updateCheckFinalResult(checkFinalScoreResultMap);
+		}
+	}
     
 }

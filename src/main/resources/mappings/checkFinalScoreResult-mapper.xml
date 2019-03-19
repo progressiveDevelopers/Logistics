@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.numberONe.mapper.CheckFinalScoreResultMapper">
+    <!--mybatis ehcache缓存配置 -->
+    <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 <cache type="org.mybatis.caches.ehcache.LoggingEhcache"
+        /> -->
+    <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+    <!-- 以下与实体类的中字段一致 -->
+    <sql id="selectId">
+		id,
+		month,
+		accountNumber,
+		externalScore,
+		externalPercentileScore,
+		superiorScore,
+		superiorPercentileScore,
+		captainScore,
+		captainPercentileScore,
+		postCoefficient,
+		weightCoefficient,
+		roleId,
+		isGroupLeaderFlag,
+		finalScore,
+		finalPercentileScore,
+		externalScoreGrading,
+		groupGrading,
+		captainScoreGrading,
+		totalScoreGrading
+	</sql>
+
+    <insert id="addCheckResultList"  parameterType="java.util.List">
+        insert into check_result (
+        id,
+        month,
+        accountNumber,
+        externalScore,
+        externalPercentileScore,
+        superiorScore,
+        superiorPercentileScore,
+        captainScore,
+        captainPercentileScore,
+        postCoefficient,
+        weightCoefficient,
+        roleId,
+        isGroupLeaderFlag,
+        finalScore,
+        finalPercentileScore,
+        externalScoreGrading,
+        groupGrading,
+        captainScoreGrading,
+        totalScoreGrading)
+        values
+        <foreach collection="list" item="item" index="index"
+                 separator=",">
+            (#{item.id}
+            ,#{item.month}
+            ,#{item.accountNumber}
+            ,#{item.externalScore}
+            ,#{item.externalPercentileScore}
+            ,#{item.superiorScore}
+            ,#{item.superiorPercentileScore}
+            ,#{item.captainScore}
+            ,#{item.captainPercentileScore}
+            ,#{item.postCoefficient}
+            ,#{item.weightCoefficient}
+            ,#{item.roleId}
+            ,#{item.isGroupLeaderFlag}
+            ,#{item.finalScore}
+            ,#{item.finalPercentileScore}
+            ,#{item.externalScoreGrading}
+            ,#{item.groupGrading}
+            ,#{item.captainScoreGrading}
+            ,#{item.totalScoreGrading})
+        </foreach>
+    </insert>
+
+    <update id="updateCheckFinalResult" parameterType="java.util.HashMap">
+
+
+            update check_final_score_result
+          set
+        <if test="externalScore != null and externalScore != ''">
+           externalScore=${externalScore},
+          </if>
+          <if test="externalPercentileScore != null and externalPercentileScore != ''">
+           externalPercentileScore=${externalPercentileScore},
+          </if>
+            <if test="superiorScore != null and superiorScore != ''">
+                 superiorScore=${superiorScore},
+            </if>
+            <if test="superiorPercentileScore != null and superiorPercentileScore != ''">
+                 superiorPercentileScore=${superiorPercentileScore},
+            </if>
+            <if test="captainScore != null and captainScore != ''">
+                 captainScore=${captainScore},
+            </if>
+            <if test="captainPercentileScore != null and captainPercentileScore != ''">
+                 captainPercentileScore=${captainPercentileScore},
+            </if>
+            <if test="postCoefficient != null and postCoefficient != ''">
+                 postCoefficient=${postCoefficient},
+            </if>
+            <if test="finalPercentileScore != null and finalPercentileScore != ''">
+                 finalPercentileScore=${finalPercentileScore},
+            </if>
+            <if test="externalScoreGrading != null and externalScoreGrading != ''">
+                 externalScoreGrading=${externalScoreGrading},
+            </if>
+            <if test="groupGrading != null and groupGrading != ''">
+                 groupGrading=${groupGrading},
+            </if>
+            <if test="captainScoreGrading != null and captainScoreGrading != ''">
+                 captainScoreGrading=${captainScoreGrading},
+            </if>
+            <if test="totalScoreGrading != null and totalScoreGrading != ''">
+                 totalScoreGrading=${totalScoreGrading},
+            </if>
+            <if test="month != null and month != ''">
+                 `month`=${month}
+            </if>
+            where `month` = ${month}
+            and accountNumber = ${accountNumber}
+
+
+    </update>
+
+    <select id="findCheckFinalResult" parameterType="java.util.HashMap"
+            resultType="com.numberONe.entity.CheckFinalScoreResultMap">
+		select
+		*
+		from check_final_score_result
+		where
+		1=1
+        <if test="accountNumber != null and accountNumber != ''">
+		and accountNumber = #{accountNumber}
+        </if>
+        <if test="month != null and month != ''">
+		and month = #{month}
+        </if>
+
+	</select>
+
+    <select id="findCheckFinalResultList" parameterType="java.util.HashMap"
+            resultType="com.numberONe.entity.CheckFinalScoreResultMap">
+        select
+        *
+        from check_final_score_result
+        where
+        1=1
+        <if test="accountNumber != null and accountNumber != ''">
+            and accountNumber = #{accountNumber}
+        </if>
+        <if test="month != null and month != ''">
+            and month = #{month}
+        </if>
+        <if test="ignoreNull != null and ignoreNull != ''">
+            and by superiorPercentileScore is not null
+        </if>
+        <if test="judge != null and judge == '1'">
+            order by externalPercentileScore asc
+        </if>
+        <if test="judge != null and judge == '2'">
+            order by superiorPercentileScore asc
+        </if>
+        <if test="judge != null and judge == '3'">
+            order by captainPercentileScore asc
+        </if>
+        <if test="judge != null and judge == '4'">
+            order by finalPercentileScore asc
+        </if>
+
+    </select>
+</mapper>
