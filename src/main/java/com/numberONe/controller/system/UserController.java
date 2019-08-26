@@ -1,17 +1,15 @@
 package com.numberONe.controller.system;
 
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.numberONe.annotation.SystemLog;
+import com.numberONe.constant.EmailConstant;
+import com.numberONe.controller.index.BaseController;
+import com.numberONe.entity.*;
+import com.numberONe.exception.SystemException;
+import com.numberONe.mapper.*;
+import com.numberONe.plugin.PageView;
+import com.numberONe.shiro.EasyTypeToken;
+import com.numberONe.util.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -23,38 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.numberONe.annotation.SystemLog;
-import com.numberONe.constant.EmailConstant;
-import com.numberONe.controller.index.BaseController;
-import com.numberONe.entity.CheckAvgResultFormMap;
-import com.numberONe.entity.CheckMonthFormMap;
-import com.numberONe.entity.CheckResultFormMap;
-import com.numberONe.entity.CheckTaskAssignmentFormMap;
-import com.numberONe.entity.GroupFormMap;
-import com.numberONe.entity.ResUserFormMap;
-import com.numberONe.entity.RoleFormMap;
-import com.numberONe.entity.UserFormMap;
-import com.numberONe.entity.UserGroupInfoFormMap;
-import com.numberONe.entity.UserGroupsFormMap;
-import com.numberONe.entity.UserInfoView;
-import com.numberONe.entity.ValidateEmailFormMap;
-import com.numberONe.exception.SystemException;
-import com.numberONe.mapper.CheckMapper;
-import com.numberONe.mapper.CheckMonthMapper;
-import com.numberONe.mapper.CheckResultMapper;
-import com.numberONe.mapper.CheckTaskAssignmentMapper;
-import com.numberONe.mapper.GroupMapper;
-import com.numberONe.mapper.RoleMapper;
-import com.numberONe.mapper.UserInfoMapper;
-import com.numberONe.mapper.UserMapper;
-import com.numberONe.mapper.ValidateEmailMapper;
-import com.numberONe.plugin.PageView;
-import com.numberONe.shiro.EasyTypeToken;
-import com.numberONe.util.Common;
-import com.numberONe.util.EmailUtils;
-import com.numberONe.util.JsonUtils;
-import com.numberONe.util.POIUtils;
-import com.numberONe.util.PasswordHelper;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -250,31 +225,54 @@ public class UserController extends BaseController {
 		return Common.BACKGROUND_PATH + "/system/user/updatePassword";
 	}
 	
-	//保存新密码
-	@RequestMapping("editPassword")
+	//一键重置密码
+	@RequestMapping("resetPassword")
 	@ResponseBody
 	@Transactional(readOnly=false)//需要事务操作必须加入此注解
-	@SystemLog(module="系统管理",methods="用户管理-修改密码")//凡需要处理业务逻辑的.都需要记录操作日志
-	public String editPassword(HttpServletRequest request) throws Exception{
-		// 当验证都通过后，把用户信息放在session里
-	    UserFormMap userFormMap = getFormMap(UserFormMap.class);
-	    String newpassword = (String) userFormMap.get("newpassword");
-		userFormMap.put("password", newpassword);
-		
-		// 将信息保存在request中保存以便发送邮件
-		UserFormMap newuserFormMap = (UserFormMap) userMapper.findUserById(userFormMap);
-		request.setAttribute("newUserFormMap", newuserFormMap);
-		newuserFormMap.put("password", newpassword);
-		
-		//这里对修改的密码进行加密
-		PasswordHelper passwordHelper = new PasswordHelper();
-		passwordHelper.encryptPassword(userFormMap);
-		userMapper.editEntity(userFormMap);
-		
-		//更改密码之后注销用户信息 
-		SecurityUtils.getSubject().logout();
-		return "success";
+	@SystemLog(module="系统管理",methods="用户管理-重置密码")//凡需要处理业务逻辑的.都需要记录操作日志
+	public String resetPassword(HttpServletRequest request) throws Exception{
+        String[] ids = getParaValues("ids");
+        for (String id : ids) {
+            UserFormMap userFormMap = getFormMap(UserFormMap.class);
+            userFormMap.put("id", id);
+            UserFormMap newuserFormMap = (UserFormMap) userMapper.findUserById(userFormMap);
+            request.setAttribute("newUserFormMap", newuserFormMap);
+            newuserFormMap.put("password", "x@111111");
+            //这里对修改的密码进行加密
+            PasswordHelper passwordHelper = new PasswordHelper();
+            passwordHelper.encryptPassword(newuserFormMap);
+            userMapper.editEntity(newuserFormMap);
+
+        }
+        return "success";
 	}
+
+
+    //保存新密码
+    @RequestMapping("editPassword")
+    @ResponseBody
+    @Transactional(readOnly=false)//需要事务操作必须加入此注解
+    @SystemLog(module="系统管理",methods="用户管理-修改密码")//凡需要处理业务逻辑的.都需要记录操作日志
+    public String editPassword(HttpServletRequest request) throws Exception{
+        // 当验证都通过后，把用户信息放在session里
+        UserFormMap userFormMap = getFormMap(UserFormMap.class);
+        String newpassword = (String) userFormMap.get("newpassword");
+        userFormMap.put("password", newpassword);
+
+        // 将信息保存在request中保存以便发送邮件
+        UserFormMap newuserFormMap = (UserFormMap) userMapper.findUserById(userFormMap);
+        request.setAttribute("newUserFormMap", newuserFormMap);
+        newuserFormMap.put("password", newpassword);
+
+        //这里对修改的密码进行加密
+        PasswordHelper passwordHelper = new PasswordHelper();
+        passwordHelper.encryptPassword(userFormMap);
+        userMapper.editEntity(userFormMap);
+
+        //更改密码之后注销用户信息
+        SecurityUtils.getSubject().logout();
+        return "success";
+    }
 	
 	
 	@RequestMapping("forgetPasswordValidate")

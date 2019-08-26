@@ -55,6 +55,10 @@ $(function() {
 	$("#dimission").click("click", function() {
 	    dimission();
 	});
+    // 重置密码
+    $("#resetbtn").click("click", function() {
+        resetPassword();
+    });
 });
 function dimission() {
     var cbox = grid.getSelectedCheckbox();
@@ -137,4 +141,25 @@ function permissions() {
 		area : [ "700px", "80%" ],
 		content : url
 	});
+
+
+}
+function resetPassword() {
+    var cbox = grid.getSelectedCheckbox();
+    if (cbox == "") {
+        layer.msg("请选择用户！！");
+        return;
+    }
+    layer.confirm('是否重置？', function(index) {
+        var url = rootPath + '/user/resetPassword.shtml';
+        var s = CommnUtil.ajax(url, {
+            ids : cbox.join(",")
+        }, "json");
+        if (s == "success") {
+            layer.msg('重置成功');
+            grid.loadData();
+        } else {
+            layer.msg('重置失败');
+        }
+    });
 }
