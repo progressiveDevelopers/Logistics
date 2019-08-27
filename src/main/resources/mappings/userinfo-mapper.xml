@@ -183,7 +183,7 @@
         LEFT JOIN (
         	SELECT
         		result.nameid,
-        		result.allscore
+        		convert((result.allscore/60),decimal(16,3))*100 as allscore
         	FROM
         		check_avg_result result
         	WHERE

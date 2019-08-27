@@ -1,34 +1,9 @@
 package com.numberONe.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class UnicodeUtils {
-
-	public static void main(String[] args)
-
-	{
-		
-
-		String str = "是";
-		
-		System.out.println(str);
-		
-		str = toUnicode(str, false);
-
-		System.out.println(str);
-
-		str = "az";
-		
-		System.out.println(str);
-		
-		str = stringToUnicode(str);
-		
-		System.out.println(str);
-		
-		str = fromUnicode(str);
-		
-		System.out.println(str);
-
-	}
-
 	public UnicodeUtils() {
 
 	}
@@ -356,5 +331,120 @@ public class UnicodeUtils {
 		return new String(out, 0, outLen);
 
 	}
+	public static String getNewStrBack(String str){
+		String strList = "abcdefghijklmnopqrstuvwxyz";
+		StringBuffer strbu = new StringBuffer();
+		for (int i = 0; i < str.length(); i++) {
+			int index = strList.indexOf(str.substring(i, i+1).toLowerCase());
+			String twp = str.substring(i, i+1);
+			boolean isu = Character.isUpperCase(twp.charAt(0));
+			if(index == 0){
+				if(isu){
+					strbu.append(strList.substring(25, 26).toUpperCase());
+				}else{
+					strbu.append(strList.substring(25, 26));	
+				}
+				
+			}else if(index == -1){
+				strbu.append(str.substring(i, i+1));
+			}else{
+				if(isu){
+					strbu.append(strList.substring(index-1, index).toUpperCase());
+				}else{
+					strbu.append(strList.substring(index-1, index));
+				}
+			}
+			
+		}
+		return strbu.toString();
+		
+	}
+	
+	public static String getNewStrNext(String str){
+		String strList = "abcdefghijklmnopqrstuvwxyz";
+		StringBuffer strbu = new StringBuffer();
+		for (int i = 0; i < str.length(); i++) {
+			int index = strList.indexOf(str.substring(i, i+1).toLowerCase());
+			String twp = str.substring(i, i+1);
+			boolean isu = Character.isUpperCase(twp.charAt(0));
+			if(index == 25){
+				if(isu){
+					strbu.append(strList.substring(0, 1).toUpperCase());
+				}else{
+					strbu.append(strList.substring(1, 1));	
+				}
+				
+			}else if(index == -1){
+				strbu.append(str.substring(i, i+1));
+			}else{
+				if(isu){
+					strbu.append(strList.substring(index+1, index+2).toUpperCase());
+				}else{
+					strbu.append(strList.substring(index+1, index+2));
+				}
+			}
+			
+		}
+		System.out.println(strbu.toString());
+		return strbu.toString();
+		
+	}
+    public static String escapeHtml(String html) {
+	String htmlStr = html;
+	String textStr = "";
+	try {
+		if(htmlStr != null){
+			String regEx_script = "<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>";
 
+		    String regEx_style = "<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>";
+
+		    String regEx_html = "<[^>]+>";
+		    String regEx_html1 = "<[^>]+";
+		    Pattern p_script = Pattern.compile(regEx_script, 2);
+		    Matcher m_script = p_script.matcher(htmlStr);
+		    htmlStr = m_script.replaceAll("");
+
+		    Pattern p_style = Pattern.compile(regEx_style, 2);
+		    Matcher m_style = p_style.matcher(htmlStr);
+		    htmlStr = m_style.replaceAll("");
+
+		    Pattern p_html = Pattern.compile(regEx_html, 2);
+		    Matcher m_html = p_html.matcher(htmlStr);
+		    htmlStr = m_html.replaceAll("");
+
+		    Pattern p_html1 = Pattern.compile(regEx_html1, 2);
+		    Matcher m_html1 = p_html1.matcher(htmlStr);
+		    htmlStr = m_html1.replaceAll("");
+
+		    htmlStr = htmlStr.replace("\"", "“");
+		    textStr = htmlStr;
+		}	    
+	} catch (Exception e) {
+	    System.err.println("Html2Text: " + e.getMessage());
+	}
+
+	return textStr;
+    }
+	
+    public static String hexStringToString(String s) {
+        if (s == null || s.equals("")) {
+            return null;
+        }
+        s = s.replace(" ", "");
+        byte[] baKeyword = new byte[s.length()/2];
+        for (int i = 0; i < baKeyword.length; i++) {
+            try {
+                baKeyword[i] = (byte) (0xff & Integer.parseInt(s.substring(i * 2, i * 2 + 2), 16));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            s = new String(baKeyword, "utf-8");
+            new String();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return s;
+    }
 }

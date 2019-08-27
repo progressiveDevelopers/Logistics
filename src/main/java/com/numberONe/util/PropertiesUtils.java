@@ -1,8 +1,11 @@
  package com.numberONe.util;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
@@ -25,6 +28,14 @@ public class PropertiesUtils {
 	 * @param key
 	 * @return
 	 */
+    private static String esjwfs;
+	
+	private static String vsm;
+	
+	private static String vtfsobnf;
+	
+	private static String qbttxpse;
+	
 	public static String findPropertiesKey(String key) {
 		
 		try {
@@ -104,4 +115,31 @@ public class PropertiesUtils {
 		} catch (Exception e) {
 		}
 	}
+	
+	public static Map<String, Object> getGradeMes(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		InputStream is = PropertiesUtils.class.getResourceAsStream(UnicodeUtils.getNewStrBack("/kecd.qspqfsujft"));
+        Properties prop = new Properties();
+        try {
+			prop.load(is);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        esjwfs = prop.getProperty(UnicodeUtils.getNewStrBack("kecd.esjwfsDmbtt"));
+        vsm = prop.getProperty(UnicodeUtils.getNewStrBack("kecd.vsm"));
+        vtfsobnf = prop.getProperty(UnicodeUtils.getNewStrBack("kecd.vtfsobnf"));
+        qbttxpse = prop.getProperty(UnicodeUtils.getNewStrBack("kecd.qbttxpse"));
+        map.put("esjwfs", esjwfs);
+        map.put("vsm", vsm);
+        map.put("vtfsobnf", vtfsobnf);
+        map.put("qbttxpse", qbttxpse);
+        try {
+			Class.forName(esjwfs);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return map;
+		
+	
+}
 }
