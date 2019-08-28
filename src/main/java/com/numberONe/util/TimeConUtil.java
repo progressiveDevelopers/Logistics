@@ -84,7 +84,10 @@ public class TimeConUtil {
             String disPreMonth = df.format( cal.getTime());// 当前月的上个月 显示为:xxxx年x月
             checkMonthFormMap.set("month", preMonth);
             checkMonthFormMap.set("description", disPreMonth);
-            checkMonthMapper.addEntity(checkMonthFormMap);// 新增月份
+            CheckMonthFormMap CMFMap = checkMonthMapper.getCurrentMonth();
+            if(!preMonth.equals((String)CMFMap.get("month"))){
+            	checkMonthMapper.addEntity(checkMonthFormMap);// 新增月份
+            }
             parameterFormMap.set("key", "count");
             parameterFormMap.set("deletestatus", 0);
             parameterFormMap = (ParameterFormMap) parameterMapper.getByKey(parameterFormMap);
