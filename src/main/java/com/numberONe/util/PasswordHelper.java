@@ -21,7 +21,7 @@ public class PasswordHelper {
 	public static void main(String[] args) {
 		PasswordHelper passwordHelper = new PasswordHelper();
 		UserFormMap userFormMap = new UserFormMap();
-		userFormMap.put("password","123456");
+		userFormMap.put("password","x@111111");
 		userFormMap.put("accountName","admin");
 		passwordHelper.encryptPassword(userFormMap);
 		System.out.println(userFormMap);
