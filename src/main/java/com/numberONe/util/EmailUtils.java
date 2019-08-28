@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -26,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.numberONe.constant.EmailConstant;
+import com.numberONe.entity.ParameterFormMap;
+import com.numberONe.mapper.ParameterMapper;
 
 /**
  * 简单的邮件发送
@@ -35,6 +38,9 @@ import com.numberONe.constant.EmailConstant;
  */
 public class EmailUtils {
     
+    @Inject
+    static private ParameterMapper parameterMapper;
+	
     private  static  final Logger log = LoggerFactory.getLogger(EmailUtils.class);
     
     public static Properties properties = getEmailProps();
@@ -99,12 +105,10 @@ public class EmailUtils {
      * @param toEmail 发送给谁
      * @param subject 邮件标题
      * @param content 邮件内容
-     * @throws IOException 
-     * @throws MessagingException 
-     * @throws AddressException 
+     * @throws Exception 
      */
     public static void sendHtmlMail(String toEmail,String subject, String content)
-            throws IOException, AddressException, MessagingException {
+            throws Exception {
         sendHtmlMailAndBc(toEmail,subject,content,null);
     }
     
@@ -129,12 +133,10 @@ public class EmailUtils {
      * @param subject 邮件标题
      * @param content 邮件内容
      * @param cc 抄送  传入null 则不抄送 要以英文,(逗号拆分)
-     * @throws IOException 
-     * @throws MessagingException 
-     * @throws AddressException 
+     * @throws Exception 
      */
     public static void sendHtmlMailAndBc(String toEmail,String subject, String content,String cc)
-            throws IOException, AddressException, MessagingException {
+            throws Exception {
         // 0.1 确定连接位置
         Properties props = new Properties();
         // 设置邮箱smtp服务器的地址，
@@ -147,8 +149,30 @@ public class EmailUtils {
         props.setProperty("mail.smtp.socketFactory.port", "465");
         props.setProperty("mail.smtp.auth", properties.getProperty("mail.smtp.auth"));
         
-        final String eamilName = properties.getProperty("emailName");
-        final String emailPassword = properties.getProperty("emailPassword");
+        /**
+         * get email address and password from database
+         */
+        ParameterFormMap emailNameMap = new ParameterFormMap();
+        ParameterFormMap emailPasswordMap = new ParameterFormMap();
+        emailNameMap = new ParameterFormMap();
+        emailNameMap.set("key", "emailAddress");
+        emailNameMap.set("deletestatus", "0");
+        emailNameMap = (ParameterFormMap) parameterMapper.getByKey(emailNameMap);
+        
+        emailPasswordMap = new ParameterFormMap();
+        emailPasswordMap.set("key", "emailPassword");
+        emailPasswordMap.set("deletestatus", "0");
+        emailPasswordMap = (ParameterFormMap) parameterMapper.getByKey(emailPasswordMap);
+        
+        
+        
+        final String eamilName = (String) emailNameMap.get("value");
+        final String emailPassword = (String) emailPasswordMap.get("value");
+        
+		/*
+		 * final String eamilName = properties.getProperty("emailName"); 
+		 * final String emailPassword = properties.getProperty("emailPassword");
+		 */
 
         // 0.2确定权限（账号和密码）
         Authenticator authenticator = new Authenticator() {

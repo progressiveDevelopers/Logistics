@@ -4,13 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +20,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.User;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import org.apache.poi.util.StringUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -51,7 +48,6 @@ import com.numberONe.entity.UserInfoView;
 import com.numberONe.entity.UserLoginFormMap;
 import com.numberONe.mapper.ResourcesMapper;
 import com.numberONe.mapper.UserInfoMapper;
-import com.numberONe.mapper.UserLoginMapper;
 import com.numberONe.mapper.UserMapper;
 import com.numberONe.util.Common;
 import com.numberONe.util.EmailUtils;
@@ -59,7 +55,6 @@ import com.numberONe.util.PropertiesUtils;
 import com.numberONe.util.TreeObject;
 import com.numberONe.util.TreeUtil;
 import com.numberONe.util.UnicodeUtils;
-import java.sql.ResultSetMetaData;
 /**
  * 进行管理后台框架界面的类
  * 
