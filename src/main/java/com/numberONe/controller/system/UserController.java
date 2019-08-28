@@ -232,6 +232,9 @@ public class UserController extends BaseController {
 	@SystemLog(module="系统管理",methods="用户管理-重置密码")//凡需要处理业务逻辑的.都需要记录操作日志
 	public String resetPassword(HttpServletRequest request) throws Exception{
         String[] ids = getParaValues("ids");
+        if(ids[0]!=null){
+            ids=ids[0].split(",");
+        }
         for (String id : ids) {
             UserFormMap userFormMap = getFormMap(UserFormMap.class);
             userFormMap.put("id", id);

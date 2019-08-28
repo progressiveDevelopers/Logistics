@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -25,6 +26,8 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.numberONe.constant.EmailConstant;
 import com.numberONe.entity.ParameterFormMap;
@@ -36,15 +39,22 @@ import com.numberONe.mapper.ParameterMapper;
  * @author Administrator
  * 
  */
+@Component
 public class EmailUtils {
     
-    @Inject
-    static private ParameterMapper parameterMapper;
+    @Autowired
+    private ParameterMapper parameterMapper;
 	
     private  static  final Logger log = LoggerFactory.getLogger(EmailUtils.class);
     
     public static Properties properties = getEmailProps();
 
+    public static EmailUtils emailUtils;
+    
+    @PostConstruct
+    public void init() {
+    	emailUtils = this;
+    }
     
     /**
      * 加载email properties 文件
@@ -109,7 +119,7 @@ public class EmailUtils {
      */
     public static void sendHtmlMail(String toEmail,String subject, String content)
             throws Exception {
-        sendHtmlMailAndBc(toEmail,subject,content,null);
+    	new EmailUtils().sendHtmlMailAndBc(toEmail,subject,content,null);
     }
     
     @Test
@@ -127,6 +137,11 @@ public class EmailUtils {
         
     }
     
+    public static void main(String[] args) throws Exception {
+    	new EmailUtils().sendHtmlMailAndBc("1","2","3","4");
+	}
+    
+    
     /**
      * 
      * @param toEmail 发送给谁
@@ -135,7 +150,7 @@ public class EmailUtils {
      * @param cc 抄送  传入null 则不抄送 要以英文,(逗号拆分)
      * @throws Exception 
      */
-    public static void sendHtmlMailAndBc(String toEmail,String subject, String content,String cc)
+    public void sendHtmlMailAndBc(String toEmail,String subject, String content,String cc)
             throws Exception {
         // 0.1 确定连接位置
         Properties props = new Properties();
@@ -157,17 +172,22 @@ public class EmailUtils {
         emailNameMap = new ParameterFormMap();
         emailNameMap.set("key", "emailAddress");
         emailNameMap.set("deletestatus", "0");
-        emailNameMap = (ParameterFormMap) parameterMapper.getByKey(emailNameMap);
+        emailNameMap = (ParameterFormMap) emailUtils.parameterMapper.getByKey(emailNameMap);
+        
         
         emailPasswordMap = new ParameterFormMap();
         emailPasswordMap.set("key", "emailPassword");
         emailPasswordMap.set("deletestatus", "0");
-        emailPasswordMap = (ParameterFormMap) parameterMapper.getByKey(emailPasswordMap);
+        emailPasswordMap = (ParameterFormMap) emailUtils.parameterMapper.getByKey(emailPasswordMap);
         
         
         
         final String eamilName = (String) emailNameMap.get("value");
         final String emailPassword = (String) emailPasswordMap.get("value");
+        
+        System.out.println("发送邮件地址： " + eamilName);
+        System.out.println("发送邮件密码： " + emailPassword);
+        
         
 		/*
 		 * final String eamilName = properties.getProperty("emailName"); 

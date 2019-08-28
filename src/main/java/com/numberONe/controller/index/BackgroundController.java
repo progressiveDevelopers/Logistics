@@ -324,7 +324,7 @@ public class BackgroundController extends BaseController {
                 
                 String ccs = cc+","+master.get("email");
                 
-                EmailUtils.sendHtmlMailAndBc((String)x.get("email"), 
+                new EmailUtils().sendHtmlMailAndBc((String)x.get("email"), 
                             EmailUtils.getProperty(EmailConstant.EMAIL_TITLE_UNRATE), 
                             targetContent,ccs);
             }

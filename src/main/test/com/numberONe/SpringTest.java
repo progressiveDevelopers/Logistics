@@ -13,7 +13,11 @@ import com.numberONe.util.TimeConUtil;
 public class SpringTest {
     
     @Autowired
+    private EmailUtil emailUtil;
+    
+    @Autowired
     private TimeConUtil timeConUtil;
+   
     
     @Test
     public void TimeTask() {
@@ -25,6 +29,12 @@ public class SpringTest {
         }
     }
     
+    
+    @Test
+    public void emailProperties() {
+    	System.out.println("测试email发送人员");
+    	emailUtil.sendHtmlMailAndBc("1","1","1","1");
+    }
     
     @Test
     public void TimeTaskRateInfo() {
