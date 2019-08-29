@@ -36,29 +36,36 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 			// 根据不同错误转向不同页面
 				if(ex instanceof SystemException) {
 					response.setStatus(1001);//业务异常返回 1001
+					ex.printStackTrace();
 					//需注意：ModelAndView之中ViewName指的是视图解析器前缀和后缀之前的路径
 					return new ModelAndView("WEB-INF/jsp/exception/error-system", model);
 				}else if(ex instanceof ParameterException) {
 					response.setStatus(1002);//参数异常返回 1002
+					ex.printStackTrace();
 					return new ModelAndView("WEB-INF/jsp/exception/error-parameter", model);
 				} else {
 					response.setStatus(1000);//其他异常返回 1000
+					ex.printStackTrace();
 					return new ModelAndView("WEB-INF/error", model);
 				}
 		 }else{
 			 try {  
 				 if(ex instanceof SystemException) {
 						response.setStatus(1001);//业务异常返回 1001
+						ex.printStackTrace();
 					}else if(ex instanceof ParameterException) {
 						response.setStatus(1002);//参数异常返回 1002
+						ex.printStackTrace();
 					} else {
 						response.setStatus(1000);//其他异常返回 1000
+						ex.printStackTrace();
 					}
                  PrintWriter writer = response.getWriter();  
                  writer.write(ex.getMessage());  
                  writer.flush();  
              } catch (IOException e) {  
             	 model.put("ex", e);
+            	 e.printStackTrace();
             	 return new ModelAndView("WEB-INF/error", model);
              }  
              return null;  
