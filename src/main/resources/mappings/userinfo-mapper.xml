@@ -198,7 +198,7 @@
         SELECT t.evaluatorId,t.evaluator,t.`monthId`,t.`month`,sum(t.checkResult) AS
         'score' FROM check_result t
         WHERE t.`operationPostId` = #{0} AND t.monthId = #{1} AND t.deletestatus = 0
-        GROUP BY t.evaluatorId,t.`monthId`
+        GROUP BY t.evaluatorId,t.evaluator,t.`monthId`,t.`month`
         ) result
         INNER JOIN
         check_task_assignment task

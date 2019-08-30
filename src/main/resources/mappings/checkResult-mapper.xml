@@ -69,7 +69,7 @@
         SELECT id FROM (
         SELECT id FROM check_result
         WHERE operationPostId =#{0} AND monthId = #{1} AND checkOptionId = #{2} ORDER BY  checkResult ASC LIMIT 1 
-        ) t2 )
+        ) t2 ) GROUP BY checkOption
 	</select>
 	
    
