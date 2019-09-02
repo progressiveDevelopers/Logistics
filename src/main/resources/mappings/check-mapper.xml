@@ -117,7 +117,9 @@
 	   FROM check_result a,
 	   (SELECT evaluatorId,operationPostId,operationPost,month FROM check_task_assignment where`status`='1' and evaluatorId=#{evaluatorId} and monthId=#{monthId}) b
 	   where a.evaluatorId=b.evaluatorId AND a.operationPostId = b.operationPostId AND a.`month` = b.`month`
-	   GROUP BY a.operationPostId
+	   GROUP BY 
+	   b.MONTH,
+	   b.operationPost
  
 	</select>
 	
